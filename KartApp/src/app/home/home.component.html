@@ -1,7 +1,6 @@
-<ActionBar class="action-bar">
-    <Label class="action-bar-title" text="Home"></Label>
-</ActionBar>
 
-<GridLayout class="page">
+<StackLayout class="page">
     <!-- Add your page content here -->
-</GridLayout>
+    <Button text="Go to map" [nsRouterLink]="['/map']" pageTransition="slide"></Button>
+    
+</StackLayout>

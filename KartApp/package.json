@@ -1,10 +1,10 @@
 {
     "nativescript": {
         "id": "org.nativescript.KartApp",
-        "tns-android": {
+        "tns-ios": {
             "version": "5.1.0"
         },
-        "tns-ios": {
+        "tns-android": {
             "version": "5.1.0"
         }
     },
@@ -22,10 +22,11 @@
         "@angular/platform-browser-dynamic": "~7.1.0",
         "@angular/router": "~7.1.0",
         "nativescript-angular": "~7.1.0",
+        "nativescript-mapbox": "^4.4.1",
         "nativescript-theme-core": "~1.0.4",
-        "tns-core-modules": "~5.1.0",
         "reflect-metadata": "~0.1.10",
         "rxjs": "~6.3.0",
+        "tns-core-modules": "~5.1.0",
         "zone.js": "~0.8.18"
     },
     "devDependencies": {
