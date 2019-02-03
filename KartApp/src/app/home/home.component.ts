@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Page } from "tns-core-modules/ui/page/page";
 
 @Component({
     selector: "Home",
@@ -7,8 +8,9 @@ import { Component, OnInit } from "@angular/core";
 })
 export class HomeComponent implements OnInit {
 
-    constructor() {
+    constructor(page: Page) {
         // Use the component constructor to inject providers.
+        page.actionBarHidden = true;
     }
 
     ngOnInit(): void {
