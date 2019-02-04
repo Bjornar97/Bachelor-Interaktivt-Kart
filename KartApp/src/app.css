@@ -15,6 +15,53 @@ refer to http://docs.nativescript.org/ui/theme.
 For example, the following CSS rule changes the font size of all UI
 components that have the btn class name.
 */
+*{
+    background-color: transparent;
+}
+
 .btn {
     font-size: 18;
+}
+
+.map{
+    z-index: -1;
+}
+
+.bottomRow{
+    z-index: 10;
+}
+
+.absoluteContainer{
+    z-index: 0;
+}
+
+.drawer{
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 0 10dp 0 10dp;
+    border-top-left-radius: 20dp;
+    border-top-right-radius: 20dp;
+}
+
+.drag{
+    padding: 10dp;
+}
+
+.scrollView{
+    
+}
+
+.button{
+    background-color: orangered;
+    color: white;
+    height: 100%;
+    font-family: FontAwesome;
+    font-size: 12;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.button:active {
+    background-color: orangered;
+    color:white;
 }

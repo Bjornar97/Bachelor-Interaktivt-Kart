@@ -2,14 +2,14 @@ import { NgModule } from "@angular/core";
 import { Routes } from "@angular/router";
 import { NativeScriptRouterModule } from "nativescript-angular/router";
 
-import { MapPageComponent } from "./map-page.component";
+import { HomeComponent } from "./home-page.component";
 
 const routes: Routes = [
-    { path: "", component: MapPageComponent }
+    { path: "", component: HomeComponent }
 ];
 
 @NgModule({
     imports: [NativeScriptRouterModule.forChild(routes)],
     exports: [NativeScriptRouterModule]
 })
-export class MapPageRoutingModule { }
+export class HomeRoutingModule { }
