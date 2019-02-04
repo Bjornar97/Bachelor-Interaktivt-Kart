@@ -1,24 +1,20 @@
-<AbsoluteLayout dock="top" class="absoluteContainer">
-    <ContentView height="100%" width="100%" class="map">
-        <!-- The map coming from the plugin 
-            accessToken is the token I got from mapbox.com
-            mapStyle is the style of the map, they have a variety of them, and you can make your own if you want to.
-        -->
+<AbsoluteLayout class="absoluteContainer">
+    <ContentView height="100%" width="100%" class="mapBox">
         <ns-map></ns-map>
     </ContentView>
-    <DockLayout width="100%" height="100%" stretchLastChild="false" style="z-index: 99">
-        <GridLayout rows="*" columns="*,*,*" class="bottomRow" dock="bottom" width="100%" height="50" backgroundColor="#ffaaaa">
-            <Button col="0" text="Hjem" (tap)="change(home)" class="button"></Button>
-            <Button col="1" text="Konto" (tap)="change(home)" class="button"></Button>
-            <Button col="2" text="Instillinger" (tap)="change(home)" class="button"></Button>
-            
+    <DockLayout width="100%" height="100%" stretchLastChild="false">
+        <GridLayout rows="auto, auto" class="currentPage" dock="bottom" width="100%" backgroundColor="transparent">
+            <StackLayout row="0" colSpan="3" width="100%" class="drawer" style="visability: collapsed;">
+                <Label (pan)="onPan($event)" text="Sett den dra tingen her" textWrap="true" class="drag"></Label>
+                <ScrollView width="100%" [height]="drawer.height" horizontalAlignment="center" class="scrollView"> 
+                    <page-router-outlet></page-router-outlet>
+                </ScrollView>
+            </StackLayout>
+            <GridLayout row="1" rows="*" columns="*,*,*" class="bottomRow" backgroundColor="#f77">
+                <Button height="50dp" row="1" col="0" text="Hjem" [nsRouterLink]="['/home']" pageTransition="slideTop" (tap)="change('home', 150)" class="button"></Button>
+                <Button height="50dp" row="1" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="change('account', 200)" class="button"></Button>
+                <Button height="50dp" row="1" col="2" text="Instillinger" [nsRouterLink]="['/settings']" (tap)="change('settings', 60)" class="button"></Button>
+            </GridLayout>
         </GridLayout>
     </DockLayout>
-    <StackLayout top="400%" width="100%" class="drawer">
-        <Label text="Sett den dra tingen her" textWrap="true"></Label>
-        <ScrollView width="100%" height="80%" horizontalAlignment="center"> 
-            <Label text="Legg den dra-opp-greiå her" textWrap="true"></Label>
-            <page-router-outlet></page-router-outlet>
-        </ScrollView>
-    </StackLayout>
 </AbsoluteLayout>
