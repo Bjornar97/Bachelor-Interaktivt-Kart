@@ -30,8 +30,8 @@ export class AppComponent {
 
         console.log(screen.mainScreen.heightDIPs);
 
-        if (drawerLoc.heightInt > screen.mainScreen.heightDIPs - 115){
-            drawerLoc.heightInt = screen.mainScreen.heightDIPs - 115;
+        if (drawerLoc.heightInt > screen.mainScreen.heightDIPs - 113){
+            drawerLoc.heightInt = screen.mainScreen.heightDIPs - 113;
             console.log("Outside range!")
         }
         
@@ -43,7 +43,7 @@ export class AppComponent {
         drawerLoc.height = drawerLoc.heightInt + "dp";
     }
 
-    change(dest, height = screen.mainScreen.heightDIPs - 115){
+    change(dest, height = screen.mainScreen.heightDIPs - 113){
         console.log("Going to " + dest, " Height: " + height);
         this.drawer.visibility = "visibility: visible;";
         // TODO: Navigation goes here
