@@ -4,7 +4,7 @@ import { Page } from "tns-core-modules/ui/page/page";
 @Component({
     selector: "Home",
     moduleId: module.id,
-    templateUrl: "./home.component.html"
+    templateUrl: "./home-page.component.html"
 })
 export class HomeComponent implements OnInit {
 

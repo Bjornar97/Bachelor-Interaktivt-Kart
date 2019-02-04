@@ -12,7 +12,8 @@ export class AppComponent {
     private drawer = {
         startHeight: 100,
         heightInt: 100,
-        height: "100dp"
+        height: "100dp",
+        visibility: "visibility: collapsed;"
     };
 
     onPan(args: PanGestureEventData) {
@@ -44,8 +45,11 @@ export class AppComponent {
 
     change(dest, height = screen.mainScreen.heightDIPs - 115){
         console.log("Going to " + dest, " Height: " + height);
+        this.drawer.visibility = "visibility: visible;";
         // TODO: Navigation goes here
 
+
+        
 
         this.drawer.heightInt = height;
         this.drawer.height = this.drawer.heightInt + "dp";
