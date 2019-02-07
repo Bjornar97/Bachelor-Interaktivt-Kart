@@ -46,11 +46,6 @@ export class AppComponent {
     change(dest, height = screen.mainScreen.heightDIPs - 115){
         console.log("Going to " + dest, " Height: " + height);
         this.drawer.visibility = "visibility: visible;";
-        // TODO: Navigation goes here
-
-
-        
-
         this.drawer.heightInt = height;
         this.drawer.height = this.drawer.heightInt + "dp";
         this.drawer.startHeight = height;
