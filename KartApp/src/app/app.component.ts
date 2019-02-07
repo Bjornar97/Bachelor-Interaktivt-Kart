@@ -18,6 +18,18 @@ export class AppComponent {
         maxHeight: screen.mainScreen.heightDIPs - 113
     };
 
+    private buttons = {
+        home: {
+            buttonClass: "button"
+        },
+        account: {
+            buttonClass: "button"
+        },
+        settings: {
+            buttonClass: "button"
+        }
+    };
+
     hideDrawer(){
         this.drawer.visibility = "visibility: collapsed;";
     }
@@ -30,11 +42,47 @@ export class AppComponent {
         
     }
 
+    setSelectedButtons(selectedButton = null){
+        // TODO: Iterate dict
+        this.buttons.home.buttonClass = "button";
+        this.buttons.account.buttonClass = "button";
+        this.buttons.settings.buttonClass = "button";
+        if (selectedButton) {
+            if (selectedButton === "home") {
+                this.buttons.home.buttonClass = "buttonSelected";
+            } else if (selectedButton === "account") {
+                this.buttons.account.buttonClass = "buttonSelected";
+            } else if (selectedButton === "settings") {
+                this.buttons.settings.buttonClass = "buttonSelected";
+            }
+        }
+    }
+
+    isSelected(buttonName){
+        // TODO: Iterate dict
+        if (buttonName === "home" && this.buttons.home.buttonClass === "buttonSelected") {
+            return true;
+        }
+        if (buttonName === "account" && this.buttons.account.buttonClass === "buttonSelected") {
+            return true;
+        }
+        if (buttonName === "settings" && this.buttons.settings.buttonClass === "buttonSelected") {
+            return true;
+        }
+        return false;
+    }
+
     onPan(args: PanGestureEventData){
         console.log("Pan delta: [" + args.deltaX + ", " + args.deltaY + "] state: " + args.state);
         var state = args.state;
         var drawerLoc = this.drawer;
+        if (state === 1) {
+            // Første trykk
+            
+        }
+
         if (state === 2) {
+            // Mens den er holdt
             drawerLoc.heightInt = drawerLoc.startHeight - args.deltaY;
         }
 
@@ -56,6 +104,7 @@ export class AppComponent {
             // Gjem draweren når den er dratt helt ned
             if (drawerLoc.heightInt < 10){
                 this.hideDrawer();
+                this.setSelectedButtons();
             }
             // Når draweren er på toppen
             if (drawerLoc.heightInt > drawerLoc.maxHeight - 20){
@@ -68,25 +117,30 @@ export class AppComponent {
         drawerLoc.height = drawerLoc.heightInt + "dp";
     }
 
-    changeDrawer(dest, height = this.drawer.maxHeight){
-        console.log("Going to " + dest, " Height: " + height);
-        this.showDrawer();
-        // TODO: Navigation goes here
+    onButtonPress(buttonName, height = this.drawer.maxHeight){
+        console.log("Going to " + buttonName, " Height: " + height);
 
+        console.log(buttonName)
+        if (this.isSelected(buttonName)){
+            buttonName = null;
+            this.hideDrawer();
+        } else {
+            this.showDrawer();
+        }
 
-        
+        this.setSelectedButtons(buttonName);
 
         this.drawer.heightInt = height;
         
         if (this.drawer.heightInt > this.drawer.maxHeight) {
             this.drawer.heightInt = this.drawer.maxHeight;
-            console.log("Outside range!")
+            console.log("Outside range!");
         }
 
         if (this.drawer.heightInt === this.drawer.maxHeight) {
-            this.drawer.drawerClass = "drawerMaximized"
+            this.drawer.drawerClass = "drawerMaximized";
         } else {
-            this.drawer.drawerClass = "drawer"
+            this.drawer.drawerClass = "drawer";
         }
 
         this.drawer.height = this.drawer.heightInt + "dp";

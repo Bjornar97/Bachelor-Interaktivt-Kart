@@ -11,9 +11,9 @@
                 </ScrollView>
             </StackLayout>
             <GridLayout row="1" rows="*" columns="*,*,*" class="bottomRow" backgroundColor="#f77">
-                <Button height="50dp" row="1" col="0" text="Hjem" [nsRouterLink]="['/home']" (tap)="changeDrawer('home', 250)" class="button"></Button>
-                <Button height="50dp" row="1" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="changeDrawer('account', 1250)" class="button"></Button>
-                <Button height="50dp" row="1" col="2" text="Instillinger" [nsRouterLink]="['/settings']" (tap)="changeDrawer('settings', 250)" class="button"></Button>
+                <Button height="50dp" row="1" col="0" text="Hjem" [nsRouterLink]="['/home']" (tap)="onButtonPress('home', 250)" [class]="buttons.home.buttonClass"></Button>
+                <Button height="50dp" row="1" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="onButtonPress('account', 1250)" [class]="buttons.account.buttonClass"></Button>
+                <Button height="50dp" row="1" col="2" text="Instillinger" [nsRouterLink]="['/settings']" (tap)="onButtonPress('settings', 250)" [class]="buttons.settings.buttonClass"></Button>
             </GridLayout>
         </GridLayout>
     </DockLayout>

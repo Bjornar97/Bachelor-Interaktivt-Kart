@@ -71,3 +71,18 @@ components that have the btn class name.
     background-color: orangered;
     color:white;
 }
+
+.buttonSelected{
+    background-color: rgb(0, 17, 255);
+    color: white;
+    height: 100%;
+    font-family: FontAwesome;
+    font-size: 12;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.buttonSelected:active {
+    background-color: rgb(0, 234, 255);
+    color:white;
+}
