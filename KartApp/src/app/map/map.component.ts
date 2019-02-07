@@ -107,6 +107,7 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
+      
   }
 
 }
