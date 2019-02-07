@@ -5,15 +5,15 @@
 -->        
 <Mapbox
     accessToken="pk.eyJ1IjoiYmFjaGVsb3ItaW50ZXJha3RpdnQta2FydCIsImEiOiJjanI5czR5ZG8waXJ4NDNvY2k1aHY0NzYzIn0.bbWi5kPH3n89M7zxFTgXRw"
-    mapStyle="mapbox://styles/mapbox/outdoors-v10"
-    latitude="64.810928"
-    longitude="15.605580"
+    [mapStyle]="mapStyles.mapStyle"
+    [latitude]="mapStyles.latitude"
+    [longitude]="mapStyles.longitude"
     hideCompass="false"
-    zoomLevel="3"
-    showUserLocation="true"
-    disableZoom="false"
-    disableRotation="false"
-    disableScroll="false"
-    disableTilt="false"
+    [zoomLevel]="mapStyles.zoomLevel"
+    [showUserLocation]="mapStyles.showUser"
+    [disableZoom]="mapStyles.disableMovement"
+    [disableRotation]="mapStyles.disableMovement"
+    [disableScroll]="mapStyles.disableMovement"
+    [disableTilt]="mapStyles.disableMovement"
     (mapReady)="onMapReady($event)">
 </Mapbox>
