@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MapboxViewApi, Viewport as MapboxViewport } from "nativescript-mapbox";
 import { LocationService } from "../location.service";
-import { MainMap, setMap } from "../globals";
+import { MainMap, setMap, buttons } from "../globals";
 
 @Component({
   selector: 'ns-map',
@@ -107,7 +107,6 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
-      
   }
 
 }
