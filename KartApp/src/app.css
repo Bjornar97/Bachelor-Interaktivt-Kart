@@ -43,6 +43,12 @@ components that have the btn class name.
     border-top-right-radius: 20dp;
 }
 
+.drawerMaximized{
+    background-color: rgba(255, 255, 255, 1);
+    text-align: center;
+    padding: 0 10dp;
+}
+
 .drag{
     padding: 10dp;
 }
@@ -63,5 +69,20 @@ components that have the btn class name.
 
 .button:active {
     background-color: orangered;
+    color:white;
+}
+
+.buttonSelected{
+    background-color: rgb(0, 17, 255);
+    color: white;
+    height: 100%;
+    font-family: FontAwesome;
+    font-size: 12;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.buttonSelected:active {
+    background-color: rgb(0, 234, 255);
     color:white;
 }
