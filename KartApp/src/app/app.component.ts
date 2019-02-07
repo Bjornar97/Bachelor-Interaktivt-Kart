@@ -26,7 +26,11 @@ export class AppComponent {
         this.drawer.visibility = "visibility: visible;";
     }
 
-    onPan(args: PanGestureEventData) {
+    setDrawerHeight(){
+        
+    }
+
+    onPan(args: PanGestureEventData){
         console.log("Pan delta: [" + args.deltaX + ", " + args.deltaY + "] state: " + args.state);
         var state = args.state;
         var drawerLoc = this.drawer;
