@@ -18,6 +18,14 @@ export class AppComponent {
         maxHeight: screen.mainScreen.heightDIPs - 113
     };
 
+    hideDrawer(){
+        this.drawer.visibility = "visibility: collapsed;";
+    }
+
+    showDrawer(){
+        this.drawer.visibility = "visibility: visible;";
+    }
+
     onPan(args: PanGestureEventData) {
         console.log("Pan delta: [" + args.deltaX + ", " + args.deltaY + "] state: " + args.state);
         var state = args.state;
@@ -54,14 +62,6 @@ export class AppComponent {
         }
 
         drawerLoc.height = drawerLoc.heightInt + "dp";
-    }
-
-    hideDrawer(){
-        this.drawer.visibility = "visibility: collapsed;";
-    }
-
-    showDrawer(){
-        this.drawer.visibility = "visibility: visible;";
     }
 
     changeDrawer(dest, height = this.drawer.maxHeight){
