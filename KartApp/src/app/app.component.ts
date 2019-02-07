@@ -13,10 +13,10 @@ export class AppComponent {
         startHeight: 100,
         heightInt: 100,
         height: "100dp",
-        visibility: "visibility: collapsed;"
+        visibility: "visibility: collapsed;",
+        drawerClass: "drawer",
+        maxHeight: screen.mainScreen.heightDIPs - 113
     };
-
-    private topHeight = 113
 
     onPan(args: PanGestureEventData) {
         console.log("Pan delta: [" + args.deltaX + ", " + args.deltaY + "] state: " + args.state);
@@ -26,14 +26,16 @@ export class AppComponent {
             drawerLoc.heightInt = drawerLoc.startHeight - args.deltaY;
         }
 
+        drawerLoc.drawerClass = "drawer";
+
         if (drawerLoc.heightInt < 0){
             drawerLoc.heightInt = 0;
         }
 
         console.log(screen.mainScreen.heightDIPs);
 
-        if (drawerLoc.heightInt > screen.mainScreen.heightDIPs - this.topHeight){
-            drawerLoc.heightInt = screen.mainScreen.heightDIPs - this.topHeight;
+        if (drawerLoc.heightInt > drawerLoc.maxHeight){
+            drawerLoc.heightInt = drawerLoc.maxHeight;
             console.log("Outside range!")
         }
         
@@ -44,9 +46,9 @@ export class AppComponent {
                 this.hideDrawer()
             }
             // Når draweren er på toppen
-            if (drawerLoc.heightInt > screen.mainScreen.heightDIPs - this.topHeight - 20){
-                drawerLoc.heightInt = screen.mainScreen.heightDIPs - this.topHeight;
-                console.log("Outside range!")
+            if (drawerLoc.heightInt > drawerLoc.maxHeight - 20){
+                drawerLoc.heightInt = drawerLoc.maxHeight;
+                drawerLoc.drawerClass = "drawerMaximized";
             }
             drawerLoc.startHeight = drawerLoc.heightInt;
         }
@@ -58,7 +60,7 @@ export class AppComponent {
         this.drawer.visibility = "visibility: collapsed;";
     }
 
-    changeDrawer(dest, height = screen.mainScreen.heightDIPs - 113){
+    changeDrawer(dest, height = this.drawer.maxHeight){
         console.log("Going to " + dest, " Height: " + height);
         this.drawer.visibility = "visibility: visible;";
         // TODO: Navigation goes here
@@ -67,8 +69,20 @@ export class AppComponent {
         
 
         this.drawer.heightInt = height;
+        
+        if (this.drawer.heightInt > this.drawer.maxHeight) {
+            this.drawer.heightInt = this.drawer.maxHeight;
+            console.log("Outside range!")
+        }
+
+        if (this.drawer.heightInt === this.drawer.maxHeight) {
+            this.drawer.drawerClass = "drawerMaximized"
+        } else {
+            this.drawer.drawerClass = "drawer"
+        }
+
         this.drawer.height = this.drawer.heightInt + "dp";
-        this.drawer.startHeight = height;
+        this.drawer.startHeight = this.drawer.heightInt;
     }
 
     ngOnInit(): void {

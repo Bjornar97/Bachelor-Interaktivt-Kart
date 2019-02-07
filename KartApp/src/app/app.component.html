@@ -4,7 +4,7 @@
     </ContentView>
     <DockLayout width="100%" height="100%" stretchLastChild="false">
         <GridLayout rows="auto, auto" class="currentPage" dock="bottom" width="100%" backgroundColor="transparent">
-            <StackLayout row="0" colSpan="3" width="100%" class="drawer" [style]="drawer.visibility">
+            <StackLayout row="0" colSpan="3" width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility">
                 <Label (pan)="onPan($event)" text="Sett den dra tingen her" textWrap="true" class="drag"></Label>
                 <ScrollView width="100%" [height]="drawer.height" horizontalAlignment="center" class="scrollView"> 
                     <page-router-outlet></page-router-outlet>
@@ -12,7 +12,7 @@
             </StackLayout>
             <GridLayout row="1" rows="*" columns="*,*,*" class="bottomRow" backgroundColor="#f77">
                 <Button height="50dp" row="1" col="0" text="Hjem" [nsRouterLink]="['/home']" (tap)="changeDrawer('home', 250)" class="button"></Button>
-                <Button height="50dp" row="1" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="changeDrawer('account', 250)" class="button"></Button>
+                <Button height="50dp" row="1" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="changeDrawer('account', 1250)" class="button"></Button>
                 <Button height="50dp" row="1" col="2" text="Instillinger" [nsRouterLink]="['/settings']" (tap)="changeDrawer('settings', 250)" class="button"></Button>
             </GridLayout>
         </GridLayout>

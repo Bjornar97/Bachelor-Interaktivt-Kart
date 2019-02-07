@@ -43,6 +43,12 @@ components that have the btn class name.
     border-top-right-radius: 20dp;
 }
 
+.drawerMaximized{
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 0 10dp;
+}
+
 .drag{
     padding: 10dp;
 }
