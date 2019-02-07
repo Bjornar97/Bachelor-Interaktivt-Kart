@@ -16,6 +16,8 @@ export class AppComponent {
         visibility: "visibility: collapsed;"
     };
 
+    private topHeight = 113
+
     onPan(args: PanGestureEventData) {
         console.log("Pan delta: [" + args.deltaX + ", " + args.deltaY + "] state: " + args.state);
         var state = args.state;
@@ -24,26 +26,39 @@ export class AppComponent {
             drawerLoc.heightInt = drawerLoc.startHeight - args.deltaY;
         }
 
-        if (drawerLoc.heightInt < 10){
+        if (drawerLoc.heightInt < 0){
             drawerLoc.heightInt = 0;
         }
 
         console.log(screen.mainScreen.heightDIPs);
 
-        if (drawerLoc.heightInt > screen.mainScreen.heightDIPs - 113){
-            drawerLoc.heightInt = screen.mainScreen.heightDIPs - 113;
+        if (drawerLoc.heightInt > screen.mainScreen.heightDIPs - this.topHeight){
+            drawerLoc.heightInt = screen.mainScreen.heightDIPs - this.topHeight;
             console.log("Outside range!")
         }
         
         if (state === 3){
             // Sluppet
+            // Gjem draweren når den er dratt helt ned
+            if (drawerLoc.heightInt < 10){
+                this.hideDrawer()
+            }
+            // Når draweren er på toppen
+            if (drawerLoc.heightInt > screen.mainScreen.heightDIPs - this.topHeight - 20){
+                drawerLoc.heightInt = screen.mainScreen.heightDIPs - this.topHeight;
+                console.log("Outside range!")
+            }
             drawerLoc.startHeight = drawerLoc.heightInt;
         }
 
         drawerLoc.height = drawerLoc.heightInt + "dp";
     }
 
-    change(dest, height = screen.mainScreen.heightDIPs - 113){
+    hideDrawer(){
+        this.drawer.visibility = "visibility: collapsed;";
+    }
+
+    changeDrawer(dest, height = screen.mainScreen.heightDIPs - 113){
         console.log("Going to " + dest, " Height: " + height);
         this.drawer.visibility = "visibility: visible;";
         // TODO: Navigation goes here
