@@ -43,7 +43,7 @@ export class AppComponent {
             // Sluppet
             // Gjem draweren når den er dratt helt ned
             if (drawerLoc.heightInt < 10){
-                this.hideDrawer()
+                this.hideDrawer();
             }
             // Når draweren er på toppen
             if (drawerLoc.heightInt > drawerLoc.maxHeight - 20){
@@ -60,9 +60,13 @@ export class AppComponent {
         this.drawer.visibility = "visibility: collapsed;";
     }
 
+    showDrawer(){
+        this.drawer.visibility = "visibility: visible;";
+    }
+
     changeDrawer(dest, height = this.drawer.maxHeight){
         console.log("Going to " + dest, " Height: " + height);
-        this.drawer.visibility = "visibility: visible;";
+        this.showDrawer();
         // TODO: Navigation goes here
 
 
