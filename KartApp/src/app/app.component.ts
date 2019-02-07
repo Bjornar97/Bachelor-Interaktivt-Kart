@@ -78,15 +78,13 @@ export class AppComponent {
         var drawerLoc = this.drawer;
         if (state === 1) {
             // Første trykk
-            
+            drawerLoc.drawerClass = "drawer";
         }
 
         if (state === 2) {
             // Mens den er holdt
             drawerLoc.heightInt = drawerLoc.startHeight - args.deltaY;
         }
-
-        drawerLoc.drawerClass = "drawer";
 
         if (drawerLoc.heightInt < 0){
             drawerLoc.heightInt = 0;
