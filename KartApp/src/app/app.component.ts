@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 import {screen} from "platform"
+import { LocationClass } from "./location";
+import { MainMap } from "./globals";
 
 @Component({
     moduleId: module.id,
@@ -9,13 +11,21 @@ import {screen} from "platform"
 })
 export class AppComponent { 
     
+    constructor(){
+        this.locationService = new LocationClass(1);
+    }
+
+    private locationService: LocationClass;
+    private showLocationButton = true;
+
     private drawer = {
         startHeight: 100,
         heightInt: 100,
         height: "100dp",
         visibility: "visibility: collapsed;",
         drawerClass: "drawer",
-        maxHeight: screen.mainScreen.heightDIPs - 113
+        maxHeight: screen.mainScreen.heightDIPs - 113,
+        maxHeightLocationButton: screen.mainScreen.heightDIPs / 2
     };
 
     private buttons = {
@@ -111,6 +121,12 @@ export class AppComponent {
             }
             drawerLoc.startHeight = drawerLoc.heightInt;
         }
+        
+        if (drawerLoc.heightInt >= drawerLoc.maxHeightLocationButton){
+            this.showLocationButton = false;
+        } else {
+            this.showLocationButton = true;
+        }
 
         drawerLoc.height = drawerLoc.heightInt + "dp";
     }
@@ -143,6 +159,10 @@ export class AppComponent {
 
         this.drawer.height = this.drawer.heightInt + "dp";
         this.drawer.startHeight = this.drawer.heightInt;
+    }
+
+    goToLocation(){
+        MainMap.flyTo(16, 2000, true, undefined, 4000, 10000);
     }
 
     ngOnInit(): void {
