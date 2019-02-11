@@ -6,7 +6,6 @@ import { AppComponent } from "./app.component";
 
 import { registerElement } from "nativescript-angular/element-registry";
 import { MapComponent } from "./map/map.component";
-import { LocationService } from "./location.service";
 registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 
 @NgModule({
@@ -24,7 +23,6 @@ registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
     schemas: [
         NO_ERRORS_SCHEMA
     ],
-    providers: [LocationService]
 })
 export class AppModule { 
 

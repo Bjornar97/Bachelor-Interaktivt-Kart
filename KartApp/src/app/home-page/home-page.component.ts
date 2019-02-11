@@ -2,6 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { Page } from "tns-core-modules/ui/page/page";
 import { MapComponent } from "../map/map.component";
 import { MainMap } from "../globals";
+import { LocationClass } from "../location";
+import { Tracker } from "../tracker";
 
 @Component({
     selector: "Home",
@@ -13,19 +15,19 @@ export class HomeComponent implements OnInit {
     constructor(page: Page) {
         // Use the component constructor to inject providers.
         page.actionBarHidden = true;
-        this.mapComponent = new MapComponent;
+        this.locationClass = new LocationClass;
+        this.tracker = new Tracker(1);
     }
 
-    private mapComponent: MapComponent;
+    private locationClass: LocationClass;
+    private tracker: Tracker;
 
-    goToLocation (latitude?, longitude?) {
-        console.log("Going to location");
-        if (latitude != undefined && longitude != undefined){
-            MainMap.flyTo(16, 2000, 0, 5000, 10000, {latitude: latitude, longitude: longitude});
-            
-        } else {
-            MainMap.flyTo(16, 1000, 0, 5000, 10000);
-        }
+    startTrack(){
+        this.tracker.startTrip();
+    }
+
+    stopTrack(){
+        this.tracker.endTrip();
     }
 
     ngOnInit(): void {
