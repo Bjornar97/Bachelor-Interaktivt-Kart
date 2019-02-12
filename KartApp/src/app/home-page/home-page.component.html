@@ -6,6 +6,15 @@
     <Button text="Start Tur" (tap)="startTrack()" ></Button>
     <Button text="Stopp Tur" (tap)="stopTrack()" ></Button>
 
+    <StackLayout *ngIf="trip != undefined">
+        <Label text="Tur ferdig!" textWrap="true"></Label>
+        <StackLayout *ngFor="let point of trip.points">
+            <Label [text]="point.lat + ', ' + point.lng + ', ' + point.speed" textWrap="true"></Label>
+        </StackLayout>
+        
+    </StackLayout>
+    
+
     <Label text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque et gravida purus, sit amet consequat mauris. Cras nec turpis imperdiet, sagittis elit ac, dignissim urna. Phasellus eget nibh eget elit vulputate aliquet. Ut quis eros leo. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent non lorem ligula. Curabitur commodo erat vitae molestie mattis. Integer nec libero volutpat, hendrerit libero vel, vestibulum justo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
 
     Phasellus eu tortor in erat porta aliquet. Phasellus nec tempus velit. Fusce hendrerit finibus massa, tincidunt hendrerit felis semper sit amet. Quisque a posuere nisi. Integer iaculis dapibus erat ac pulvinar. Sed pharetra posuere convallis. Curabitur gravida, mi quis facilisis euismod, mi tellus fringilla risus, sed pellentesque ipsum libero eget ante. Morbi pharetra metus id nunc fermentum tincidunt. Proin vitae turpis condimentum, mattis mauris nec, tempor mi. Vivamus faucibus libero urna, et pharetra justo ullamcorper sit amet. Vestibulum nec tempus nibh. Pellentesque blandit lacus tortor, ut rhoncus nisl molestie eget. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed maximus dui in libero dapibus vehicula. Donec justo enim, cursus a tortor nec, laoreet eleifend mi. Suspendisse vel ex dapibus lacus tristique euismod id sed orci.

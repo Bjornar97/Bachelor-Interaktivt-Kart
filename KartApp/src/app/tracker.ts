@@ -9,16 +9,18 @@ export type Trip = {
     stopTime: Date,
     title?: string,
     description?: string
-  }
+}
 
 export class Tracker {
-    constructor(defaultAccuracy: number) {
+    constructor(defaultAccuracy: number, drawOnMap: boolean) {
         this.accuracy = defaultAccuracy;
         this.locationClass = new LocationClass();
+        this.drawOnMap = drawOnMap;
     }
     private accuracy: number;
     private locationClass: LocationClass;
 
+    private lastPoint: LocationObject;
     private status: boolean = false;
     private trip: Trip;
 
@@ -54,19 +56,20 @@ export class Tracker {
           altitude: point.altitude,
           direction: point.direction,
           horizontalAccuracy: point.horizontalAccuracy,
-          lat: point.lat,
-          lng: point.lng,
+          lat: point.latitude,
+          lng: point.longitude,
           speed: point.speed,
           timestamp: point.timestamp,
           verticalAccuracy: point.verticalAccuracy
         }
-        this.trip.points[location.id] = location;
+        this.trip.points.push(location);
         var i = 0;
         console.log("Added point");
 
-        if (this.drawOnMap){
-            MainMap.drawLine([point]);
+        if (this.drawOnMap && this.lastPoint != undefined){
+            MainMap.drawLine([this.lastPoint, point], "red", 2, 0.8);
         }
+        this.lastPoint = point;
     }
 
     private logError(error: Error){
@@ -123,6 +126,8 @@ export class Tracker {
     public endTrip(): Trip{
         console.log("Stopping Trip " + this.trip.id);
         geolocation.clearWatch(this.trip.id);
+        MainMap.removeLine();
+        MainMap.drawLine(this.trip.points, "red", 1, 0.7);
         this.status = false;
         this.trip.stopTime = new Date();
 

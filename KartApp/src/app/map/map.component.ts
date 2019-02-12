@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitudeProperty } from "nativescript-mapbox";
 import { LocationClass, LocationObject } from "../location";
-import { MainMap, setMap, buttons } from "../globals";
+import { setMap } from "../globals";
 
 @Component({
   selector: 'ns-map',

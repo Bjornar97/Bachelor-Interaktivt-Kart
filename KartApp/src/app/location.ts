@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
 import * as geolocation from "nativescript-geolocation";
 import { Location } from 'nativescript-geolocation';
-import { MainMap } from './globals';
 
 export type LocationObject = {
   id: number;
