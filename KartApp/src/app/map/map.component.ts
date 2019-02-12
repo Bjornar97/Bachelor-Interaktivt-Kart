@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { MapboxViewApi, Viewport as MapboxViewport } from "nativescript-mapbox";
+import { Component, OnInit, Input } from '@angular/core';
+import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitudeProperty } from "nativescript-mapbox";
+import { LocationClass, LocationObject } from "../location";
+import { setMap } from "../globals";
 
 @Component({
   selector: 'ns-map',
@@ -8,42 +10,183 @@ import { MapboxViewApi, Viewport as MapboxViewport } from "nativescript-mapbox";
   moduleId: module.id,
 })
 export class MapComponent implements OnInit {
+    
+    constructor(){
+        this.locationClass = new LocationClass(1);
+    }
 
-  private map: MapboxViewApi;
+    @Input() main: string;
+    private locationClass: LocationClass;
+    private map: MapboxViewApi;
+    private mapStyles = {
+        mapStyle: "mapbox://styles/mapbox/outdoors-v10",
+        latitude: 64.810928,
+        longitude: 15.605580,
+        zoomLevel: 3,
+        showUser: true,
+        disableMovement: false
+    }
+
+    private styles = [
+        {
+            id: 0,
+            name: "outdoors",
+            value: "mapbox://styles/mapbox/outdoors-v10"
+        },
+        {
+            id: 1,
+            name: "satellite",
+            value: "mapbox://styles/mapbox/satellite-streets-v9"
+        }
+    ]
+
+    /**
+     * setCenter - Set the center of the map
+     * 
+     * @param latitude 
+     * @param longitude 
+     * @param animated Should the transition be animated, true or false
+     */
+    public setCenter(latitude, longitude, animated = true){
+        this.map.setCenter({lat: latitude, lng: longitude, animated: animated});
+    }
+
+    /**
+     * addMarkers
+     * @param markers
+     */
+    public addMarkers(markers: MapboxMarker[]) {
+        this.map.addMarkers(markers);
+    }
+
+    /**
+     * 
+     * @param points An array of points the line should go between. The points need to be in type LatLng with latitude and longitude.
+     * @param color The color of the line.  default: red.
+     * @param width The width of the line. default: 1.
+     * @param opacity The opacity of the line. Default: 0.7.
+     */
+    public drawLine(points: LatLng[], color = "#ff0000", width = 1, opacity = 0.7){
+        // var LatLngPoints: LatLng[] = [];
+        // points.forEach(function(point){
+        //     LatLngPoints.push({
+        //         lat: point.lat,
+        //         lng: point.lng
+        //     });
+        // });
+        var promise = this.map.addPolyline({color: color, points: points, width: width, opacity: opacity});
+        return promise;
+    }
+
+    /**
+     * 
+     * @param ids Array of ids you want to remove from the map. If you do not send ids, all polylines will be removed.
+     */
+    public removeLine(ids?: number[]){
+        this.map.removePolylines(ids);
+    }
+
+    public trackUser(bearing = true){
+        if (bearing){
+            this.map.trackUser({mode: "FOLLOW_WITH_HEADING", animated: true});
+        } else {
+            this.map.trackUser({mode: "FOLLOW", animated: true});
+        }
+    }
+
+    public setMapStyle(style = "outdoors"){
+        var styleObject = this.styles.find(x => x.name == style);
+        this.map.setMapStyle(styleObject.value);
+    }
+
+    /**
+     * flyTo(): Flies the camera to the specified location or the current location of the device.
+     * 
+     * @param zoomLevel: How far the camera should zoom in(only applies to android). Default: 14.
+     * 
+     * @param altitude: How high in meters the camera should stop above ground(only applies to iOS)
+     * 
+     * @param bearing: The direction of the compass in degrees. If not specified, it is the same as it was.
+     * 
+     * @param duration: For how long the animation should take in milliseconds. Default: 4000
+     * 
+     * @param maxAge: How old the location reading can be in milliseconds.
+     * 
+     * @param LocationObject: An object that need latitude and longitude which is numbers if specified.
+     * 
+     */
+    flyTo(zoomLevel = 14, altitude = 5000, track = false, bearing?, duration = 4000, maxAge?, LocationObject?) {
+        // Function to get the camera to fly to the current location of the device
+        var trackUser = this.trackUser;
+        var map = this.map;
+        var location;
+        console.log("map.component: Getting ready to fly");
+        if (LocationObject == undefined){
+            console.log("map.component: location not specified. Trying to find current location");
+            this.locationClass.getLocation(maxAge, 10000, 0)
+                .then(function(result){
+                    location = result;
+                    map.animateCamera({
+                        // Target is the destination for the camera, which is the location of the device
+                        target: {
+                            lat: location.lat, 
+                            lng: location.lng
+                        },
+                        zoomLevel: zoomLevel, // Zoom level on Android
+                        altitude: altitude, // altitude above the ground in metres on iOS
+                        bearing: bearing, // The direction of the camera in degrees(0 - 360)
+                        duration: duration // How long the animation lasts
+                    }).then(function() {
+                        if (track){
+                            map.trackUser({mode: "FOLLOW_WITH_HEADING", animated: true});
+                        }
+                    });
+                    
+                    return location.horizontalAccuracy;
+                }, function(err){
+                    console.log("map.component: An error occured. " + err);
+                    return new Error("Could not get location" + err);
+                });
+        } else {
+            console.log("map.component: Got a locationObject");
+            location = LocationObject;
+            map.animateCamera({
+                // Target is the destination for the camera, which is the location of the device
+                target: {
+                    lat: location.lat, 
+                    lng: location.lng
+                },
+                zoomLevel: 14, // Zoom level on Android
+                altitude: 5000, // altitude above the ground in metres on iOS
+                bearing: 0, // The direction of the camera in degrees(0 - 360)
+                duration: 4000 // How long the animation lasts
+            });
+        }
+    }
 
   // Waits until the map is ready
   onMapReady(args): void {
       // Gets the map that is displayed
       this.map = args.map;
-      
-      // Waits 2 seconds
-      setTimeout(() => {
-          // Put this into a local variable, because this cannot be called in the function below
-          var _this = this;
+      if (this.main == "true"){
+        setMap(this);
+      }
 
-          // Function in the plugin for getting the location of the device and put it into the variable userLocation
-          this.map.getUserLocation().then(
-              function(userLocation) {
-                  // Function to get the camera to fly to the current location of the device
-                  _this.map.animateCamera({
-                      // Target is the destination for the camera, which is the location of the device
-                      target: {
-                          lat: userLocation.location.lat, 
-                          lng: userLocation.location.lng
-                      },
-                      zoomLevel: 14, // Zoom level on Android
-                      altitude: 5000, // altitude above the ground in metres on iOS
-                      bearing: 0, // The direction of the camera in degrees(0 - 360)
-                      duration: 4000 // How long the animation lasts
-                  });
-              }
-          )
-      }, 2000);
+      console.log("Trying to find location");
+      var map = this.map;
+      this.locationClass.getLocation(undefined, 3000, 0).then(function (loc) {
+          console.log("Latitude: " + loc.lat + ", longitude: " + loc.lng);
+          map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
+          map.setZoomLevel({level: 16, animated: false});
+      }, function (err) {
+          console.log("ERROR: ");
+          console.dir(err);
+      });
 
   }
 
   ngOnInit() {
-    console.log("initted map in component")
+      
   }
 
 }

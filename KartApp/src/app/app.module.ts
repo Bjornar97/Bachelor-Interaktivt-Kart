@@ -22,6 +22,8 @@ registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
     ],
     schemas: [
         NO_ERRORS_SCHEMA
-    ]
+    ],
 })
-export class AppModule { }
+export class AppModule { 
+
+}
