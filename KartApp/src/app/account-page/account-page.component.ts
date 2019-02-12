@@ -12,6 +12,7 @@ export class AccountPageComponent implements OnInit {
   constructor(page: Page) {
     // Use the component constructor to inject providers.
     page.actionBarHidden = true;
+    
 }
 
   ngOnInit() {
