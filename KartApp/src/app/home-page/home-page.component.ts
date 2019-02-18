@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
         // Use the component constructor to inject providers.
         page.actionBarHidden = true;
         this.locationClass = new LocationClass;
-        this.tracker = new Tracker(1);
+        this.tracker = new Tracker(1, true);
     }
 
     private tripComplete = false;
