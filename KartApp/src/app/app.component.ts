@@ -19,13 +19,14 @@ export class AppComponent {
     private showLocationButton = true;
 
     private drawer = {
-        startHeight: 100,
+        startHeight: 100, // Brukt til å renge ut høyden ved endring i høyde.
         heightInt: 100,
         height: "100dp",
         visibility: "visibility: collapsed;",
         drawerClass: "drawer",
         maxHeight: screen.mainScreen.heightDIPs - 113,
-        maxHeightLocationButton: screen.mainScreen.heightDIPs / 2
+        maxHeightLocationButton: screen.mainScreen.heightDIPs / 2,
+        initialHeight: 200 // Høyden den husker og starter på når du åpner draweren.
     };
 
     private buttons = {
@@ -40,16 +41,64 @@ export class AppComponent {
         }
     };
 
-    hideDrawer(){
+    private hideDrawer(){
         this.drawer.visibility = "visibility: collapsed;";
     }
 
-    showDrawer(){
+    private showDrawer(){
         this.drawer.visibility = "visibility: visible;";
     }
 
-    setDrawerHeight(){
+    closeDrawer(){
+        this.hideDrawer()
+        this.setSelectedButtons()
+        this.showLocationButton = true;
+    }
+
+    openDrawer(height = this.drawer.initialHeight, buttonName?){
+        this.showDrawer();
+        this.setDrawerHeight(height);
+        if (buttonName != undefined) {
+            this.setSelectedButtons(buttonName);
+        }
+    }
+
+    setDrawerHeight(height = 0, isPanning = false){
+        var drawerLoc = this.drawer;
+
+        if (height < 0){
+            console.log("Drawer height below minimum range! Height: " + height + ", Minimum: 0")
+            height = 0;
+        }
+        if (height > drawerLoc.maxHeight){
+            console.log("Drawer height above maximum range! Height: " + height + ", Maximum: " + drawerLoc.maxHeight)
+            height = drawerLoc.maxHeight;
+        }
+
+        if (!isPanning) {
+            // Når draweren er på toppen
+            if (height > drawerLoc.maxHeight - 20){
+                height = drawerLoc.maxHeight;
+                drawerLoc.drawerClass = "drawerMaximized";
+            } else {
+                drawerLoc.drawerClass = "drawer";
+            }
+            // Gjem draweren når den er dratt helt ned
+            if (height < 10){
+                this.closeDrawer();
+            } else {
+                drawerLoc.initialHeight = height;
+            }
+        }
         
+        if (height >= drawerLoc.maxHeightLocationButton){
+            this.showLocationButton = false;
+        } else {
+            this.showLocationButton = true;
+        }
+
+        drawerLoc.heightInt = height;
+        drawerLoc.height = height + "dp";
     }
 
     setSelectedButtons(selectedButton = null){
@@ -89,76 +138,26 @@ export class AppComponent {
         if (state === 1) {
             // Første trykk
             drawerLoc.drawerClass = "drawer";
-        }
-
-        if (state === 2) {
-            // Mens den er holdt
-            drawerLoc.heightInt = drawerLoc.startHeight - args.deltaY;
-        }
-
-        if (drawerLoc.heightInt < 0){
-            drawerLoc.heightInt = 0;
-        }
-
-        console.log(screen.mainScreen.heightDIPs);
-
-        if (drawerLoc.heightInt > drawerLoc.maxHeight){
-            drawerLoc.heightInt = drawerLoc.maxHeight;
-            console.log("Outside range!")
-        }
-        
-        if (state === 3){
-            // Sluppet
-            // Gjem draweren når den er dratt helt ned
-            if (drawerLoc.heightInt < 10){
-                this.hideDrawer();
-                this.setSelectedButtons();
-            }
-            // Når draweren er på toppen
-            if (drawerLoc.heightInt > drawerLoc.maxHeight - 20){
-                drawerLoc.heightInt = drawerLoc.maxHeight;
-                drawerLoc.drawerClass = "drawerMaximized";
-            }
             drawerLoc.startHeight = drawerLoc.heightInt;
         }
-        
-        if (drawerLoc.heightInt >= drawerLoc.maxHeightLocationButton){
-            this.showLocationButton = false;
-        } else {
-            this.showLocationButton = true;
+        if (state === 2) {
+            // Mens den er holdt
+            this.setDrawerHeight(drawerLoc.startHeight - args.deltaY, true);
         }
-
-        drawerLoc.height = drawerLoc.heightInt + "dp";
+        if (state === 3){
+            // Sluppet
+            this.setDrawerHeight(drawerLoc.startHeight - args.deltaY);
+        }
     }
 
-    onButtonPress(buttonName, height = this.drawer.maxHeight){
-        console.log("Going to " + buttonName, " Height: " + height);
+    onButtonPress(buttonName, height = this.drawer.initialHeight){
+        console.log("Pressed button: " + buttonName, " Height: " + height);
 
-        console.log(buttonName)
         if (this.isSelected(buttonName)){
-            buttonName = null;
-            this.hideDrawer();
+            this.closeDrawer();
         } else {
-            this.showDrawer();
+            this.openDrawer(height, buttonName);
         }
-
-        this.setSelectedButtons(buttonName);
-
-        this.drawer.heightInt = height;
-        
-        if (this.drawer.heightInt > this.drawer.maxHeight) {
-            this.drawer.heightInt = this.drawer.maxHeight;
-            console.log("Outside range!");
-        }
-
-        if (this.drawer.heightInt === this.drawer.maxHeight) {
-            this.drawer.drawerClass = "drawerMaximized";
-        } else {
-            this.drawer.drawerClass = "drawer";
-        }
-
-        this.drawer.height = this.drawer.heightInt + "dp";
-        this.drawer.startHeight = this.drawer.heightInt;
     }
 
     goToLocation(){
@@ -167,6 +166,5 @@ export class AppComponent {
 
     ngOnInit(): void {
         // Init your component properties here.
-        
     }
 }
