@@ -55,8 +55,12 @@ export class AppComponent {
         this.showLocationButton = true;
     }
 
-    openDrawer(height){
-        
+    openDrawer(height = this.drawer.initialHeight, buttonName?){
+        this.showDrawer();
+        this.setDrawerHeight(height);
+        if (buttonName != undefined) {
+            this.setSelectedButtons(buttonName);
+        }
     }
 
     setDrawerHeight(height = 0, isPanning = false){
@@ -152,9 +156,7 @@ export class AppComponent {
         if (this.isSelected(buttonName)){
             this.closeDrawer();
         } else {
-            this.showDrawer();
-            this.setDrawerHeight(height);
-            this.setSelectedButtons(buttonName);
+            this.openDrawer(height, buttonName);
         }
     }
 
@@ -164,6 +166,5 @@ export class AppComponent {
 
     ngOnInit(): void {
         // Init your component properties here.
-        
     }
 }
