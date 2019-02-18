@@ -25,7 +25,8 @@ export class AppComponent {
         visibility: "visibility: collapsed;",
         drawerClass: "drawer",
         maxHeight: screen.mainScreen.heightDIPs - 113,
-        maxHeightLocationButton: screen.mainScreen.heightDIPs / 2
+        maxHeightLocationButton: screen.mainScreen.heightDIPs / 2,
+        initialHeight: 100
     };
 
     private buttons = {
@@ -48,7 +49,7 @@ export class AppComponent {
         this.drawer.visibility = "visibility: visible;";
     }
 
-    setDrawerHeight(){
+    setDrawerHeight(height = 0){
         
     }
 
@@ -109,15 +110,17 @@ export class AppComponent {
         
         if (state === 3){
             // Sluppet
-            // Gjem draweren når den er dratt helt ned
-            if (drawerLoc.heightInt < 10){
-                this.hideDrawer();
-                this.setSelectedButtons();
-            }
             // Når draweren er på toppen
             if (drawerLoc.heightInt > drawerLoc.maxHeight - 20){
                 drawerLoc.heightInt = drawerLoc.maxHeight;
                 drawerLoc.drawerClass = "drawerMaximized";
+            }
+            // Gjem draweren når den er dratt helt ned
+            if (drawerLoc.heightInt < 10){
+                this.hideDrawer();
+                this.setSelectedButtons();
+            } else {
+                this.drawer.initialHeight = this.drawer.heightInt;
             }
             drawerLoc.startHeight = drawerLoc.heightInt;
         }
@@ -131,7 +134,7 @@ export class AppComponent {
         drawerLoc.height = drawerLoc.heightInt + "dp";
     }
 
-    onButtonPress(buttonName, height = this.drawer.maxHeight){
+    onButtonPress(buttonName, height = this.drawer.initialHeight){
         console.log("Going to " + buttonName, " Height: " + height);
 
         console.log(buttonName)
@@ -159,6 +162,9 @@ export class AppComponent {
 
         this.drawer.height = this.drawer.heightInt + "dp";
         this.drawer.startHeight = this.drawer.heightInt;
+
+
+        this.drawer.initialHeight = this.drawer.heightInt;
     }
 
     goToLocation(){
