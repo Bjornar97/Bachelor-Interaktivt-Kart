@@ -28,7 +28,7 @@ export class MapMenuComponent implements OnInit {
 
   private open = "closed";
 
-  constructor(page: Page, private route: ActivatedRoute) { 
+  constructor(page: Page) { 
     page.actionBarHidden = true;
     this.settingsService = globals.settingsService;
     var setting = this.settingsService.getSetting(undefined, 11);
