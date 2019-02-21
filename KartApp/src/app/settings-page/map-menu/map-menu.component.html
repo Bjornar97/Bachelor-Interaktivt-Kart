@@ -1,0 +1,8 @@
+<StackLayout>
+    <Label text="Kartinstillinger" textWrap="true" class="header"></Label>
+    <GridLayout rows="*, *" columns="*, auto" class="setting first" shadow="2">
+        <Label row="0" col="0" text="Karttype" (tap)="toggleMapOptions()" [class]="open" class="text" textWrap="true"></Label>
+        <Label row="0" col="1" text="downarrow" textWrap="true" [class]="open" class="text"></Label>
+        <ListPicker row="1" colSpan="2" class="picker" *ngIf="showMapStyleOptions" [selectedIndex]="selectedIndex" (selectedIndexChange)="mapStyleIndexChanged($event)" [items]="mapStyleOptions"></ListPicker>
+    </GridLayout>
+</StackLayout>

@@ -1,0 +1,14 @@
+<StackLayout>
+    <Label text="Innstillinger" class="h2 header" textWrap="true"></Label>
+    <StackLayout class="container">
+        <GridLayout rows="*" columns="*, auto" class="setting first">
+            <Label col="0" text="Kartinstillinger" [nsRouterLink]="['./menu/map']" pageTransition="slide" class="text menu"></Label>
+            <Label col="1" text="arrow" textWrap="true"></Label>
+        </GridLayout>
+        <GridLayout rows="*" columns="*, auto" class="setting">
+            <Label col="0" text="Roter kart automatisk mens du flytter deg" class="labelSwitch" (tap)="changeRotateSwitch()" textWrap="true"></Label>
+            <Switch col="1" [checked]="isAutoRotate" class="switch" (checkedChange)="onAutoRotateChecked($event)"></Switch>
+        </GridLayout>
+    </StackLayout>
+</StackLayout>
+
