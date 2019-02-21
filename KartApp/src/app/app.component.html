@@ -9,9 +9,9 @@
             </StackLayout>
             <StackLayout row="1" colSpan="3" width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility">
                 <Label (pan)="onPan($event)" text="Sett den dra tingen her" textWrap="false" class="drag"></Label>
-                <ScrollView width="100%" [height]="drawer.height" horizontalAlignment="center" class="scrollView"> 
+                <StackLayout width="100%" [height]="drawer.height" horizontalAlignment="center"> 
                     <page-router-outlet></page-router-outlet>
-                </ScrollView>
+                </StackLayout>
             </StackLayout>
             <GridLayout row="2" rows="*" colSpan="3" columns="*,*,*" class="bottomRow" backgroundColor="#f77">
                 <Button height="50dp" row="1" col="0" text="Hjem" [nsRouterLink]="['/home']" (tap)="onButtonPress('home')" [class]="buttons.home.buttonClass"></Button>
