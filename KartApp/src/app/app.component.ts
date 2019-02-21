@@ -2,7 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 import {screen} from "platform"
 import { LocationClass } from "./location";
-import { MainMap } from "./globals";
+import * as globals from "./globals";
+import { SettingsService } from "./settings-page/settings.service";
 
 @Component({
     moduleId: module.id,
@@ -10,9 +11,13 @@ import { MainMap } from "./globals";
     templateUrl: "app.component.html"
 })
 export class AppComponent { 
-    
+    private settingsService;
+
     constructor(){
+        console.log("Creating app component!");
         this.locationService = new LocationClass(1);
+        this.settingsService = new SettingsService();
+        globals.setSettingsService(this.settingsService);
     }
 
     private locationService: LocationClass;
@@ -162,10 +167,11 @@ export class AppComponent {
     }
 
     goToLocation(){
-        MainMap.flyTo(16, 2000, true, undefined, 4000, 10000);
+        globals.MainMap.flyTo(16, 2000, true, 4000, 10000);
     }
 
     ngOnInit(): void {
+        console.log("Innitting app component!");
         // Init your component properties here.
         
     }

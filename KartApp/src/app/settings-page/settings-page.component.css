@@ -1,0 +1,33 @@
+/* Add mobile styles for the component here.  */
+
+
+.container{
+    text-align: left;
+}
+
+.setting{
+    padding: 15dp;
+    font-size: 18;
+    text-align: left;
+    border-color: #777;
+    border-width: 0 0 2px 0;
+    color: #000;
+}
+
+.labelSwitch:highlighted{
+    background-color: #aaa;
+}
+
+.switch{
+    text-align: right;
+    background-color: red;
+}
+
+.first{
+    border-width: 2px 0 2px 0;
+}
+
+.header{
+    margin-bottom: 10dp;
+    font-size: 20;
+}
