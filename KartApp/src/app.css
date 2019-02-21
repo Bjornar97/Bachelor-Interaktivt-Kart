@@ -23,7 +23,7 @@ components that have the btn class name.
     font-size: 18;
 }
 
-.map{
+.mapBox{
     z-index: -1;
 }
 
