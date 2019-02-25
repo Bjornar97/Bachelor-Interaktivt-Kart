@@ -54,7 +54,14 @@ components that have the btn class name.
 }
 
 .scrollView{
-    
+
+}
+
+.backBtn{
+    border-color: #fff;
+    color: blue;
+    border-radius: 1;
+    font-size: 14;
 }
 
 .button{

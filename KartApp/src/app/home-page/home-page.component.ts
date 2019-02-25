@@ -1,47 +1,91 @@
 import { Component, OnInit } from "@angular/core";
 import { Page } from "tns-core-modules/ui/page/page";
-import { MapComponent } from "../map/map.component";
-import { MainMap } from "../globals";
-import { LocationClass } from "../location";
-import { Tracker, Trip } from "../tracker";
+import { TripService } from "./trip.service";
+import { AppComponent } from "../app.component";
+import { Trip, Tracker } from "../tracker";
+import { RouterExtensions } from "nativescript-angular/router";
+import * as fs from 'tns-core-modules/file-system';
+import * as globals from "../globals";
 
 @Component({
     selector: "Home",
     moduleId: module.id,
-    templateUrl: "./home-page.component.html"
+    templateUrl: "./home-page.component.html",
+    styleUrls: ["./home-page.component.css"],
 })
-export class HomeComponent implements OnInit {
+export class HomePageComponent implements OnInit {
 
-    constructor(page: Page) {
+    constructor(page: Page, private routerext: RouterExtensions) {
         // Use the component constructor to inject providers.
         page.actionBarHidden = true;
-        this.locationClass = new LocationClass;
-        this.tracker = new Tracker(1, true);
+        this.tripService = new TripService();
+        if (globals.MainTracker == undefined){
+            console.log("Main tracker does not exist,  making a new one");
+            globals.setTracker(new Tracker(1, false));
+        }
+        this.checkPrevTrip();
+        this.tripText = this.checkTrip();
     }
 
-    private tripComplete = false;
-    private trip: Trip;
+    private trips: Trip[];
 
-    private locationClass: LocationClass;
-    private tracker: Tracker;
+    private tripService: TripService;
 
-    startTrack(){
-        this.tracker.startTrip();
-        this.tripComplete = false;
+    private tripText = "Ny Tur";
+    private tripClass = "newTripBtn";
+
+    /**
+     * checkTrip() - Checks if a trip is in progress, and choose what button to be displayed. "Gå til tur" if a trip is in progress, "Ny tur" if not.
+     */
+    private checkTrip(){
+        if (this.tripService.isTrip()){
+            this.tripClass = "tripBtn oldTripBtn";
+            return "Gå til tur";
+        } else {
+            this.tripClass = "tripBtn newTripBtn";
+            return "Ny Tur";
+        }
     }
 
-    stopTrack(){
-        var Trip = this.tracker.endTrip();
-        this.trip = Trip;
-        this.tripComplete = true;
-        Trip.points.forEach(function(point){
-            console.log("Lat: " + point.lat + ", Lng: " + point.lng + ", Speed: " + point.speed);
-        });
-        console.dir(Trip.points);
+    /**
+     * Check if the previous trip was finished. If it wasnt, load the trip into the tracker so it can continue.
+     */
+    private checkPrevTrip(){
+        try {
+            // Check if a trip is currently going on when opening the app:
+            var folder = fs.knownFolders.documents().getFolder("Trips");
+                // Getting the file
+            var file = folder.getFile("CurrentTrip.json");
+            var currentTrip = JSON.parse(file.readTextSync());
 
+            var tripID = currentTrip.tripID;
+            var trip: Trip = currentTrip.trip;
+            var tripTrips: Trip[] = currentTrip.tripTrips;
+            var totalTime = currentTrip.totalTime;
+            // Checking if the last trip was finished
+            if (!this.tripService.doesTripExist(tripID)){
+                console.log("Prev trip not finsihed");
+                // If it wasnt, we resume the trip
+                var date = new Date(trip.stopTime);
+                if ((Date.now() - date.getTime()) < 24 * 60 * 60 * 1000){
+                    console.log("Resuming Trip");
+                    globals.MainTracker.loadTrip(tripID,trip, tripTrips, totalTime);
+                    // TODO: Open the drawer and select button
+                    //this.routerext.navigateByUrl("home/currentTrip");
+                }
+            }    
+        } catch (error) {
+            console.log("There was an error while resuming previous trip");
+            console.log(error);
+        }   
+    }
+
+    deleteTripFolder(){
+        this.tripService.deleteFolder();
     }
 
     ngOnInit(): void {
         // Init your component properties here.
+        this.trips = this.tripService.getTrips();
     }
 }

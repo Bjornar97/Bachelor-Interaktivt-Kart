@@ -4,6 +4,8 @@ import {screen} from "platform"
 import { LocationClass } from "./location";
 import * as globals from "./globals";
 import { SettingsService } from "./settings-page/settings.service";
+import { RouterExtensions } from "nativescript-angular/router";
+import * as fs from 'tns-core-modules/file-system';
 
 @Component({
     moduleId: module.id,
@@ -13,7 +15,7 @@ import { SettingsService } from "./settings-page/settings.service";
 export class AppComponent { 
     private settingsService;
 
-    constructor(){
+    constructor(private routerExtensions: RouterExtensions){
         console.log("Creating app component!");
         this.locationService = new LocationClass(1);
         this.settingsService = new SettingsService();
@@ -169,8 +171,30 @@ export class AppComponent {
         globals.MainMap.flyTo(16, 2000, true, 4000, 10000);
     }
 
+    backBtnPress(){
+        if (this.routerExtensions.canGoBackToPreviousPage()){
+            this.routerExtensions.back();
+        } else {
+            var url = this.routerExtensions.router.url;
+            var urlArray = url.split("/");
+            this.routerExtensions.navigate([urlArray[0]], {transition: {name: "slideRight"}});
+        }
+    }
+
     ngOnInit(): void {
         console.log("Innitting app component!");
         // Init your component properties here.
+
+        // Adding files and folders that doesnt exist:
+        var tripFolder = fs.knownFolders.documents().getFolder("Trips");
+        if (!fs.File.exists(fs.path.join(tripFolder.path, "Info.json"))){
+            console.log("Adding file: Info.json");
+            var file = tripFolder.getFile("Info.json");
+            var info = {
+                lastTripID: 0,
+                ids: []
+            }
+            file.writeTextSync(JSON.stringify(info));
+        }
     }
 }
