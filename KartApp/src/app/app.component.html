@@ -11,7 +11,10 @@
             </GridLayout>
         </GridLayout>
         <StackLayout width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility" dock="bottom">
-            <Label (pan)="onPan($event)" text="Sett den dra tingen her" textWrap="false" class="drag"></Label>
+            <AbsoluteLayout>
+                <Button text="< Tilbake" (tap)="backBtnPress()" left="0" class="backBtn"></Button>
+                <Label (pan)="onPan($event)" left="100dp" text="Sett den dra tingen her" textWrap="false" class="drag"></Label>
+            </AbsoluteLayout>
             <ContentView width="100%" [height]="drawer.height" horizontalAlignment="center">
                 <page-router-outlet></page-router-outlet>
             </ContentView>

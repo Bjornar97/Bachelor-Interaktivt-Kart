@@ -40,6 +40,7 @@ export class SettingsService implements OnInit{
       this.settingsListSuccess = true;
     }).catch(error => {
       console.log("Could not load settings from the file: " + error);
+      settingsFile.removeSync();
       this.settingsListSuccess = false; 
     }); 
   }

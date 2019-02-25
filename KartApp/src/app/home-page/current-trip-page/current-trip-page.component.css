@@ -1,0 +1,84 @@
+/* Add mobile styles for the component here.  */
+.pictureBtn{
+    height: 50dp;
+    border-radius: 50%;
+    color: #fff;
+    background-color: #0077ee;
+}
+
+.pictureBtn.small{
+    height: 50dp;
+    width: 50dp;
+    font-size: 10;
+}
+
+.pictureBtnContainer{
+    vertical-align: middle;
+    max-height: 40dp;
+    min-height: 50dp;
+    margin: 10dp;
+}
+
+.timeContainer{
+    vertical-align: middle;
+    text-align: center;
+    color: #000;
+}
+
+.timeContainer.small .time{
+    font-size: 20;
+}
+
+.time{
+    font-size: 28;
+}
+
+
+.controlBtnContainer{
+}
+
+.btn{
+    height: 60dp;
+    width: 60dp;
+    margin: 10dp;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 10;
+}
+
+.small .btn{
+    width: 50dp;
+    height: 50dp;
+}
+
+.small{
+    margin: 0 10dp 0 10dp;
+}
+
+.btn-pause{
+    background-color: #eeee33;
+}
+
+.btn-play{
+    background-color: green;
+}
+
+.btn-stop{
+    background-color: red;
+}
+.leftTopContainer{
+    vertical-align: middle;
+    text-align: center;
+    color: #000;
+}
+
+.pausedText{
+    font-size: 16;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.grid{
+    max-height: 100dp;
+    min-height: 50dp;
+}
