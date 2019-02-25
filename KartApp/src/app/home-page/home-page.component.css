@@ -1,0 +1,27 @@
+.header{
+    color: #000;
+    font-size: 20;
+    padding: 0 10dp 10dp 10dp;
+    border-color: #aaa;
+    border-width: 0 0 2px 0;
+}
+
+.tripBtn{
+    padding: 10dp 50dp 10dp 50dp;
+    margin: 0 0 15dp 0;
+    border-radius: 50%; 
+}
+
+.newTripBtn{
+    background-color: #0077ee;
+    color: #fff;
+}
+
+.oldTripBtn{
+    background-color: #00ee77;
+    color: #fff; 
+}
+
+.newTripContainer{
+    width: 100%;
+}
