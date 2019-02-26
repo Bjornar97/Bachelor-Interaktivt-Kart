@@ -16,7 +16,7 @@
                 <page-router-outlet></page-router-outlet>
             </ContentView>
         </StackLayout>
-        <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayMapButtons" dock="bottom" width="100%">
+        <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayMapButtons" dock="bottom" width="100%" isPassThroughParentEnabled="true">
             <StackLayout row="0" col="2" *ngIf="showLocationButton" >
                 <Button text="O" (tap)="goToLocation()" class="locationButton"></Button> <!-- Icon goes into this button -->
             </StackLayout>
