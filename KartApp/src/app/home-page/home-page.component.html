@@ -1,12 +1,12 @@
-<DockLayout stretchLastChild="true">
-    <Button [text]="tripText" dock="bottom" horizontalAlignment="center" [class]="tripClass" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft"></Button>
-    <StackLayout dock="top">
+<GridLayout rows="auto, *">
+    <StackLayout row="1">
         <Label text="Hjem" class="header" textWrap="true"></Label>
-    
+        <GridLayout *ngIf="isTrip" columns="*, auto" class="currentTripBox" [nsRouterLink]="['./currentTrip']">
+            <Label col="0" text="Tur pågår" textWrap="true" class="label"></Label>
+            <Label col="1" text="arrow" textWrap="true" class="label"></Label>
+        </GridLayout>
         <ScrollView class="scrollView">
-            <StackLayout class="page" style="background-color: transparent;">
-                <Label *ngFor="let trip of trips" [text]="trip.id + ': ' + trip.startTime.toString()" textWrap="true"></Label>
-                
+            <StackLayout class="page" style="background-color: transparent;">                
                     <!-- Add your page content here -->
                     <!-- Dummy data for now 
                     <Label text="Dette er hjem-siden!" class="h2" textWrap="true"></Label>
@@ -22,12 +22,15 @@
                     </StackLayout>
                     -->
                     <Button text="Slett trips-mappen" (tap)="deleteTripFolder()"></Button>
+                    <Label text="Turer" class="h3 tripsHeader" textWrap="true" [nsRouterLink]="['./allTrips']"></Label>
                     
-
-                    <ns-trip-box></ns-trip-box>
+                    <ng-templage *ngFor="let trip of trips">
+                        <ns-trip-box id="{{trip.id}}"></ns-trip-box>
+                    </ng-templage>
         
             </StackLayout>
                     
         </ScrollView>
     </StackLayout>
-</DockLayout>
+    <FAB *ngIf="!isTrip" row="1" [nsRouterLink]="['./currentTrip']" icon="res://ic_add_white" [rippleColor]="btnRippleColor" [class]="tripClass"></FAB>
+</GridLayout>

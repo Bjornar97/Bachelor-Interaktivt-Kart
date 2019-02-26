@@ -210,7 +210,6 @@ export class Tracker {
         var finalTrip: Trip;
         var first = true;
         var prev: Trip;
-        console.dir(this.tripTrips);
         try {
             this.tripTrips.forEach((trip) => {
                 if (trip != null){

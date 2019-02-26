@@ -7,6 +7,9 @@ import { RouterExtensions } from "nativescript-angular/router";
 import * as fs from 'tns-core-modules/file-system';
 import * as globals from "../globals";
 
+import { registerElement } from 'nativescript-angular/element-registry';
+registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
+
 @Component({
     selector: "Home",
     moduleId: module.id,
@@ -28,6 +31,7 @@ export class HomePageComponent implements OnInit {
     }
 
     private trips: Trip[];
+    private isTrip: boolean;
 
     private tripService: TripService;
 
@@ -39,9 +43,11 @@ export class HomePageComponent implements OnInit {
      */
     private checkTrip(){
         if (this.tripService.isTrip()){
+            this.isTrip = true;
             this.tripClass = "tripBtn oldTripBtn";
             return "Gå til tur";
         } else {
+            this.isTrip = false;
             this.tripClass = "tripBtn newTripBtn";
             return "Ny Tur";
         }
@@ -51,6 +57,9 @@ export class HomePageComponent implements OnInit {
      * Check if the previous trip was finished. If it wasnt, load the trip into the tracker so it can continue.
      */
     private checkPrevTrip(){
+        if (this.tripService.isTrip()){
+            return;
+        }
         try {
             // Check if a trip is currently going on when opening the app:
             var folder = fs.knownFolders.documents().getFolder("Trips");
