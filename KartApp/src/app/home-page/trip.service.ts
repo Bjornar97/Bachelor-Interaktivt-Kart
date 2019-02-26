@@ -11,7 +11,6 @@ export class TripService {
 
   constructor() {
     if (globals.MainTracker == undefined){
-      console.log("Main tracker doesnt exist, making a new one.");
       globals.setTracker(new Tracker(1, true));
     }
     this.tracker = globals.MainTracker;
@@ -56,6 +55,9 @@ export class TripService {
     var folder = this.getTripFolder();
     if (fs.File.exists(fs.path.join(folder.path, "Trip" + id + ".json"))){
       console.log("Tried to make file that already exist");
+
+      // TODO: Add the id to the array and change the id in trip and make new file with the new id.
+
       return folder.getFile("Trip" + id + ".json");
     } else {
       return folder.getFile("Trip" + id + ".json");
@@ -83,10 +85,8 @@ export class TripService {
   doesTripExist(id: number){
     var folder = this.getTripFolder();
     if (fs.File.exists(fs.path.join(folder.path, "Trip" + id + ".json"))){
-      console.log("Trip does exist! " + id);
       return true;
     } else {
-      console.log("Trip does not exist! " + id);
       return false;
     }
   }
@@ -112,7 +112,7 @@ export class TripService {
       return trip;
     } catch (error) {
       console.log("ERROR in tripService(getTrip): " + error);
-      console.log("Cannot get trip :(");
+      console.log("Cannot get trip :( " + id);
     }
   }
 
@@ -265,7 +265,7 @@ export class TripService {
   }
 
   /**
-   * Get the total time the trip has been going for. Does not include paused intervals.
+   * Get the total time the current trip has been going for. Does not include paused intervals.
    * 
    * @returns the total time in a string in this format: hh:mm:ss. If its less than one hour, this is returned: mm:ss
    */
@@ -281,11 +281,28 @@ export class TripService {
   }
 
   /**
+   * getTripTime() - Get the total time from the provided trip
+   * 
+   * @param Trip The trip to analyze
+   */
+  getTripTime(Trip: Trip){
+    var time: number;
+    time = Trip.stopTime.getTime() - Trip.startTime.getTime();
+
+    if (Trip.pauses != undefined){
+      Trip.pauses.forEach(pause => {
+        time -= pause.to.getTime() - pause.from.getTime();
+      });
+    }
+    return time;
+  }
+
+  /**
    * timeConversion - Converts time in milliseconds to a readable string in this format: hh:mm:ss. If less than one hour: mm:ss
    * 
    * @param millisec The total time in milliseconds
    */
-  private timeConversion(millisec) {
+  public timeConversion(millisec) {
     var totalTime = millisec;
 
     var totalHours = Math.floor(totalTime / 3600000);
