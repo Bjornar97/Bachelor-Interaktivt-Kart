@@ -21,10 +21,6 @@ export class TripPageComponent implements OnInit {
   private trip;
 
   ngOnInit() {
-    application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
-      args.cancel = true;
-      this.routerExtensions.navigate(["home"]);
-    });
     var path = this.routerExtensions.router.url;
     var id = parseInt(path.split("/").pop());
     this.trip = this.tripService.getTrip(id);
