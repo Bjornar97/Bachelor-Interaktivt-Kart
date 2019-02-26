@@ -24,6 +24,7 @@ export class TripPageComponent implements OnInit {
     var path = this.routerExtensions.router.url;
     var id = parseInt(path.split("/").pop());
     this.trip = this.tripService.getTrip(id);
+    MainMap.removeLine();
     MainMap.drawLine(this.trip.points, "green", 4, 1);
   }
 
