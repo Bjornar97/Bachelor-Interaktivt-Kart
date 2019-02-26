@@ -2,7 +2,7 @@
     <ContentView height="100%" width="100%" class="mapBox">
         <ns-map main="true"></ns-map>
     </ContentView>
-    <DockLayout width="100%" height="100%" stretchLastChild="false">
+    <DockLayout width="100%" height="100%" stretchLastChild="false" isPassThroughParentEnabled="true">
         <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="currentPage" dock="bottom" width="100%">
             <StackLayout row="0" col="2" *ngIf="showLocationButton" >
                 <Button text="O" (tap)="goToLocation()" class="locationButton"></Button> <!-- Icon goes into this button -->
