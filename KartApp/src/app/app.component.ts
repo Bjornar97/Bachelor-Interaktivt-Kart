@@ -95,12 +95,6 @@ export class AppComponent {
                 drawerLoc.initialHeight = height;
             }
         }
-        
-        if (height >= drawerLoc.maxHeightLocationButton){
-            this.showLocationButton = false;
-        } else {
-            this.showLocationButton = true;
-        }
 
         drawerLoc.heightInt = height;
         drawerLoc.height = height + "dp";

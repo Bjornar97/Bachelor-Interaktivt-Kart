@@ -2,22 +2,24 @@
     <ContentView height="100%" width="100%" class="mapBox">
         <ns-map main="true"></ns-map>
     </ContentView>
-    <DockLayout width="100%" height="100%" stretchLastChild="false" isPassThroughParentEnabled="true">
-        <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="currentPage" dock="bottom" width="100%">
+    <DockLayout width="100%" height="100%" stretchLastChild="false" class="overlayOuter" isPassThroughParentEnabled="true">
+        <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayBottomRow" dock="bottom" width="100%">
+            <GridLayout row="0" rows="*" colSpan="3" columns="*,*,*" class="bottomRow" backgroundColor="#f77">
+                <Button height="50dp" row="0" col="0" text="Hjem" [nsRouterLink]="['/home']" (tap)="onButtonPress('home')" [class]="buttons.home.buttonClass"></Button>
+                <Button height="50dp" row="0" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="onButtonPress('account')" [class]="buttons.account.buttonClass"></Button>
+                <Button height="50dp" row="0" col="2" text="Instillinger" [nsRouterLink]="['/settings']" (tap)="onButtonPress('settings')" [class]="buttons.settings.buttonClass"></Button>
+            </GridLayout>
+        </GridLayout>
+        <StackLayout width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility" dock="bottom">
+            <Label (pan)="onPan($event)" text="Sett den dra tingen her" textWrap="false" class="drag"></Label>
+            <ContentView width="100%" [height]="drawer.height" horizontalAlignment="center">
+                <page-router-outlet></page-router-outlet>
+            </ContentView>
+        </StackLayout>
+        <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayMapButtons" dock="bottom" width="100%">
             <StackLayout row="0" col="2" *ngIf="showLocationButton" >
                 <Button text="O" (tap)="goToLocation()" class="locationButton"></Button> <!-- Icon goes into this button -->
             </StackLayout>
-            <StackLayout row="1" colSpan="3" width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility">
-                <Label (pan)="onPan($event)" text="Sett den dra tingen her" textWrap="false" class="drag"></Label>
-                <ContentView width="100%" [height]="drawer.height" horizontalAlignment="center">
-                    <page-router-outlet></page-router-outlet>
-                </ContentView>
-            </StackLayout>
-            <GridLayout row="2" rows="*" colSpan="3" columns="*,*,*" class="bottomRow" backgroundColor="#f77">
-                <Button height="50dp" row="1" col="0" text="Hjem" [nsRouterLink]="['/home']" (tap)="onButtonPress('home')" [class]="buttons.home.buttonClass"></Button>
-                <Button height="50dp" row="1" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="onButtonPress('account')" [class]="buttons.account.buttonClass"></Button>
-                <Button height="50dp" row="1" col="2" text="Instillinger" [nsRouterLink]="['/settings']" (tap)="onButtonPress('settings')" [class]="buttons.settings.buttonClass"></Button>
-            </GridLayout>
         </GridLayout>
     </DockLayout>
 </AbsoluteLayout>
