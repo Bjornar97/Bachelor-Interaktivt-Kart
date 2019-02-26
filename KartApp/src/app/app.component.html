@@ -5,13 +5,16 @@
     <DockLayout width="100%" height="100%" stretchLastChild="false" class="overlayOuter" isPassThroughParentEnabled="true">
         <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayBottomRow" dock="bottom" width="100%">
             <GridLayout row="0" rows="*" colSpan="3" columns="*,*,*" class="bottomRow" backgroundColor="#f77">
-                <Button height="50dp" row="0" col="0" text="Hjem" [nsRouterLink]="['/home']" (tap)="onButtonPress('home')" [class]="buttons.home.buttonClass"></Button>
-                <Button height="50dp" row="0" col="1" text="Konto" [nsRouterLink]="['/account']" (tap)="onButtonPress('account')" [class]="buttons.account.buttonClass"></Button>
-                <Button height="50dp" row="0" col="2" text="Instillinger" [nsRouterLink]="['/settings']" (tap)="onButtonPress('settings')" [class]="buttons.settings.buttonClass"></Button>
+                <Button height="50dp" row="0" col="0" text="Hjem" [nsRouterLink]="['/home']" pageTransition="fade" (tap)="onButtonPress('home')" [class]="buttons.home.buttonClass"></Button>
+                <Button height="50dp" row="0" col="1" text="Konto" [nsRouterLink]="['/account']" pageTransition="fade" (tap)="onButtonPress('account')" [class]="buttons.account.buttonClass"></Button>
+                <Button height="50dp" row="0" col="2" text="Instillinger" [nsRouterLink]="['/settings']" pageTransition="fade" (tap)="onButtonPress('settings')" [class]="buttons.settings.buttonClass"></Button>
             </GridLayout>
         </GridLayout>
         <StackLayout width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility" dock="bottom">
-            <Label (pan)="onPan($event)" text="Sett den dra tingen her" textWrap="false" class="drag"></Label>
+            <AbsoluteLayout>
+                <Button text="< Tilbake" (tap)="backBtnPress()" left="0" class="backBtn"></Button>
+                <Label (pan)="onPan($event)" left="100dp" text="Sett den dra tingen her" textWrap="false" class="drag"></Label>
+            </AbsoluteLayout>
             <ContentView width="100%" [height]="drawer.height" horizontalAlignment="center">
                 <page-router-outlet></page-router-outlet>
             </ContentView>
