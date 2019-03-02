@@ -43,7 +43,19 @@ export class LocationClass {
     return true;
   }
 
-  private newPoint(timestamp: Date, lat: number, lng: number, horizontalAccuracy: number, speed?: number, direction?: number, altitude?: number, verticalAccuracy?: number) {
+  /**
+   * newPoint() - make a new LocationObject.
+   * 
+   * @param timestamp Date of the point
+   * @param lat latitude
+   * @param lng longitude
+   * @param horizontalAccuracy how accurate the point is horizontally
+   * @param speed the speed at the point, optional
+   * @param direction direction, e.g 0 for north, optional
+   * @param altitude altitude of the point, optional
+   * @param verticalAccuracy how accurate the point is vertically
+   */
+  public newPoint(timestamp: Date, lat: number, lng: number, horizontalAccuracy: number, speed?: number, direction?: number, altitude?: number, verticalAccuracy?: number) {
     console.log("Making new point");
     let location: LocationObject;
     location = {
@@ -64,10 +76,10 @@ export class LocationClass {
     
   }
 
-  private convertToGeoLocation(points: LocationObject[]){
+  private convertToGeoLocation(points: LocationObject[]): geolocation.Location[]{
     var newArray: Location[] = [];
     points.forEach(function(point){
-      newArray[point.id] = {
+      newArray.push({
         altitude: point.altitude,
         direction: point.direction,
         horizontalAccuracy: point.horizontalAccuracy,
@@ -76,7 +88,7 @@ export class LocationClass {
         speed: point.speed,
         timestamp: point.timestamp,
         verticalAccuracy: point.verticalAccuracy
-      }
+      })
     });
     return newArray;
   }
@@ -87,20 +99,22 @@ export class LocationClass {
    * @param firstPoint The first point. Type LocationObject
    * @param secondPoint The second point. Type LocationObject
    * 
+   * @returns The distance in meters
    */
   public findDistance(firstPoint: LocationObject, secondPoint: LocationObject) {
     var geoPoints = this.convertToGeoLocation([firstPoint, secondPoint]);
     var first = true;
     var firstP: Location;
     var secondP: Location;
-    geoPoints.forEach(function(point){
+    geoPoints.forEach((point) => {
       if (first){
         firstP = point;
+        first = false;
       } else {
         secondP = point;
       }
     });
-    geolocation.distance(firstP, secondP);
+    return geolocation.distance(firstP, secondP);
   }
 
   /**
@@ -113,7 +127,7 @@ export class LocationClass {
    * 
    * @param maxTimeout How long it can try to get the location before aborting in milliseconds.
    */
-  public getLocation(maxAge = 5000, maxTimeout = 20000, accuracy = this.defaultAccuracy): Promise<any> {
+  public getLocation(maxAge = 5000, maxTimeout = 20000, accuracy = this.defaultAccuracy): Promise<LocationObject> {
     var newPoint = this.newPoint;
 
     return new Promise((resolve, reject) => {

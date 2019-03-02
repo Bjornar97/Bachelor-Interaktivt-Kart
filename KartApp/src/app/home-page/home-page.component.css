@@ -7,11 +7,16 @@
     border-width: 0 0 2px 0;
 }
 
+.page{
+    padding-bottom: 100dp;
+}
+
 .tripsHeader{
     border-color: #aaa;
+    text-align: left;
     font-size: 18;
-    border-width: 0 0 2px 0;
-    padding: 5dp 0 10dp 0;
+    margin-top: 10dp;
+    margin-left: 10dp;
 }
 
 .tripBtn{
@@ -42,6 +47,15 @@
     height: 70dp;
     border-radius: 20dp;
     background-color: #fff;
+    
+}
+
+.currentPaused{
+    border-color: #ffff00;
+    border-width: 5;
+}
+
+.currentPlay{
     border-color: #008000;
     border-width: 5;
 }
