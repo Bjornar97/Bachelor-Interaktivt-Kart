@@ -1,11 +1,26 @@
 /* Add mobile styles for the component here.  */
 .page {
-    align-items: center;
-    flex-direction: column;
-  }
+  align-items: center;
+  flex-direction: column;
+}
   .form {
     margin-left: 30;
     margin-right: 30;
     flex-grow: 2;
-    vertical-align: middle;
+    vertical-align: left;
   }
+ 
+  .linje-under{
+    border-color:rgb(194, 188, 188);
+    border-width: 0 0 1 0;
+    text-align: left;
+  }
+  
+  .KartApp{
+    font-style:italic;
+    font-size: 20;
+    color:green;
+    
+  }
+
+  

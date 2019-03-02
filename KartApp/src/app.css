@@ -79,38 +79,41 @@ components that have the btn class name.
 
 .button{
     background-color: rgb(208,208,208);
-    color: black;
+    color:white;
     height: 100%;
     font-family: 'FontAwesome', 'Font-Awesome';
     font-size: 12;
     vertical-align: middle;
     width:50%;
+    border-color: rgb(208,208,208);
+    border-width: 1px;
     
 }
     
 .button:active {
-    background-color: #A9A9A9;
+    background-color: rgb(131, 131, 131);
     color:black;
-    border-color:  #A9A9A9;
+    border-color: rgb(131, 131, 131);
+    border-width: 1px;
     
 }
 
 .buttonSelected{
-    background-color:#A9A9A9;
-    color: black;
+    background-color:rgb(208,208,208);
+    color: #00f;
     height: 100%;
     font-family: 'FontAwesome', 'Font-Awesome';
     font-size: 12;
     vertical-align: middle;
     width: 100%;
-    border-color: #A9A9A9;
+    border-color: rgb(208,208,208);
     border-width: 1px;
 }
 
 .buttonSelected:active {
-    background-color:#A9A9A9;
+    background-color:rgb(131, 131, 131);
     color:black;
-    border-color: #A9A9A9;
+    border-color: rgb(131, 131, 131);
     border-width: 1px;
 }
 .locationButton{

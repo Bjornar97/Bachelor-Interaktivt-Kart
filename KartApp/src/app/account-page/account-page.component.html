@@ -1,26 +1,33 @@
 <ScrollView class="scrollView">
 <GridLayout android:fontFamily="cursive"
 android:textStyle="bold">
-        <StackLayout  verticalAlignment="center">
-            <StackLayout class="form"  backgroundColor="#FFFFFF">
-                    <TextView
-                        color="darkgreen"
-                        text-border="lightgreen"
-                        text="KartApp"></TextView> 
+   
+        <StackLayout>
+            <StackLayout class="form"  backgroundColor="#FFFFFF" >
+                <StackLayout class="page m-20">
+                    <Label>
+                      <FormattedString>
+                        <Span text="Kart App" class="KartApp"></Span>
+                      </FormattedString>
+                    </Label>
+                </StackLayout>
                     <Image src="res://fjellman" stretch="aspectFill" width="50%" class="logo"></Image> 
                 <StackLayout class="input-field">
-                    <Label text="Email:"></Label>
-                    <TextField class="input input-border input-login" ></TextField>   
+                    <TextField hint="Email:"  class="linje-under" fontSize="14" > </TextField>   
                 </StackLayout>
                 <StackLayout class="input-field">
-                    <Label text="Password:"></Label>
-                    <TextField secure="true" class="input input-border input-login" ></TextField>
+                    <TextField hint="Password:" class="linje-under" fontSize="14" > </TextField>   
                 </StackLayout>
                 <Button class="btn btn-primary btn-login" text="Login"></Button>
-                <Label text="Not a member? Register here."></Label>
-                <Button class="btn btn-primary btn-sign-up" text="Register" ></Button>
+                <Label class="h3 p-15 m-15 text-left">
+                    <FormattedString>
+                        <Span text="Not a member? " color="gray"></Span>
+                        <Span text=" Sign Up" fontAttributes="Bold" fontSize="15"></Span>
+                    </FormattedString>
+                </Label>
             </StackLayout>
-        </StackLayout>    
+        </StackLayout> 
+      
 </GridLayout>
 </ScrollView>
  
