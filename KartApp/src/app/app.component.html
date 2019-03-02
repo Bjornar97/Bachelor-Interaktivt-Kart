@@ -23,7 +23,14 @@
         </StackLayout>
         <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayMapButtons" dock="bottom" width="100%" isPassThroughParentEnabled="true">
             <StackLayout row="0" col="2" *ngIf="showLocationButton" >
-                <Button text="O" (tap)="goToLocation()" class="locationButton"></Button> <!-- Icon goes into this button -->
+                <!-- Go to location button with icon -->
+                <FAB
+                    (tap)="goToLocation()" 
+                    icon="res://round_gps_fixed_black_24"
+                    rippleColor="#f1f1f1" 
+                    class="locationButton"
+                >
+                </FAB>
             </StackLayout>
         </GridLayout>
     </DockLayout>

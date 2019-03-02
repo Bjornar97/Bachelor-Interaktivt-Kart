@@ -106,12 +106,11 @@ components that have the btn class name.
 
 }
 .locationButton{
-    border-radius: 50%;
-    height: 60dp;
-    width: 60dp;
-    background-color: #fff;
+    height: 60;
+    width: 60;
     margin-bottom: 50dp;
     margin-right: 10dp;
+    background-color: #fff;
 }
 
 .fas {
