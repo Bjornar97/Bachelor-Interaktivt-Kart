@@ -11,9 +11,11 @@
             </GridLayout> 
         </GridLayout>
         <StackLayout width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility" dock="bottom">
-            <AbsoluteLayout>
-                <Button text="< Tilbake" (tap)="backBtnPress()" left="0" class="backBtn"></Button>
-                <Label (pan)="onPan($event)" text="&#xf2d1;" fontSize="15" class="far" textWrap="true" class="fal fa-window-minimize drag"></Label>
+            <AbsoluteLayout width="100%" (pan)="onPan($event)">
+                <GridLayout rows="*" columns="*, auto, *" width="100%">
+                    <Button col="0" text="< Tilbake" (pan)="onPan($event)" (tap)="backBtnPress()" class="backBtn"></Button>
+                    <Label col="1" text="&#xf2d1;" fontSize="15" class="far" textWrap="true" class="fal fa-window-minimize drag"></Label>
+                </GridLayout>
             </AbsoluteLayout>
             <ContentView width="100%" [height]="drawer.height" horizontalAlignment="center">
                 <page-router-outlet></page-router-outlet>

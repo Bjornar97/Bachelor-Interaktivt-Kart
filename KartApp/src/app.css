@@ -71,6 +71,8 @@ components that have the btn class name.
 }
 
 .backBtn{
+    margin: 0;
+    padding: 0;
     border-color: #fff;
     color: blue;
     border-radius: 1;
@@ -91,11 +93,7 @@ components that have the btn class name.
 }
     
 .button:active {
-    background-color: rgb(131, 131, 131);
-    color:black;
-    border-color: rgb(131, 131, 131);
-    border-width: 1px;
-    
+
 }
 
 .buttonSelected{
@@ -111,10 +109,7 @@ components that have the btn class name.
 }
 
 .buttonSelected:active {
-    background-color:rgb(131, 131, 131);
-    color:black;
-    border-color: rgb(131, 131, 131);
-    border-width: 1px;
+
 }
 .locationButton{
     border-radius: 50%;
