@@ -1,10 +1,15 @@
 /* Add mobile styles for the component here.  */
 
 .box{
+    text-align: left;
     margin: 5dp 0 5dp 0;
     padding: 20dp;
     border-width: 2dp;
     border-radius: 20dp;
     border-color: #ddd;
     background-color: #fff;
+}
+
+.deleteBtn{
+    padding: 10dp 5dp 10dp 5dp;
 }

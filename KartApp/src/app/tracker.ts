@@ -224,6 +224,7 @@ export class Tracker {
                             startTime: trip.startTime,
                             stopTime: undefined,
                         }
+                        first = false;
                     } else {
                         console.log("Not first trip");
                         finalTrip.pauses.push({

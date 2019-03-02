@@ -67,6 +67,17 @@ export class MapComponent implements OnInit {
     }
 
     /**
+     * getCenter - Get the center of the map
+     */
+    public getCenter() {
+        return this.map.getCenter();
+    }
+
+    public getZoom(){
+        return this.map.getZoomLevel();
+    }
+
+    /**
      * addMarkers
      * @param markers
      */
@@ -172,10 +183,14 @@ export class MapComponent implements OnInit {
                     lat: location.lat, 
                     lng: location.lng
                 },
-                zoomLevel: 14, // Zoom level on Android
-                altitude: 5000, // altitude above the ground in metres on iOS
+                zoomLevel:zoomLevel, // Zoom level on Android
+                altitude: altitude, // altitude above the ground in metres on iOS
                 bearing: 0, // The direction of the camera in degrees(0 - 360)
-                duration: 4000 // How long the animation lasts
+                duration: duration // How long the animation lasts
+            }).then(function() {
+                if (track){
+                    globals.MainMap.trackUser();
+                }
             });
         }
     }
