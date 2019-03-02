@@ -79,33 +79,27 @@ components that have the btn class name.
     font-size: 14;
 }
 
-.button{
-    background-color: rgb(208,208,208);
-    color:white;
-    height: 100%;
-    font-family: 'FontAwesome', 'Font-Awesome';
-    font-size: 12;
-    vertical-align: middle;
-    width:50%;
-    border-color: rgb(208,208,208);
-    border-width: 1px;
-    
-}
-    
-.button:active {
-
-}
-
-.buttonSelected{
-    background-color:rgb(208,208,208);
-    color: #00f;
+.button, .buttonSelected{
+    background-color:#eee;
     height: 100%;
     font-family: 'FontAwesome', 'Font-Awesome';
     font-size: 12;
     vertical-align: middle;
     width: 100%;
-    border-color: rgb(208,208,208);
+    border-color: #eee;
     border-width: 1px;
+}
+
+.button{
+    color: #888;
+}
+
+.buttonSelected{
+    color: #00f;
+}
+    
+.button:active {
+
 }
 
 .buttonSelected:active {
