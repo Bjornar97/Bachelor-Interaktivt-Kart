@@ -3,9 +3,10 @@ import { Page } from 'tns-core-modules/ui/page/page';
 import { Trip } from '~/app/tracker';
 import { TripService } from '../trip.service';
 import { RouterExtensions } from 'nativescript-angular/router';
-import * as application from 'tns-core-modules/application';
 import * as camera from "nativescript-camera";
 import { Image } from "tns-core-modules/ui/image";
+import * as dialogs from "tns-core-modules/ui/dialogs";
+
 
 @Component({
   selector: 'ns-current-trip-page',
@@ -73,13 +74,35 @@ export class CurrentTripPageComponent implements OnInit {
    * stopTrip() - Stop the current trip
    */
   private stopTrip(){
-    this.isLoading = true;
-    this.pauseInterval();
-    this.trip = this.tripService.endTrip();
-    this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id, {
-      animated: true,
-      clearHistory: true,
-      transition: {name: "slideLeft"}
+    var pause;
+    if (!this.paused){
+      this.togglePause();
+      pause = true;
+    } else {
+      pause = false;
+    }
+
+    let options = {
+      title: "Stopp tur",
+      message: "Er du sikker på at du vil stoppe turen?",
+      okButtonText: "Ja",
+      cancelButtonText: "Nei",
+      neutralButtonText: "Avbryt"
+    };
+
+    dialogs.confirm(options).then((result) => {
+      if (result){
+        this.isLoading = true;
+        this.pauseInterval();
+        this.trip = this.tripService.endTrip();
+        this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
+          animated: true,
+          clearHistory: false,
+          transition: {name: "slideLeft"}
+        });
+      } else if (pause){
+        this.togglePause();
+      }
     });
   }
 
@@ -90,6 +113,7 @@ export class CurrentTripPageComponent implements OnInit {
    * startInterval() - Start the interval that updates the timer. Every second it checks how long the trip has been going for, and updates the string used in the view.
    */
   private startInterval(){
+    this.timeSpent = this.tripService.getTotalTime();
     this.interval = setInterval(() => {
       this.timeSpent = this.tripService.getTotalTime();
     }, 1000);

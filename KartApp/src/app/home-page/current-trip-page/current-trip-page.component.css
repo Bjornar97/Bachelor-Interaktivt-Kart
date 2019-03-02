@@ -79,6 +79,6 @@
 }
 
 .grid{
-    max-height: 100dp;
+    height: 150dp;
     min-height: 50dp;
 }

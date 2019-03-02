@@ -8,7 +8,8 @@ import { CurrentTripPageComponent } from "./current-trip-page/current-trip-page.
 
 const routes: Routes = [
     { path: "", component: HomePageComponent, pathMatch: "full" },
-    { path: "trip/:id", component: TripPageComponent },
+    { path: "trip/:id", redirectTo: "trip/:id/" },
+    { path: "trip/:id/:canGoBack", component: TripPageComponent },
     { path: "currentTrip", component: CurrentTripPageComponent }
 ];
 

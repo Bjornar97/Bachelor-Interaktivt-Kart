@@ -1,36 +1,29 @@
 <GridLayout rows="auto, *">
     <StackLayout row="1">
         <Label text="Hjem" class="header" textWrap="true"></Label>
-        <GridLayout *ngIf="isTrip" columns="*, auto" class="currentTripBox" [nsRouterLink]="['./currentTrip']"  pageTransition="slideLeft">
-            <Label col="0" text="Tur pågår" textWrap="true" class="label"></Label>
+        <GridLayout *ngIf="isTrip" columns="*, auto" [class]="currentTripBoxClass" [nsRouterLink]="['./currentTrip']"  pageTransition="slideLeft">
+            <Label col="0" [text]="currentTripText" textWrap="true" class="label"></Label>
             <Label col="1" text="arrow" textWrap="true" class="label"></Label>
         </GridLayout>
-        <ScrollView class="scrollView">
-            <StackLayout class="page" style="background-color: transparent;">                
-                    <!-- Add your page content here -->
-                    <!-- Dummy data for now 
-                    <Label text="Dette er hjem-siden!" class="h2" textWrap="true"></Label>
-                    <Button text="Start Tur" (tap)="startTrack()" ></Button>
-                    <Button text="Stopp Tur" (tap)="stopTrack()" ></Button>
-                
-                    <StackLayout *ngIf="trip != undefined">
-                        <Label text="Tur ferdig!" textWrap="true"></Label>
-                        <StackLayout *ngFor="let point of trip.points">
-                            <Label [text]="point.lat + ', ' + point.lng + ', ' + point.speed" textWrap="true"></Label>
-                        </StackLayout>
-                        
-                    </StackLayout>
-                    -->
-                    <Button text="Slett trips-mappen" (tap)="deleteTripFolder()"></Button>
-                    <Label text="Turer" class="h3 tripsHeader" textWrap="true" [nsRouterLink]="['./allTrips']"></Label>
-                    
-                    <ng-templage *ngFor="let trip of trips">
-                        <ns-trip-box id="{{trip.id}}"></ns-trip-box>
-                    </ng-templage>
-        
+
+        <ScrollView id="homeScrollView" class="scrollView">
+            <StackLayout class="page" style="background-color: transparent;">
+                <Label text="Turer" class="h3 tripsHeader" textWrap="true" [nsRouterLink]="['./allTrips']"></Label>
+                <ng-templage *ngFor="let trip of trips" class="bottomElement">
+                    <ns-trip-box *ngIf="trip != undefined" id="{{trip.id}}" (delete)="delete(trip)"></ns-trip-box>
+                </ng-templage>
+                <Button text="Slett trips-mappen" (tap)="deleteTripFolder()"></Button>
             </StackLayout>
-                    
         </ScrollView>
     </StackLayout>
-    <FAB *ngIf="!isTrip" row="1" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft" icon="res://ic_add_white" [rippleColor]="btnRippleColor" [class]="tripClass"></FAB>
+    <!-- FloatActionButton - The round button bottom right that makes a new trip -->
+    <FAB 
+        *ngIf="!isTrip" 
+        row="1" 
+        [nsRouterLink]="['./currentTrip']" 
+        pageTransition="slideLeft" 
+        icon="res://baseline_add_white_48"
+        [rippleColor]="btnRippleColor" 
+        [class]="tripClass">
+    </FAB>
 </GridLayout>
