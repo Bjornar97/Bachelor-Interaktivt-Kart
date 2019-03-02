@@ -23,7 +23,7 @@ components that have the btn class name.
     font-size: 18;
 }
 
-.map{
+.mapBox{
     z-index: -1;
 }
 
@@ -35,16 +35,26 @@ components that have the btn class name.
     z-index: 0;
 }
 
+.overlayOuter{
+}
+
+.overlayBottomRow{
+}
+
+.overlayMapButtons{
+}
+
 .drawer{
     background-color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    padding: 0 10dp 0 10dp;
     border-top-left-radius: 20dp;
     border-top-right-radius: 20dp;
 }
 
 .drawerMaximized{
     background-color: rgba(255, 255, 255, 1);
+}
+
+.drawer, .drawerMaximized{
     text-align: center;
     padding: 0 10dp;
 }
@@ -54,7 +64,14 @@ components that have the btn class name.
 }
 
 .scrollView{
-    
+
+}
+
+.backBtn{
+    border-color: #fff;
+    color: blue;
+    border-radius: 1;
+    font-size: 14;
 }
 
 .button{

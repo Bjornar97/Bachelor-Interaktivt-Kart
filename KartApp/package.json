@@ -2,7 +2,7 @@
     "nativescript": {
         "id": "org.nativescript.KartApp",
         "tns-ios": {
-            "version": "5.1.0"
+            "version": "5.1.1"
         },
         "tns-android": {
             "version": "5.1.0"
@@ -22,8 +22,11 @@
         "@angular/platform-browser-dynamic": "~7.1.0",
         "@angular/router": "~7.1.0",
         "nativescript-angular": "~7.1.0",
+        "nativescript-camera": "^4.2.0",
+        "nativescript-floatingactionbutton": "^5.0.0",
         "nativescript-geolocation": "^4.4.2",
         "nativescript-mapbox": "^4.4.1",
+        "nativescript-ngx-shadow": "^6.4.0",
         "nativescript-theme-core": "~1.0.4",
         "reflect-metadata": "~0.1.10",
         "rxjs": "~6.3.0",

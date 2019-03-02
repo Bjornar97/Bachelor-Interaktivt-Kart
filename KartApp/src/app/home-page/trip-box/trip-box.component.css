@@ -1,0 +1,10 @@
+/* Add mobile styles for the component here.  */
+
+.box{
+    margin: 5dp 0 5dp 0;
+    padding: 20dp;
+    border-width: 2dp;
+    border-radius: 20dp;
+    border-color: #ddd;
+    background-color: #fff;
+}

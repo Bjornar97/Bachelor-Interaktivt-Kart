@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitudeProperty } from "nativescript-mapbox";
 import { LocationClass, LocationObject } from "../location";
-import { setMap } from "../globals";
+import * as globals from "../globals";
+import { SettingsService, Setting } from '../settings-page/settings.service';
 
 @Component({
   selector: 'ns-map',
@@ -10,10 +11,33 @@ import { setMap } from "../globals";
   moduleId: module.id,
 })
 export class MapComponent implements OnInit {
+
+    private styles = [
+        {
+            id: 0,
+            name: "satellite",
+            value: "mapbox://styles/mapbox/satellite-streets-v9"
+        },
+        {
+            id: 1,
+            name: "outdoors",
+            value: "mapbox://styles/mapbox/outdoors-v10"
+        },
+        {
+            id: 2,
+            name: "street",
+            value: ""
+        }
+    ]
     
     constructor(){
         this.locationClass = new LocationClass(1);
+        this.settingsService = globals.settingsService;
     }
+    
+    private settingsService: SettingsService;
+    private settings: Setting[];
+    private autoRotate = true;
 
     @Input() main: string;
     private locationClass: LocationClass;
@@ -27,18 +51,9 @@ export class MapComponent implements OnInit {
         disableMovement: false
     }
 
-    private styles = [
-        {
-            id: 0,
-            name: "outdoors",
-            value: "mapbox://styles/mapbox/outdoors-v10"
-        },
-        {
-            id: 1,
-            name: "satellite",
-            value: "mapbox://styles/mapbox/satellite-streets-v9"
-        }
-    ]
+    setAutoRotate(value: boolean){
+        this.autoRotate = value;
+    }
 
     /**
      * setCenter - Set the center of the map
@@ -86,7 +101,8 @@ export class MapComponent implements OnInit {
         this.map.removePolylines(ids);
     }
 
-    public trackUser(bearing = true){
+    public trackUser(){
+        var bearing = this.autoRotate;
         if (bearing){
             this.map.trackUser({mode: "FOLLOW_WITH_HEADING", animated: true});
         } else {
@@ -94,9 +110,11 @@ export class MapComponent implements OnInit {
         }
     }
 
-    public setMapStyle(style = "outdoors"){
+    public setMapStyle(style = "outdoors"){         
         var styleObject = this.styles.find(x => x.name == style);
-        this.map.setMapStyle(styleObject.value);
+        if (styleObject != undefined){
+            this.map.setMapStyle(styleObject.value);
+        }
     }
 
     /**
@@ -115,12 +133,11 @@ export class MapComponent implements OnInit {
      * @param LocationObject: An object that need latitude and longitude which is numbers if specified.
      * 
      */
-    flyTo(zoomLevel = 14, altitude = 5000, track = false, bearing?, duration = 4000, maxAge?, LocationObject?) {
+    flyTo(zoomLevel = 14, altitude = 5000, track = false, duration = 4000, maxAge?, LocationObject?) {
         // Function to get the camera to fly to the current location of the device
         var trackUser = this.trackUser;
         var map = this.map;
         var location;
-        console.log("map.component: Getting ready to fly");
         if (LocationObject == undefined){
             console.log("map.component: location not specified. Trying to find current location");
             this.locationClass.getLocation(maxAge, 10000, 0)
@@ -134,11 +151,10 @@ export class MapComponent implements OnInit {
                         },
                         zoomLevel: zoomLevel, // Zoom level on Android
                         altitude: altitude, // altitude above the ground in metres on iOS
-                        bearing: bearing, // The direction of the camera in degrees(0 - 360)
                         duration: duration // How long the animation lasts
                     }).then(function() {
                         if (track){
-                            map.trackUser({mode: "FOLLOW_WITH_HEADING", animated: true});
+                            globals.MainMap.trackUser();
                         }
                     });
                     
@@ -166,22 +182,25 @@ export class MapComponent implements OnInit {
 
   // Waits until the map is ready
   onMapReady(args): void {
-      // Gets the map that is displayed
-      this.map = args.map;
-      if (this.main == "true"){
-        setMap(this);
-      }
+    // Gets the map that is displayed
+    this.map = args.map;
+    if (this.main == "true"){
+    globals.setMap(this);
+    }
 
-      console.log("Trying to find location");
-      var map = this.map;
-      this.locationClass.getLocation(undefined, 3000, 0).then(function (loc) {
-          console.log("Latitude: " + loc.lat + ", longitude: " + loc.lng);
-          map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
-          map.setZoomLevel({level: 16, animated: false});
-      }, function (err) {
-          console.log("ERROR: ");
-          console.dir(err);
-      });
+    var map = this.map;
+    this.locationClass.getLocation(undefined, 3000, 0).then(function (loc) {
+        console.log("Latitude: " + loc.lat + ", longitude: " + loc.lng);
+        map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
+        map.setZoomLevel({level: 16, animated: false});
+    }, function (err) {
+        console.log("ERROR: ");
+        console.dir(err);
+    });
+    var styleSetting = globals.settingsService.getSetting(undefined, 11);
+    if (styleSetting != undefined){
+        this.setMapStyle(this.styles[styleSetting.value].name);
+    }
 
   }
 
