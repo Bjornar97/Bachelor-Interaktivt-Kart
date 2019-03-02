@@ -31,7 +31,7 @@ export class AppComponent {
         height: "100dp",
         visibility: "visibility: collapsed;",
         drawerClass: "drawer",
-        maxHeight: screen.mainScreen.heightDIPs - 113,
+        maxHeight: screen.mainScreen.heightDIPs - 105,
         maxHeightLocationButton: screen.mainScreen.heightDIPs / 2,
         initialHeight: 200 // Høyden den husker og starter på når du åpner draweren.
     };
