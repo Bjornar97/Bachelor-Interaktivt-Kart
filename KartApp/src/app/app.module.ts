@@ -7,6 +7,7 @@ import { AppComponent } from "./app.component";
 import { registerElement } from "nativescript-angular/element-registry";
 import { MapComponent } from "./map/map.component";
 registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
+registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
 
 import { SettingsService } from "./settings-page/settings.service";
 

@@ -7,9 +7,6 @@ import { RouterExtensions } from "nativescript-angular/router";
 import * as fs from 'tns-core-modules/file-system';
 import * as globals from "../globals";
 
-import { registerElement } from 'nativescript-angular/element-registry';
-registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
-
 @Component({
     selector: "Home",
     moduleId: module.id,
