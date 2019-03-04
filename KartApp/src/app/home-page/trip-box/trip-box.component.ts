@@ -1,7 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Trip } from '~/app/tracker';
 import { TripService } from '../trip.service';
 import { formatDate } from '@angular/common';
+import { RouterExtensions } from 'nativescript-angular/router';
+import * as dialogs from "tns-core-modules/ui/dialogs";
+import { View } from 'tns-core-modules/ui/page/page';
+import { screen } from "platform";
 
 let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
@@ -14,16 +18,43 @@ let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søn
 })
 export class TripBoxComponent implements OnInit {
 
-  constructor(private tripService: TripService) { 
+  constructor(private tripService: TripService, private routerExt: RouterExtensions) { 
 
   }
 
   @Input() id: number;
+  
+  @Output()
+  delete = new EventEmitter<string>();
 
   private trip: Trip;
   private totalTimeString: string;
   private startTimeString: string;
 
+  deleteTrip(box: View){
+    let options = {
+      title: "Slette tur",
+      message: "Er du sikker på at du vil slette denne turen? \n \nDette sletter turen for godt!",
+      okButtonText: "Ja",
+      cancelButtonText: "Nei",
+      neutralButtonText: "Avbryt"
+    };
+  
+    dialogs.confirm(options).then((result: boolean) => {
+      var screenWidth = screen.mainScreen.widthDIPs;
+      if (result){
+        box.animate({
+          translate: {x: -(screenWidth) - 100, y: 0},
+          duration: 700,
+          delay: 200
+         }).then(() => {
+          this.tripService.deleteTrip([this.id]);
+          this.routerExt.navigateByUrl("/home");
+          this.delete.emit();
+         });
+      }
+    });
+  }
 
   ngOnInit() {
     this.trip = this.tripService.getTrip(this.id);

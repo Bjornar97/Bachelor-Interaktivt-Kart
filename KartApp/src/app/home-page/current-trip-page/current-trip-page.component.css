@@ -72,6 +72,12 @@
     color: #000;
 }
 
+.activity-indicator{
+    width: 60dp;
+    height: 60dp;
+    color: #008000;
+}
+
 .pausedText{
     font-size: 16;
     vertical-align: middle;
@@ -79,6 +85,6 @@
 }
 
 .grid{
-    max-height: 100dp;
+    height: 150dp;
     min-height: 50dp;
 }

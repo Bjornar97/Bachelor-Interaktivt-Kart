@@ -3,9 +3,10 @@ import * as globals from "../globals";
 import { Trip, Tracker } from '../tracker';
 import * as fs from 'tns-core-modules/file-system';
 import { HomeModule } from "./home-page.module";
+import { AppModule } from '../app.module';
 
 @Injectable({
-  providedIn: HomeModule
+  providedIn: AppModule
 })
 export class TripService {
 
@@ -41,6 +42,11 @@ export class TripService {
       return this.getTripFolder().getFile("Trip" + id + ".json");
     } else {
       console.log("ERROR: tripService: The File for id: " + id + " does not exist");
+      var infoFile = this.getTripFolder().getFile("Info.json");
+      var info = JSON.parse(infoFile.readTextSync());
+      var ids: number[] = info.ids;
+      delete ids[ids.indexOf(id)];
+      infoFile.writeTextSync(JSON.stringify(info));
     }
   }
 
@@ -109,6 +115,10 @@ export class TripService {
       var trip: Trip = JSON.parse(tripText);
       trip.startTime = new Date(trip.startTime);
       trip.stopTime = new Date(trip.stopTime);
+      trip.pauses.forEach((pause) => {
+        pause.from = new Date(pause.from);
+        pause.to = new Date(pause.to);
+      });
       return trip;
     } catch (error) {
       console.log("ERROR in tripService(getTrip): " + error);
@@ -118,12 +128,31 @@ export class TripService {
 
   deleteTrip(id: number[]){
     id.forEach((currentId) => {
-      this.getTripFile(currentId).remove();
+      console.log("Deleting trip: " + currentId);
+      if (this.doesTripExist(currentId)){
+        this.getTripFile(currentId).remove();
+      }
+      try {
+        var infoFile = this.getTripFolder().getFile("Info.json");
+        var info = JSON.parse(infoFile.readTextSync());
+        var ids: number[] = info.ids;
+        delete ids[ids.indexOf(currentId)];
+        infoFile.writeTextSync(JSON.stringify(info));
+        if (fs.File.exists(fs.path.join(this.getTripFolder().path, "CurrentTrip.json"))){
+          var currtrip: Trip = JSON.parse(this.getCurrentTripFile().readTextSync());
+          if (currentId == currtrip.id){
+            this.getCurrentTripFile().removeSync();
+          }  
+        }
+      } catch (error) {
+        console.log("ERROR in tripService(deleteTrip): " + error);
+      }
     });
   }
 
   deleteFolder(){
     this.getTripFolder().removeSync();
+    this.getCurrentTripFile().removeSync();
   }
 
   /**
@@ -132,13 +161,21 @@ export class TripService {
   getTrips(): Trip[]{
     try {
       var info = JSON.parse(this.getTripFolder().getFile("Info.json").readTextSync());
+      if (info == undefined){
+        info = {
+          ids: [],
+          lastTripID: 0
+        }
+      }
       var ids = info.ids;
       var trips: Trip[] = [];
       ids.forEach(id => {
-        var trip: Trip = this.getTrip(id);
-        trip.startTime = new Date(trip.startTime);
-        trip.stopTime = new Date(trip.stopTime);
-        trips.push(trip);
+        if (id != undefined){
+          var trip: Trip = this.getTrip(id);
+          if (trip != undefined){
+            trips.push(trip);
+          }
+        }
       });
       return trips;
     } catch (error) {
@@ -169,6 +206,10 @@ export class TripService {
         console.log("Could not find file");
         return 0;
     }
+  }
+
+  getCurrentTripFile(){
+    return this.getTripFolder().getFile("CurrentTrip.json");
   }
 
   /**
@@ -206,7 +247,7 @@ export class TripService {
     }
     this.tracker.pauseTrip();
     var trip = this.tracker.getTrip();
-    var currentTripFile = this.getTripFolder().getFile("CurrentTrip.json");
+    var currentTripFile = this.getCurrentTripFile();
     var currentTrip = {
       tripID: this.tracker.getTripID(),
       trip: trip,
@@ -241,6 +282,7 @@ export class TripService {
    */
   endTrip(): Trip{
     var trip = this.tracker.endTrip();
+    this.getCurrentTripFile().removeSync();
     var file = this.makeTripFile(this.tracker.getTripID());
     file.writeTextSync(JSON.stringify(trip), (error) => {
       console.log("ERROR: tripService: Error while writing trip to file: " + error);
@@ -254,7 +296,7 @@ export class TripService {
       return trip;
 
     } catch (error) {
-      console.log("ERROR in tripService(endTrip)" + error);
+      console.log("ERROR in tripService(endTrip): " + error);
       info = {
         ids: [],
         lastTripID: 0
