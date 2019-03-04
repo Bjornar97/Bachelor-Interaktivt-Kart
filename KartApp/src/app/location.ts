@@ -128,6 +128,7 @@ export class LocationClass {
    * @param maxTimeout How long it can try to get the location before aborting in milliseconds.
    */
   public getLocation(maxAge = 5000, maxTimeout = 20000, accuracy = this.defaultAccuracy): Promise<LocationObject> {
+    this.locationEnabled();
     var newPoint = this.newPoint;
 
     return new Promise((resolve, reject) => {

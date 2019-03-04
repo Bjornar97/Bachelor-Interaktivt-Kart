@@ -74,6 +74,7 @@ export class CurrentTripPageComponent implements OnInit {
    * stopTrip() - Stop the current trip
    */
   private stopTrip(){
+    this.isLoading = true;
     var pause;
     if (!this.paused){
       this.togglePause();
@@ -90,14 +91,15 @@ export class CurrentTripPageComponent implements OnInit {
       neutralButtonText: "Avbryt"
     };
 
+    console.log("Before dialog");
     dialogs.confirm(options).then((result) => {
+      console.log("After dialog");
       if (result){
-        this.isLoading = true;
         this.pauseInterval();
         this.trip = this.tripService.endTrip();
         this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
           animated: true,
-          clearHistory: false,
+          clearHistory: true,
           transition: {name: "slideLeft"}
         });
       } else if (pause){

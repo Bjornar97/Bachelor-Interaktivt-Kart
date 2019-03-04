@@ -20,6 +20,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
   }
 
   private sub;
+  private backEvent;
   private trip;
 
   ngOnInit() {
@@ -51,6 +52,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     this.sub.unsubscribe();
+    application.android.removeEventListener(application.AndroidApplication.activityBackPressedEvent);
   }
 
 }

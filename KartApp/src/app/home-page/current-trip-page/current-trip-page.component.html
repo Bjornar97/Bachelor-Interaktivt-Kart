@@ -1,7 +1,6 @@
 <DockLayout stretchLastChild="true">
     <GridLayout dock="bottom" class="grid" width="100%" rows="*, *" columns="*, *" *ngIf="height > 150">
         <StackLayout row="0" col="0" class="leftTopContainer">
-            <Label *ngIf="paused" text="Tur satt på pause" class="pausedText" textWrap="true"></Label>
             <ActivityIndicator [busy]="isLoading" class="activity-indicator"></ActivityIndicator>
             <Image *ngIf="!paused" [src]="imageSrc" width="100%" height="100%"></Image>
         </StackLayout>

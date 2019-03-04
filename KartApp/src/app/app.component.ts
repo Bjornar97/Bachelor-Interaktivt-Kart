@@ -196,6 +196,8 @@ export class AppComponent {
                             } else {
                                 duration = 300 + (distance/(zoom))*((zoom-14)*10)^3;
                             }
+                        } else {
+                            duration = 4000;
                         }
                         if (distance > 500){
                             zoomlevel = 16;
@@ -220,7 +222,7 @@ export class AppComponent {
         } else {
             var url = this.routerExtensions.router.url;
             var urlArray = url.split("/");
-            this.routerExtensions.navigate([urlArray[0]], {transition: {name: "slideRight"}});
+            this.routerExtensions.navigate([urlArray[1]], {transition: {name: "slideRight"}, clearHistory: true});
         }
     }
 
@@ -264,5 +266,6 @@ export class AppComponent {
             }
             file.writeTextSync(JSON.stringify(info));
         }
+        console.log("App component initiallized");
     }
 }
