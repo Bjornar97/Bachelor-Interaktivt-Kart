@@ -9,6 +9,7 @@ import * as fs from 'tns-core-modules/file-system';
 import * as application from "tns-core-modules/application";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { TripService } from "./home-page/trip.service";
+import { isAndroid } from "platform";
 
 @Component({
     moduleId: module.id,
@@ -32,14 +33,20 @@ export class AppComponent {
     private showLocationButton = true;
 
     private drawer = {
-        startHeight: 100, // Brukt til å renge ut høyden ved endring i høyde.
+        startHeight: 100, // Brukt til å regne ut høyden ved endring i høyde.
         heightInt: 100,
         height: "100dp",
         visibility: "visibility: collapsed;",
         drawerClass: "drawer",
         maxHeight: screen.mainScreen.heightDIPs - 105,
-        maxHeightLocationButton: screen.mainScreen.heightDIPs / 2,
-        initialHeight: 200 // Høyden den husker og starter på når du åpner draweren.
+        initialHeight: 200, // Høyden den husker og starter på når du åpner draweren.
+        previousHeight: 100, // For bruk i filtrering.
+        filterHeightAlpha: 0.7, // Konstant mellom 0 og 1 for bruk i filtrering.
+        currentTime: null,
+        previousTime: null,
+        previousSpeed: 0,
+        currentSpeed: 0,
+        filterSpeedAlpha: 0.7
     };
 
     private buttons = {
@@ -76,7 +83,7 @@ export class AppComponent {
         }
     }
 
-    setDrawerHeight(height = 0, isPanning = false){
+    setDrawerHeight(height = this.drawer.maxHeight, isPanning = false){
         var drawerLoc = this.drawer;
 
         if (height < 0){
@@ -109,7 +116,6 @@ export class AppComponent {
     }
 
     setSelectedButtons(selectedButton = null){
-        // TODO: Iterate dict
         this.buttons.home.buttonClass = "button";
         this.buttons.account.buttonClass = "button";
         this.buttons.settings.buttonClass = "button";
@@ -125,7 +131,6 @@ export class AppComponent {
     }
 
     isSelected(buttonName){
-        // TODO: Iterate dict
         if (buttonName === "home" && this.buttons.home.buttonClass === "buttonSelected") {
             return true;
         }
@@ -138,6 +143,25 @@ export class AppComponent {
         return false;
     }
 
+    getFilteredHeight(){
+        var drawerLoc = this.drawer;
+        return drawerLoc.filterHeightAlpha * drawerLoc.heightInt + (1 - drawerLoc.filterHeightAlpha) * drawerLoc.previousHeight;
+    }
+
+    getDrawerSpeed(){
+        // DIP per milisecond
+        var drawerLoc = this.drawer;
+        if (drawerLoc.currentTime == drawerLoc.previousTime) {
+            return 0;
+        }
+        return (this.getFilteredHeight() - drawerLoc.previousHeight)/(drawerLoc.currentTime - drawerLoc.previousTime);
+    }
+
+    getFilteredDrawerSpeed(){
+        var drawerLoc = this.drawer;
+        return drawerLoc.filterSpeedAlpha * this.getDrawerSpeed() + (1 - drawerLoc.filterSpeedAlpha) * drawerLoc.previousSpeed;
+    }
+
     onPan(args: PanGestureEventData){
         console.log("Pan delta: [" + args.deltaX + ", " + args.deltaY + "] state: " + args.state);
         var state = args.state;
@@ -146,14 +170,29 @@ export class AppComponent {
             // Første trykk
             drawerLoc.drawerClass = "drawer";
             drawerLoc.startHeight = drawerLoc.heightInt;
+            drawerLoc.previousHeight = drawerLoc.heightInt;
+            drawerLoc.previousTime = drawerLoc.currentTime;
+            drawerLoc.previousSpeed = 0;
         }
         if (state === 2) {
             // Mens den er holdt
+            drawerLoc.previousHeight = this.getFilteredHeight();
             this.setDrawerHeight(drawerLoc.startHeight - args.deltaY, true);
+            drawerLoc.previousTime = drawerLoc.currentTime;
+            drawerLoc.currentTime = Date.now();
+            drawerLoc.previousSpeed = drawerLoc.currentSpeed;
+            drawerLoc.currentSpeed = this.getFilteredDrawerSpeed();
         }
         if (state === 3){
             // Sluppet
-            this.setDrawerHeight(drawerLoc.startHeight - args.deltaY);
+            console.log("Speed: " + drawerLoc.currentSpeed);
+            if (drawerLoc.currentSpeed > 2.2) { // Endre på tallet for å endre på grensen for maksimering.
+                this.setDrawerHeight();
+            } else if (drawerLoc.currentSpeed < -2.2) { // Endre på tallet for å endre på grensen for minimering.
+                this.setDrawerHeight(0);
+            } else {
+                this.setDrawerHeight(drawerLoc.startHeight - args.deltaY + (drawerLoc.currentSpeed * 70));
+            }
         }
     }
 
@@ -228,30 +267,32 @@ export class AppComponent {
 
     ngOnInit(): void {
         // When back button on android is pressed, check if you are on startpage, and promt you if you want to shut the app down.
-        application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
-            var url = this.routerExtensions.router.url;
-            var path = url.split("/");
-            console.log("Path: " + path + " length: " + path.length);
-            if (path.length <= 2){
-                // Check if drawer is open, and close it instead of stopping the app.
-                args.cancel = true;
-                let options = {
-                    title: "Avslutte appen?",
-                    message: "Vil du avslutte appen? \nDersom du er på en tur vil dette føre til at denne settes på pause, og vil ikke fortsette før du åpner appen og starter turen igjen.",
-                    okButtonText: "Ja",
-                    cancelButtonText: "Nei",
-                    neutralButtonText: "Avbryt"
-                  };
-                dialogs.confirm(options).then((result) => {
-                    if (result){
-                        if (this.tripService.isTrip()){
-                            this.tripService.pauseTrip();
+        if (isAndroid) {
+            application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+                var url = this.routerExtensions.router.url;
+                var path = url.split("/");
+                console.log("Path: " + path + " length: " + path.length);
+                if (path.length <= 2){
+                    // Check if drawer is open, and close it instead of stopping the app.
+                    args.cancel = true;
+                    let options = {
+                        title: "Avslutte appen?",
+                        message: "Vil du avslutte appen? \nDersom du er på en tur vil dette føre til at denne settes på pause, og vil ikke fortsette før du åpner appen og starter turen igjen.",
+                        okButtonText: "Ja",
+                        cancelButtonText: "Nei",
+                        neutralButtonText: "Avbryt"
+                      };
+                    dialogs.confirm(options).then((result) => {
+                        if (result){
+                            if (this.tripService.isTrip()){
+                                this.tripService.pauseTrip();
+                            }
+                            application.android.foregroundActivity.finish();
                         }
-                        application.android.foregroundActivity.finish();
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
         console.log("Innitting app component!");
         // Init your component properties here.
 

@@ -117,3 +117,8 @@ components that have the btn class name.
     font-family: Font Awesome 5 Free, fa-solid-900;
     font-weight: 900; 
 }
+
+.topBarBackground {
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 100;
+}

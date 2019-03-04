@@ -5,6 +5,7 @@ import { TripService } from '../trip.service';
 import { MainMap } from '~/app/globals';
 import { Page, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { ActivatedRoute } from '@angular/router';
+import { isAndroid } from "platform";
 
 @Component({
   selector: 'ns-trip-page',
@@ -32,7 +33,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
       } catch (error) {
         cangoback = false;
       }
-      if (!cangoback){
+      if (!cangoback && isAndroid){
         application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
           args.cancel = true;
           this.routerExtensions.navigate(['home'], {
@@ -52,7 +53,9 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     this.sub.unsubscribe();
-    application.android.removeEventListener(application.AndroidApplication.activityBackPressedEvent);
+    if (isAndroid) {
+      application.android.removeEventListener(application.AndroidApplication.activityBackPressedEvent);
+    }
   }
 
 }
