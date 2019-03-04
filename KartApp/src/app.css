@@ -42,6 +42,7 @@ components that have the btn class name.
 }
 
 .overlayMapButtons{
+    margin-top: 60dp;
 }
 
 .drawer{
