@@ -87,8 +87,7 @@ export class CurrentTripPageComponent implements OnInit {
       title: "Stopp tur",
       message: "Er du sikker på at du vil stoppe turen?",
       okButtonText: "Ja",
-      cancelButtonText: "Nei",
-      neutralButtonText: "Avbryt"
+      cancelButtonText: "Nei"
     };
 
     console.log("Before dialog");

@@ -9,6 +9,7 @@ import * as fs from 'tns-core-modules/file-system';
 import * as application from "tns-core-modules/application";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { TripService } from "./home-page/trip.service";
+import { isAndroid } from "platform";
 
 @Component({
     moduleId: module.id,
@@ -266,30 +267,32 @@ export class AppComponent {
 
     ngOnInit(): void {
         // When back button on android is pressed, check if you are on startpage, and promt you if you want to shut the app down.
-        application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
-            var url = this.routerExtensions.router.url;
-            var path = url.split("/");
-            console.log("Path: " + path + " length: " + path.length);
-            if (path.length <= 2){
-                // Check if drawer is open, and close it instead of stopping the app.
-                args.cancel = true;
-                let options = {
-                    title: "Avslutte appen?",
-                    message: "Vil du avslutte appen? \nDersom du er på en tur vil dette føre til at denne settes på pause, og vil ikke fortsette før du åpner appen og starter turen igjen.",
-                    okButtonText: "Ja",
-                    cancelButtonText: "Nei",
-                    neutralButtonText: "Avbryt"
-                  };
-                dialogs.confirm(options).then((result) => {
-                    if (result){
-                        if (this.tripService.isTrip()){
-                            this.tripService.pauseTrip();
+        if (isAndroid) {
+            application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+                var url = this.routerExtensions.router.url;
+                var path = url.split("/");
+                console.log("Path: " + path + " length: " + path.length);
+                if (path.length <= 2){
+                    // Check if drawer is open, and close it instead of stopping the app.
+                    args.cancel = true;
+                    let options = {
+                        title: "Avslutte appen?",
+                        message: "Vil du avslutte appen? \nDersom du er på en tur vil dette føre til at denne settes på pause, og vil ikke fortsette før du åpner appen og starter turen igjen.",
+                        okButtonText: "Ja",
+                        cancelButtonText: "Nei",
+                        neutralButtonText: "Avbryt"
+                      };
+                    dialogs.confirm(options).then((result) => {
+                        if (result){
+                            if (this.tripService.isTrip()){
+                                this.tripService.pauseTrip();
+                            }
+                            application.android.foregroundActivity.finish();
                         }
-                        application.android.foregroundActivity.finish();
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
         console.log("Innitting app component!");
         // Init your component properties here.
 
