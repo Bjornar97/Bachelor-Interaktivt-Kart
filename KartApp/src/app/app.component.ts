@@ -34,9 +34,12 @@ export class AppComponent {
         maxHeight: screen.mainScreen.heightDIPs - 105,
         initialHeight: 200, // Høyden den husker og starter på når du åpner draweren.
         previousHeight: 100, // For bruk i filtrering.
-        filterAlpha: 0.7, // Konstant mellom 0 og 1 for bruk i filtrering.
+        filterHeightAlpha: 0.7, // Konstant mellom 0 og 1 for bruk i filtrering.
         currentTime: null,
-        previousTime: null
+        previousTime: null,
+        previousSpeed: 0,
+        currentSpeed: 0,
+        filterSpeedAlpha: 0.7
     };
 
     private buttons = {
@@ -135,10 +138,23 @@ export class AppComponent {
         return false;
     }
 
+    getFilteredHeight(){
+        var drawerLoc = this.drawer;
+        return drawerLoc.filterHeightAlpha * drawerLoc.heightInt + (1 - drawerLoc.filterHeightAlpha) * drawerLoc.previousHeight;
+    }
+
     getDrawerSpeed(){
         // DIP per milisecond
         var drawerLoc = this.drawer;
-        return (drawerLoc.heightInt - drawerLoc.previousHeight)/(drawerLoc.currentTime - drawerLoc.previousTime);
+        if (drawerLoc.currentTime == drawerLoc.previousTime) {
+            return 0;
+        }
+        return (this.getFilteredHeight() - drawerLoc.previousHeight)/(drawerLoc.currentTime - drawerLoc.previousTime);
+    }
+
+    getFilteredDrawerSpeed(){
+        var drawerLoc = this.drawer;
+        return drawerLoc.filterSpeedAlpha * this.getDrawerSpeed() + (1 - drawerLoc.filterSpeedAlpha) * drawerLoc.previousSpeed;
     }
 
     onPan(args: PanGestureEventData){
@@ -150,24 +166,27 @@ export class AppComponent {
             drawerLoc.drawerClass = "drawer";
             drawerLoc.startHeight = drawerLoc.heightInt;
             drawerLoc.previousHeight = drawerLoc.heightInt;
+            drawerLoc.previousTime = drawerLoc.currentTime;
+            drawerLoc.previousSpeed = 0;
         }
         if (state === 2) {
             // Mens den er holdt
-            drawerLoc.previousHeight = drawerLoc.filterAlpha * drawerLoc.heightInt + (1 - drawerLoc.filterAlpha) * drawerLoc.previousHeight;
+            drawerLoc.previousHeight = this.getFilteredHeight();
             this.setDrawerHeight(drawerLoc.startHeight - args.deltaY, true);
             drawerLoc.previousTime = drawerLoc.currentTime;
             drawerLoc.currentTime = Date.now();
+            drawerLoc.previousSpeed = drawerLoc.currentSpeed;
+            drawerLoc.currentSpeed = this.getFilteredDrawerSpeed();
         }
         if (state === 3){
             // Sluppet
-            var drawerSpeed = this.getDrawerSpeed();
-            console.log("Speed: " + drawerSpeed);
-            if (drawerSpeed > 4) {
+            console.log("Speed: " + drawerLoc.currentSpeed);
+            if (drawerLoc.currentSpeed > 2) { // Endre på tallet for å endre på grensen for maksimering.
                 this.setDrawerHeight();
-            } else if (drawerSpeed < -4) {
+            } else if (drawerLoc.currentSpeed < -2) { // Endre på tallet for å endre på grensen for minimering.
                 this.setDrawerHeight(0);
             } else {
-                this.setDrawerHeight(drawerLoc.startHeight - args.deltaY);
+                this.setDrawerHeight(drawerLoc.startHeight - args.deltaY + (drawerLoc.currentSpeed * 70));
             }
         }
     }
