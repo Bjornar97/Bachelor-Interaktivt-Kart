@@ -26,14 +26,15 @@ export class AppComponent {
     private showLocationButton = true;
 
     private drawer = {
-        startHeight: 100, // Brukt til å renge ut høyden ved endring i høyde.
+        startHeight: 100, // Brukt til å regne ut høyden ved endring i høyde.
         heightInt: 100,
         height: "100dp",
         visibility: "visibility: collapsed;",
         drawerClass: "drawer",
         maxHeight: screen.mainScreen.heightDIPs - 105,
-        maxHeightLocationButton: screen.mainScreen.heightDIPs / 2,
-        initialHeight: 200 // Høyden den husker og starter på når du åpner draweren.
+        initialHeight: 200, // Høyden den husker og starter på når du åpner draweren.
+        previousHeight: 100, // For bruk i filtrering.
+        filterAlpha: 0.5 // Konstant mellom 0 og 1 for bruk i filtrering.
     };
 
     private buttons = {
@@ -132,6 +133,10 @@ export class AppComponent {
         return false;
     }
 
+    getDrawerSpeed(){
+        
+    }
+
     onPan(args: PanGestureEventData){
         console.log("Pan delta: [" + args.deltaX + ", " + args.deltaY + "] state: " + args.state);
         var state = args.state;
@@ -140,9 +145,11 @@ export class AppComponent {
             // Første trykk
             drawerLoc.drawerClass = "drawer";
             drawerLoc.startHeight = drawerLoc.heightInt;
+            drawerLoc.previousHeight = drawerLoc.heightInt;
         }
         if (state === 2) {
             // Mens den er holdt
+            drawerLoc.previousHeight = drawerLoc.filterAlpha * drawerLoc.heightInt + (1 - drawerLoc.filterAlpha) * drawerLoc.previousHeight;
             this.setDrawerHeight(drawerLoc.startHeight - args.deltaY, true);
         }
         if (state === 3){
