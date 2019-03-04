@@ -36,8 +36,7 @@ export class TripBoxComponent implements OnInit {
       title: "Slette tur",
       message: "Er du sikker på at du vil slette denne turen? \n \nDette sletter turen for godt!",
       okButtonText: "Ja",
-      cancelButtonText: "Nei",
-      neutralButtonText: "Avbryt"
+      cancelButtonText: "Nei"
     };
   
     dialogs.confirm(options).then((result: boolean) => {
