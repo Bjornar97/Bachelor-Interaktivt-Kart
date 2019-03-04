@@ -4,6 +4,8 @@ import { TripService } from '../trip.service';
 import { formatDate } from '@angular/common';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as dialogs from "tns-core-modules/ui/dialogs";
+import { View } from 'tns-core-modules/ui/page/page';
+import { screen } from "platform";
 
 let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
@@ -29,7 +31,7 @@ export class TripBoxComponent implements OnInit {
   private totalTimeString: string;
   private startTimeString: string;
 
-  deleteTrip(){
+  deleteTrip(box: View){
     let options = {
       title: "Slette tur",
       message: "Er du sikker på at du vil slette denne turen? \n \nDette sletter turen for godt!",
@@ -39,10 +41,17 @@ export class TripBoxComponent implements OnInit {
     };
   
     dialogs.confirm(options).then((result: boolean) => {
+      var screenWidth = screen.mainScreen.widthDIPs;
       if (result){
-        this.tripService.deleteTrip([this.id]);
-        this.routerExt.navigateByUrl("/home");
-        this.delete.emit();
+        box.animate({
+          translate: {x: -(screenWidth) - 100, y: 0},
+          duration: 700,
+          delay: 200
+         }).then(() => {
+          this.tripService.deleteTrip([this.id]);
+          this.routerExt.navigateByUrl("/home");
+          this.delete.emit();
+         });
       }
     });
   }

@@ -10,7 +10,7 @@
             <StackLayout class="page" style="background-color: transparent;">
                 <Label text="Turer" class="h3 tripsHeader" textWrap="true" [nsRouterLink]="['./allTrips']"></Label>
                 <ng-templage *ngFor="let trip of trips" class="bottomElement">
-                    <ns-trip-box *ngIf="trip != undefined" id="{{trip.id}}" (delete)="delete(trip)"></ns-trip-box>
+                    <ns-trip-box #tripBox *ngIf="trip != undefined" id="{{trip.id}}" (delete)="delete(trip, tripBox)"></ns-trip-box>
                 </ng-templage>
                 <Button text="Slett trips-mappen" (tap)="deleteTripFolder()"></Button>
             </StackLayout>
