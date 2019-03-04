@@ -40,7 +40,9 @@ export class AppComponent {
         maxHeight: screen.mainScreen.heightDIPs - 105,
         initialHeight: 200, // Høyden den husker og starter på når du åpner draweren.
         previousHeight: 100, // For bruk i filtrering.
-        filterAlpha: 0.5 // Konstant mellom 0 og 1 for bruk i filtrering.
+        filterAlpha: 0.7, // Konstant mellom 0 og 1 for bruk i filtrering.
+        currentTime: null,
+        previousTime: null
     };
 
     private buttons = {
@@ -77,7 +79,7 @@ export class AppComponent {
         }
     }
 
-    setDrawerHeight(height = 0, isPanning = false){
+    setDrawerHeight(height = this.drawer.maxHeight, isPanning = false){
         var drawerLoc = this.drawer;
 
         if (height < 0){
@@ -140,7 +142,9 @@ export class AppComponent {
     }
 
     getDrawerSpeed(){
-        
+        // DIP per milisecond
+        var drawerLoc = this.drawer;
+        return (drawerLoc.heightInt - drawerLoc.previousHeight)/(drawerLoc.currentTime - drawerLoc.previousTime);
     }
 
     onPan(args: PanGestureEventData){
@@ -157,10 +161,20 @@ export class AppComponent {
             // Mens den er holdt
             drawerLoc.previousHeight = drawerLoc.filterAlpha * drawerLoc.heightInt + (1 - drawerLoc.filterAlpha) * drawerLoc.previousHeight;
             this.setDrawerHeight(drawerLoc.startHeight - args.deltaY, true);
+            drawerLoc.previousTime = drawerLoc.currentTime;
+            drawerLoc.currentTime = Date.now();
         }
         if (state === 3){
             // Sluppet
-            this.setDrawerHeight(drawerLoc.startHeight - args.deltaY);
+            var drawerSpeed = this.getDrawerSpeed();
+            console.log("Speed: " + drawerSpeed);
+            if (drawerSpeed > 4) {
+                this.setDrawerHeight();
+            } else if (drawerSpeed < -4) {
+                this.setDrawerHeight(0);
+            } else {
+                this.setDrawerHeight(drawerLoc.startHeight - args.deltaY);
+            }
         }
     }
 
