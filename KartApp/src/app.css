@@ -46,6 +46,10 @@ components that have the btn class name.
     z-index: 20;
 }
 
+.overlayMapButtons{
+    margin-top: 60dp;
+}
+
 .drawer{
     background-color: rgba(255, 255, 255, 0.8);
     border-top-left-radius: 20dp;
