@@ -115,7 +115,6 @@ export class AppComponent {
     }
 
     setSelectedButtons(selectedButton = null){
-        // TODO: Iterate dict
         this.buttons.home.buttonClass = "button";
         this.buttons.account.buttonClass = "button";
         this.buttons.settings.buttonClass = "button";
@@ -131,7 +130,6 @@ export class AppComponent {
     }
 
     isSelected(buttonName){
-        // TODO: Iterate dict
         if (buttonName === "home" && this.buttons.home.buttonClass === "buttonSelected") {
             return true;
         }
@@ -187,9 +185,9 @@ export class AppComponent {
         if (state === 3){
             // Sluppet
             console.log("Speed: " + drawerLoc.currentSpeed);
-            if (drawerLoc.currentSpeed > 2) { // Endre på tallet for å endre på grensen for maksimering.
+            if (drawerLoc.currentSpeed > 2.2) { // Endre på tallet for å endre på grensen for maksimering.
                 this.setDrawerHeight();
-            } else if (drawerLoc.currentSpeed < -2) { // Endre på tallet for å endre på grensen for minimering.
+            } else if (drawerLoc.currentSpeed < -2.2) { // Endre på tallet for å endre på grensen for minimering.
                 this.setDrawerHeight(0);
             } else {
                 this.setDrawerHeight(drawerLoc.startHeight - args.deltaY + (drawerLoc.currentSpeed * 70));
