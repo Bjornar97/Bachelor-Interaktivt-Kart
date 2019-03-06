@@ -119,7 +119,7 @@ export class AppComponent {
 
             // Saving the state of the drawer. Subject to change
             if (this.drawerSetting != undefined){
-                this.drawerSetting.value = this.drawer;
+                this.drawerSetting.value = this.drawer.initialHeight;
                 this.settingsService.setSetting(this.drawerSetting);
             } else {
                 console.log("ERROR in app.component: Could not set setting drawerSetting, because it is not defined");
@@ -311,22 +311,19 @@ export class AppComponent {
 
         // Getting the drawer from settings
         var drawersetting: Setting = this.settingsService.getSetting(undefined, 48);
-        console.log("Drawer settings below");
         console.dir(this.drawerSetting);
         if (drawersetting != undefined){
-            console.log("Setting drawer from settings");
-            this.drawer = drawersetting.value;
+            this.drawer.initialHeight = drawersetting.value;
+            this.drawerSetting = drawersetting;
         } else {
             drawersetting = {
                 id: 48,
                 name: "drawerSetting",
                 type: "Object",
-                value: this.drawer // TODO: Change to custom object with needed information only
+                value: this.drawer.initialHeight
             }
-            console.dir(drawersetting);
+            console.log("DrawerSetting does not exist");
             this.settingsService.setSetting(drawersetting);
-            console.log("Setting: ");
-            console.dir(this.settingsService.getSetting(undefined, 48));
             this.drawerSetting = drawersetting;
         }
 
