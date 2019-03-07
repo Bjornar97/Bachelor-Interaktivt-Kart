@@ -35,11 +35,17 @@ export class SettingsService implements OnInit{
     var settingsFile = this.getFile();
     this.settingsList = [];
     
-    var text = settingsFile.readTextSync((error) => {
-      console.log("Could not load settings from the file: " + error);
-      settingsFile.removeSync();
-      this.settingsListSuccess = false; 
-    }); 
+    try {
+      var text = settingsFile.readTextSync((error) => {
+        console.log("Could not load settings from the file: " + error);
+        settingsFile.removeSync();
+        this.settingsListSuccess = false; 
+      });  
+    } catch (err) {
+      console.log("Something bad happened while reading from settingsfile: " + err);
+        settingsFile.removeSync();
+        this.settingsListSuccess = false; 
+    }
 
     var settings = text; 
     this.settingsList = JSON.parse(settings);
