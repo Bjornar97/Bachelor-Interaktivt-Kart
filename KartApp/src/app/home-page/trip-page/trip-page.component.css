@@ -1,1 +1,13 @@
 /* Add mobile styles for the component here.  */
+.info{
+   font-weight: bold; 
+   text-align:left;
+   font-size:17;
+}
+.deliminator{
+   border-width: 0 0 1px 0;
+}
+.turNavn{
+   font-size: 25;
+   margin-bottom: 30;
+}
