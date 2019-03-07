@@ -13,6 +13,8 @@ import { ImageService } from '../image.service';
 
 let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
+let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+
 @Component({
   selector: 'ns-trip-page',
   templateUrl: './trip-page.component.html',
@@ -45,6 +47,11 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private totalTimeString: string;
   private startTimeString;
   private stopTimeString;
+
+  private totalTimeString: string;
+  private startTimeString;
+  private stopTimeString;
+
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {

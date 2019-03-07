@@ -2,7 +2,6 @@
     <NavigationButton text="Tilbake" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
 </ActionBar>
 <StackLayout>
-    <Label text="TurNavn" class="turNavn"></Label>
     <StackLayout>
         <GridLayout columns="*,2*" rows="2*,3*"  height="50">
                 <Label col="0" row="0" class="info" text="Start: " textWrap="true" ></Label>
@@ -19,7 +18,6 @@
                 <Label col="0" row="0" class="info" text="Tid brukt: " textWrap="true"></Label>
                 <Label col="1" row="0" [text]="totalTimeString" textWrap="true" ></Label>                   
         </GridLayout>
-
         <GridLayout columns="*,2*" rows="2*,3*"  height="50" >
                 <Label col="0" row="0" class="info" text="Lengde: " textWrap="true"></Label>
                 <Label col="1" row="0" textWrap="true"></Label>           
