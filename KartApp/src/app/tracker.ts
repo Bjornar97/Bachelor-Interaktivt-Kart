@@ -129,7 +129,7 @@ export class Tracker {
                 maximumAge: 5000, 
                 updateDistance: 10,
                 updateTime: 5000,
-                iosAllowsBackgroundLocationUpdates: false, // Skift tilbake når background mode er implementert
+                iosAllowsBackgroundLocationUpdates: true, // Skift tilbake når background mode er implementert
                 iosPausesLocationUpdatesAutomatically: false
         });
 
@@ -175,7 +175,7 @@ export class Tracker {
                 maximumAge: 5000, 
                 updateDistance: 10, 
                 updateTime: 5000,
-                iosAllowsBackgroundLocationUpdates: false,
+                iosAllowsBackgroundLocationUpdates: true,
                 iosPausesLocationUpdatesAutomatically: false
         });
 
