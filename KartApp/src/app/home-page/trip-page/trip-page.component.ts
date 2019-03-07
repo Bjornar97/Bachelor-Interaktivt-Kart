@@ -10,6 +10,8 @@ import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
 import * as globals from "../../globals";
 
+let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+
 @Component({
   selector: 'ns-trip-page',
   templateUrl: './trip-page.component.html',
@@ -37,6 +39,11 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  private totalTimeString: string;
+  private startTimeString;
+  private stopTimeString;
+
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
