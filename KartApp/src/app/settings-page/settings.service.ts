@@ -41,14 +41,14 @@ export class SettingsService implements OnInit{
         settingsFile.removeSync();
         this.settingsListSuccess = false; 
       });  
+      var settings = text; 
+      this.settingsList = JSON.parse(settings);
     } catch (err) {
       console.log("Something bad happened while reading from settingsfile: " + err);
         settingsFile.removeSync();
         this.settingsListSuccess = false; 
     }
 
-    var settings = text; 
-    this.settingsList = JSON.parse(settings);
     console.log("The loading of settings succeded");
     this.settingsListSuccess = true;
   }
