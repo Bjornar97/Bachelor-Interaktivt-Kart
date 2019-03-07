@@ -8,7 +8,6 @@ import { ActivatedRoute } from '@angular/router';
 import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
-import * as globals from "../../globals";
 import { ImageService } from '../image.service';
 
 let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
@@ -41,10 +40,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  private totalTimeString: string;
-  private startTimeString;
-  private stopTimeString;
 
   private totalTimeString: string;
   private startTimeString: string;
