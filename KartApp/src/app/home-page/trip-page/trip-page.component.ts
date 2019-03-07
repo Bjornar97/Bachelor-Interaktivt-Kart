@@ -69,7 +69,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
       // In a real app: dispatch action to load the details here.
     });
     MainMap.removeLine();
-    MainMap.drawLine(this.trip.points, "green", 4, 1);
+    MainMap.drawLine(this.trip.points, "red", 3, 0.8);
 
     if (this.trip != undefined){
       this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
