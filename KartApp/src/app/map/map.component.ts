@@ -3,6 +3,7 @@ import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitu
 import { LocationClass, LocationObject } from "../location";
 import * as globals from "../globals";
 import { SettingsService, Setting } from '../settings-page/settings.service';
+import * as application from "application";
 
 @Component({
   selector: 'ns-map',
@@ -195,6 +196,8 @@ export class MapComponent implements OnInit {
         }
     }
 
+    private mapSaveInterval;
+
   // Waits until the map is ready
   onMapReady(args): void {
     // Gets the map that is displayed
@@ -203,21 +206,111 @@ export class MapComponent implements OnInit {
     globals.setMap(this);
     }
 
+    // Getting map position from settingsService
+    var mapSetting = this.settingsService.getSetting(undefined, 31);
+    console.dir(mapSetting);
+    if (mapSetting != undefined){
+        this.mapSetting = mapSetting;
+    } else {
+        this.mapSetting = {
+            id: 31,
+            name: "MapPositionSetting",
+            type: "Object",
+            value: undefined
+        }
+    }
+
     var map = this.map;
-    this.locationClass.getLocation(undefined, 3000, 0).then(function (loc) {
-        console.log("Latitude: " + loc.lat + ", longitude: " + loc.lng);
-        map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
-        map.setZoomLevel({level: 16, animated: false});
-    }, function (err) {
-        console.log("ERROR: ");
-        console.dir(err);
+
+    // If the setting exists, it uses that to set the center and zoom level of the map
+    if (this.mapSetting.value != undefined){
+        console.log("Center is being set from setting");
+        map.setCenter({
+            animated: false,
+            lat: this.mapSetting.value.lat,
+            lng: this.mapSetting.value.lng
+        });
+        map.setZoomLevel({
+            animated: false,
+            level: this.mapSetting.value.zoomLevel
+        });
+    } else {
+        // If the setting does not exist, find the location of the device and use that.
+        console.log("Setting center from location");
+        this.locationClass.getLocation(undefined, 3000, 0).then((loc) => {
+            console.log("Latitude: " + loc.lat + ", longitude: " + loc.lng);
+            map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
+            map.setZoomLevel({level: 16, animated: false});
+
+            this.mapSetting = {
+                id: 31,
+                name: "mapSetting",
+                type: "Object",
+                value: {
+                    lat: loc.lat,
+                    lng: loc.lng,
+                    zoomLevel: 16
+                }
+            }
+            
+            this.settingsService.setSetting(this.mapSetting);
+            this.settingsService.saveSettings();
+        }, function (err) {
+            console.log("ERROR: ");
+            console.dir(err);
+        });
+    }
+
+    this.mapSaveInterval = setInterval(() => {
+        console.log("Interval");
+        map.getCenter().then((center) => {
+            if (center != undefined){
+                map.getZoomLevel().then((zoom) => {
+                    if (zoom != undefined){
+                        this.mapSetting.value.lat = center.lat;
+                        this.mapSetting.value.lng = center.lng;
+                        this.mapSetting.value.zoomLevel = zoom;
+
+                        this.settingsService.setSetting(this.mapSetting);
+                    }
+                });
+            }
+        });
+    }, 10000);
+
+    // App went to background...
+    application.on(application.suspendEvent,() => {
+        clearInterval(this.mapSaveInterval);
     });
+
+    // App was reopened...
+    application.on(application.resumeEvent, () => {
+        this.mapSaveInterval = setInterval(() => {
+            console.log("Interval");
+            map.getCenter().then((center) => {
+                if (center != undefined){
+                    map.getZoomLevel().then((zoom) => {
+                        if (zoom != undefined){
+                            this.mapSetting.value.lat = center.lat;
+                            this.mapSetting.value.lng = center.lng;
+                            this.mapSetting.value.zoomLevel = zoom;
+    
+                            this.settingsService.setSetting(this.mapSetting);
+                        }
+                    });
+                }
+            });
+        }, 10000);
+    });
+
     var styleSetting = globals.settingsService.getSetting(undefined, 11);
     if (styleSetting != undefined){
         this.setMapStyle(this.styles[styleSetting.value].name);
     }
 
   }
+
+  private mapSetting: Setting;
 
   ngOnInit() {
       

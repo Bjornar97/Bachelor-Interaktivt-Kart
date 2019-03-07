@@ -34,15 +34,17 @@ export class SettingsService implements OnInit{
   constructor() { 
     var settingsFile = this.getFile();
     this.settingsList = [];
-    settingsFile.readText().then(text => {
-      var settings = text; 
-      this.settingsList = JSON.parse(settings);
-      this.settingsListSuccess = true;
-    }).catch(error => {
+    
+    var text = settingsFile.readTextSync((error) => {
       console.log("Could not load settings from the file: " + error);
       settingsFile.removeSync();
       this.settingsListSuccess = false; 
     }); 
+
+    var settings = text; 
+    this.settingsList = JSON.parse(settings);
+    console.log("The loading of settings succeded");
+    this.settingsListSuccess = true;
   }
 
   getSettingsList(): Setting[]{
@@ -81,6 +83,24 @@ export class SettingsService implements OnInit{
     this.saving = false; 
   }
 
+  /**
+   * getSetting - Get the setting you want.
+   * 
+   * @param SettingName The name of the setting you want to get. PLEASE DONT USE THIS(make it undefined), it is not working
+   * @param SettingId The id of the setting. Use this.
+   * 
+   * SettingID list(if you make a new setting and save it somewhere, add it to this list):
+   * 
+   * 1: Auto Rotate Setting.
+   * 
+   * 11: Map menu setting.
+   * 
+   * 21: Drawer setting.
+   * 
+   * 31: Map position setting.
+   * 
+   * @returns The setting you asked for. If it does not exist, it doesnt return anything
+   */
   getSetting(SettingName?: string, SettingId?: number): Setting {
     if (this.settingsListSuccess){
       if (SettingId != undefined){

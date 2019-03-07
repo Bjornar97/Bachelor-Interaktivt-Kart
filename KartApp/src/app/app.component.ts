@@ -3,7 +3,7 @@ import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 import {screen} from "platform"
 import { LocationClass } from "./location";
 import * as globals from "./globals";
-import { SettingsService } from "./settings-page/settings.service";
+import { SettingsService, Setting } from "./settings-page/settings.service";
 import { RouterExtensions } from "nativescript-angular/router";
 import * as fs from 'tns-core-modules/file-system';
 import * as application from "tns-core-modules/application";
@@ -18,14 +18,19 @@ import { isAndroid } from "platform";
     providers: [TripService]
 })
 export class AppComponent { 
-    private settingsService;
+    private settingsService: SettingsService;
 
     constructor(private routerExtensions: RouterExtensions){
         console.log("Creating app component!");
         this.locationService = new LocationClass(1);
-        this.settingsService = new SettingsService();
-        globals.setSettingsService(this.settingsService);
-        this.tripService = new TripService();
+        if (globals.settingsService != undefined){
+            this.settingsService = globals.settingsService;
+        } else {
+            console.log("Need to make new settings-service");
+            this.settingsService = new SettingsService();
+            globals.setSettingsService(this.settingsService);
+        }
+        this.tripService = new TripService();   
     }
 
     private locationService: LocationClass;
@@ -48,6 +53,8 @@ export class AppComponent {
         currentSpeed: 0,
         filterSpeedAlpha: 0.7
     };
+
+    private drawerSetting: Setting;
 
     private buttons = {
         home: {
@@ -108,6 +115,14 @@ export class AppComponent {
                 this.closeDrawer();
             } else {
                 drawerLoc.initialHeight = height;
+            }
+
+            // Saving the state of the drawer. Subject to change
+            if (this.drawerSetting != undefined){
+                this.drawerSetting.value = this.drawer.initialHeight;
+                this.settingsService.setSetting(this.drawerSetting);
+            } else {
+                console.log("ERROR in app.component: Could not set setting drawerSetting, because it is not defined");
             }
         }
 
@@ -293,8 +308,24 @@ export class AppComponent {
                 }
             });
         }
-        console.log("Innitting app component!");
-        // Init your component properties here.
+
+        // Getting the drawer from settings
+        var drawersetting: Setting = this.settingsService.getSetting(undefined, 48);
+        console.dir(this.drawerSetting);
+        if (drawersetting != undefined){
+            this.drawer.initialHeight = drawersetting.value;
+            this.drawerSetting = drawersetting;
+        } else {
+            drawersetting = {
+                id: 48,
+                name: "drawerSetting",
+                type: "Object",
+                value: this.drawer.initialHeight
+            }
+            console.log("DrawerSetting does not exist");
+            this.settingsService.setSetting(drawersetting);
+            this.drawerSetting = drawersetting;
+        }
 
         // Adding files and folders that doesnt exist:
         var tripFolder = fs.knownFolders.documents().getFolder("Trips");
