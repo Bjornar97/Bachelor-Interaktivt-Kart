@@ -10,6 +10,8 @@ import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
 import * as globals from "../../globals";
 
+let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+
 @Component({
   selector: 'ns-trip-page',
   templateUrl: './trip-page.component.html',
@@ -38,6 +40,11 @@ export class TripPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  private totalTimeString: string;
+  private startTimeString;
+  private stopTimeString;
+
+
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.trip = this.tripService.getTrip(parseInt(params['id']));
@@ -62,9 +69,22 @@ export class TripPageComponent implements OnInit, OnDestroy {
       // In a real app: dispatch action to load the details here.
     });
     MainMap.removeLine();
-    this.trip.walks.forEach((walk) => {
-      MainMap.drawLine(walk.points);
-    });
+    MainMap.drawLine(this.trip.points, "green", 4, 1);
+
+    if (this.trip != undefined){
+      this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
+      var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}
+      // this.startTimeString = this.trip.startTime.toLocaleDateString("en-US", options); // Not working...
+
+      var dateString: string;
+      var time = this.trip.startTime;
+      dateString =  days[time.getDay() - 1] + " " + time.getDate().toString() + "." + time.getMonth().toString() + "." + time.getFullYear().toString() + " " + time.getHours().toString() + ":" + time.getMinutes().toString();
+      this.startTimeString = dateString;
+      var dateStringStop;
+      var timeStop = this.trip.stopTime;
+      dateStringStop =  days[time.getDay() - 1] + " " + timeStop.getDate().toString() + "." + timeStop.getMonth().toString() + "." + timeStop.getFullYear().toString() + " " + timeStop.getHours().toString() + ":" + timeStop.getMinutes().toString();
+      this.stopTimeString = dateStringStop;
+    }
   }
 
   ngOnDestroy(){
