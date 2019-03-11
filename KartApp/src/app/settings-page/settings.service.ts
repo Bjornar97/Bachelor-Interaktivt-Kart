@@ -36,8 +36,6 @@ export class SettingsService implements OnInit{
     this.settingsList = [];
     
     try {
-      console.log("Test___1");
-      console.log(settingsFile);
       var text = settingsFile.readTextSync((error) => {
         console.log("Could not load settings from the file: " + error);
         settingsFile.removeSync();
@@ -50,7 +48,6 @@ export class SettingsService implements OnInit{
       settingsFile.removeSync();
       this.settingsListSuccess = false;
     }
-    console.log("Test___2");
 
     console.log("The loading of settings succeded");
     this.settingsListSuccess = true;
