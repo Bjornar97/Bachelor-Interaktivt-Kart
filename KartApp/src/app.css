@@ -82,8 +82,8 @@ components that have the btn class name.
     font-size: 12;
     vertical-align: middle;
     width: 100%;
-    background-color: #fff;
     border-color: #fff;
+    background-color: #fff;
     border-width: 1px;
 }
 
@@ -105,7 +105,7 @@ components that have the btn class name.
 .locationButton{
     height: 55dp;
     width: 55dp;
-    margin-bottom: 30dp;
+    margin-bottom: 50dp;
     margin-top: 1dp;
     margin-right: 10dp;
     background-color: #fff;
@@ -115,14 +115,14 @@ components that have the btn class name.
     z-index: 0;
     width: 57dp;
     height: 57dp;
-    margin-bottom: 30dp;
+    margin-bottom: 50dp;
     margin-right: 10dp;
     border-radius: 50%;
     background-color: #ccc;
 }
 
 .overlayMapButtons{
-    margin-bottom: 20dp;
+    margin-top: 60dp;
 }
 
 .fas {
