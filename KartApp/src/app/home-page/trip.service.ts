@@ -155,6 +155,11 @@ export class TripService {
     this.getCurrentTripFile().removeSync();
   }
 
+  sortTrips(trips: Trip[]){
+    // Sortere etter startTime. f. eks: trip[x].startTime
+
+  }
+
   /**
    *  getTrips() - Get all finished trips from the json files.
    */
@@ -177,6 +182,7 @@ export class TripService {
           }
         }
       });
+      // trips = sortTrips(trips);
       return trips;
     } catch (error) {
       console.log("ERROR in tripService(getTrips): " + error);
