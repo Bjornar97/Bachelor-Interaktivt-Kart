@@ -5,6 +5,7 @@ import { TripService } from '../trip.service';
 import { MainMap } from '~/app/globals';
 import { Page, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { ActivatedRoute } from '@angular/router';
+import { Trip } from '~/app/tracker';
 
 @Component({
   selector: 'ns-trip-page',
@@ -21,7 +22,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   private sub;
   private backEvent;
-  private trip;
+  private trip: Trip;
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -48,6 +49,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
     });
     MainMap.removeLine();
     MainMap.drawLine(this.trip.points, "green", 4, 1);
+
+    console.log(this.tripService.getTripEvents(this.trip.id));
   }
 
   ngOnDestroy(){
