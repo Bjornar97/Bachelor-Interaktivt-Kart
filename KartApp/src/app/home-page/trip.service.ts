@@ -153,7 +153,7 @@ export class TripService {
     this.getCurrentTripFile().removeSync();
   }
 
-  sortTrips(trips: Trip[]){
+  sortTrips(_trips: Trip[]){
     // Sortere etter startTime. f. eks: trip[x].startTime
 
   }
