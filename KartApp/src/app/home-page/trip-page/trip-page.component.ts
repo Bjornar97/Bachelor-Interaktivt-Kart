@@ -6,6 +6,7 @@ import { MainMap } from '~/app/globals';
 import { Page, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { ActivatedRoute } from '@angular/router';
 import { isAndroid } from "platform";
+import { Trip } from '~/app/tracker';
 
 @Component({
   selector: 'ns-trip-page',
@@ -22,7 +23,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   private sub;
   private backEvent;
-  private trip;
+  private trip: Trip;
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {

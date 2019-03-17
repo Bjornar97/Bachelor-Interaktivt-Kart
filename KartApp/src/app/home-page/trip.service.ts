@@ -4,6 +4,7 @@ import { Trip, Tracker } from '../tracker';
 import * as fs from 'tns-core-modules/file-system';
 import { HomeModule } from "./home-page.module";
 import { AppModule } from '../app.module';
+import { LocationClass } from '../location';
 
 @Injectable({
   providedIn: AppModule
@@ -115,10 +116,6 @@ export class TripService {
       var trip: Trip = JSON.parse(tripText);
       trip.startTime = new Date(trip.startTime);
       trip.stopTime = new Date(trip.stopTime);
-      trip.pauses.forEach((pause) => {
-        pause.from = new Date(pause.from);
-        pause.to = new Date(pause.to);
-      });
       return trip;
     } catch (error) {
       console.log("ERROR in tripService(getTrip): " + error);
@@ -155,7 +152,7 @@ export class TripService {
     this.getCurrentTripFile().removeSync();
   }
 
-  sortTrips(trips: Trip[]){
+  sortTrips(_trips: Trip[]){
     // Sortere etter startTime. f. eks: trip[x].startTime
 
   }
@@ -313,6 +310,100 @@ export class TripService {
   }
 
   /**
+   * getTripEvents - Get all events in a trip, including pauses, in between pauses and pictures taken on the trip. Pictures is not fully implemented yet.
+   * 
+   * @param id The id of the trip
+   * 
+   * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
+   */
+  getTripEvents(id): {
+    events: {
+      timestamp: Date,
+      type: string,
+      value: any,
+    }[]
+  } {
+    var trip = this.getTrip(id);
+    var result = {
+      events: []
+    };
+    if (trip != undefined){
+      if (trip.pauses != undefined){
+
+        var lastPoint: number;
+        var first = true;
+        var locationClass = new LocationClass();
+
+        trip.pauses.forEach((pause) => {
+          if (first){
+
+            lastPoint = trip.points.findIndex(function(value): boolean {
+              return value.id == pause.from.id;
+            });
+
+            var duration = new Date(pause.from.timestamp).getTime() - trip.startTime.getTime();
+            var distance = 0;
+            if (trip.points.length > 1){
+              for (let i = 1; i < lastPoint; i++) {
+                distance += locationClass.findDistance(trip.points[i-1], trip.points[i]);
+              }
+            }
+            var walkEvent = {
+              timestamp: trip.startTime,
+              type: "walk",
+              value: {
+                duration: duration,
+                AverageSpeed: distance / duration
+              }
+            }
+            first = false;
+          } else {
+            var point = trip.points.findIndex(function(value): boolean {
+              return value.id == pause.from.id;
+            });
+            var duration = new Date(pause.from.timestamp).getTime() - new Date(trip.points[lastPoint + 1].timestamp).getTime();
+            var distance = 0;
+            if (trip.points.length > 1){
+              for (let i = 1; i < point; i++){
+                distance += locationClass.findDistance(trip.points[i-1], trip.points[i]);
+              }
+            }
+
+            var walkEvent = {
+              timestamp: trip.points[lastPoint + 1].timestamp,
+              type: "walk",
+              value: {
+                duration: duration,
+                AverageSpeed: distance / duration
+              }
+
+            }
+          }
+          var event = {
+            timestamp: pause.from.timestamp,
+            type: "pause",
+            value: {
+              from: new Date(pause.from.timestamp),
+              to: new Date(pause.to.timestamp)
+            }
+          }
+          result.events.push(walkEvent, event);
+        });
+        if (trip.images != undefined){
+          trip.images.forEach((image) => {
+            // TODO: Legge til bildet her.
+          });
+        }
+    
+        // TODO: Sortere her
+      }
+    }
+    
+
+    return result;
+  }
+
+  /**
    * Get the total time the current trip has been going for. Does not include paused intervals.
    * 
    * @returns the total time in a string in this format: hh:mm:ss. If its less than one hour, this is returned: mm:ss
@@ -339,7 +430,7 @@ export class TripService {
 
     if (Trip.pauses != undefined){
       Trip.pauses.forEach(pause => {
-        time -= pause.to.getTime() - pause.from.getTime();
+        time -= new Date(pause.to.timestamp).getTime() - new Date(pause.from.timestamp).getTime();
       });
     }
     return time;
