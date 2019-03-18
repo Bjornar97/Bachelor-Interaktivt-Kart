@@ -31,6 +31,7 @@ export class AppComponent {
             globals.setSettingsService(this.settingsService);
         }
         this.tripService = new TripService();   
+        globals.setRouterExtensions(this.routerExtensions);
     }
 
     private locationService: LocationClass;

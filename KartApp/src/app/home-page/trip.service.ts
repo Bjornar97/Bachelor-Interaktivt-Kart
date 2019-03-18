@@ -5,6 +5,7 @@ import * as fs from 'tns-core-modules/file-system';
 import { HomeModule } from "./home-page.module";
 import { AppModule } from '../app.module';
 import { LocationClass } from '../location';
+import { Image } from 'tns-core-modules/ui/image/image';
 
 @Injectable({
   providedIn: AppModule
@@ -401,6 +402,15 @@ export class TripService {
     
 
     return result;
+  }
+
+
+  saveImage(image: Image){
+    if (this.isTrip()){
+      this.tracker.addImage(image);
+    } else {
+      console.log("ERROR in saveImage in TripService: There is no trip going on");
+    }
   }
 
   /**
