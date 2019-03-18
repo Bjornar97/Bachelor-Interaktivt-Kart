@@ -6,24 +6,29 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import * as camera from "nativescript-camera";
 import { Image } from "tns-core-modules/ui/image";
 import * as dialogs from "tns-core-modules/ui/dialogs";
+import { MarkerService } from '~/app/map/marker.service';
+import { LocationClass } from '~/app/location';
 
 
 @Component({
   selector: 'ns-current-trip-page',
   templateUrl: './current-trip-page.component.html',
   styleUrls: ['./current-trip-page.component.css'],
-  providers: [TripService],
+  providers: [TripService, MarkerService],
   moduleId: module.id,
 })
 export class CurrentTripPageComponent implements OnInit {
 
-  constructor(page: Page, private routerExtensions: RouterExtensions) { 
+  constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService) { 
     page.actionBarHidden = true;
     this.tripService = new TripService();
+    this.locationClass = new LocationClass();
   }
 
   private tripService: TripService;
   private trip: Trip;
+
+  private locationClass: LocationClass;
 
   private startTime;
   private paused: boolean = false;
@@ -43,12 +48,25 @@ export class CurrentTripPageComponent implements OnInit {
    */
   OpenCamera(){
     console.log("Taking picture");
-    camera.requestPermissions();
-    camera.takePicture({saveToGallery: false}).then((value) => {
-      var image = new Image();
-      image.src = value;
-      this.imageSrc = image.src;
-    });
+    camera.requestPermissions().then(
+      () => {
+        camera.takePicture({saveToGallery: false}).then((value) => {
+          var image = new Image();
+          image.src = value;
+          this.imageSrc = image.src;
+          this.tripService.saveImage(image);
+          var location = this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
+            this.markerService.makeMarker(loc.lat, loc.lng, "marker/image/", "image"); // TODO: Add iconpath
+          }).catch((error) => {
+            console.log("ERROR in OpenCamera in currentTripPage: Error while getting location: " + error);
+          });
+        });
+      }, 
+      () => {
+        console.log("The permission was not granted");
+        // TODO: Show Error to the user.
+      }
+    );
   }
 
   /**
