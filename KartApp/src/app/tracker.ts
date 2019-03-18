@@ -84,6 +84,14 @@ export class Tracker {
         this.accuracy = newAccuracy;
     }
 
+    public addImage(image){
+        var imageObject = {
+            timestamp: new Date(),
+            image: image
+        }
+        this.trip.images.push(imageObject);
+    }
+
     private logPoint(point: geolocation.Location){
         console.log("Logging point " + point.timestamp.valueOf());
         var location: LocationObject = {
@@ -146,7 +154,8 @@ export class Tracker {
             finished: false,
             startTime: new Date(),
             stopTime: undefined,
-            distanceMeters: 0
+            distanceMeters: 0,
+            images: [],
         }
 
         console.log("Started logging of " + watchID);
@@ -204,7 +213,8 @@ export class Tracker {
             finished: false,
             points: [],
             stopTime: undefined,
-            distanceMeters: 0
+            distanceMeters: 0,
+            images: []
         }
         this.tripTrips[this.trip.id] = this.trip;
         this.trip = newTrip;
@@ -243,7 +253,8 @@ export class Tracker {
                             points: trip.points,
                             startTime: trip.startTime,
                             stopTime: undefined,
-                            distanceMeters: 0
+                            distanceMeters: 0,
+                            images: []
                         }
                         first = false;
                     } else {
@@ -256,11 +267,17 @@ export class Tracker {
                             finalTrip.points.push(point);
                         });
                     }
+                    
                     trip.points.forEach((point, i, array) => {
                         if (i > 0){
                             distance += this.locationClass.findDistance(array[i], point);
                         }
                     });
+
+                    trip.images.forEach((image) => {
+                        finalTrip.images.push(image);
+                    });
+                    
                     duration += trip.stopTime.getTime() - trip.startTime.getTime();
                     prev = trip;   
                 } else {
