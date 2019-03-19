@@ -5,7 +5,7 @@ import { TripService } from '../trip.service';
 import { MainMap } from '~/app/globals';
 import { Page, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { ActivatedRoute } from '@angular/router';
-import { isAndroid } from "platform";
+import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
 
 @Component({

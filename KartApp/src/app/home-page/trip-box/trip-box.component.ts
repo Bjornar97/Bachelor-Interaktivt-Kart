@@ -5,7 +5,7 @@ import { formatDate } from '@angular/common';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { View } from 'tns-core-modules/ui/page/page';
-import { screen } from "platform";
+import { screen } from "tns-core-modules/platform";
 
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 

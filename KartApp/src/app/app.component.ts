@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
-import {screen} from "platform"
+import {screen} from "tns-core-modules/platform";
 import { LocationClass } from "./location";
 import * as globals from "./globals";
 import { SettingsService, Setting } from "./settings-page/settings.service";
@@ -9,7 +9,7 @@ import * as fs from 'tns-core-modules/file-system';
 import * as application from "tns-core-modules/application";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { TripService } from "./home-page/trip.service";
-import { isAndroid } from "platform";
+import { isAndroid } from "tns-core-modules/platform";
 
 @Component({
     moduleId: module.id,

@@ -3,7 +3,7 @@ import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitu
 import { LocationClass, LocationObject } from "../location";
 import * as globals from "../globals";
 import { SettingsService, Setting } from '../settings-page/settings.service';
-import * as application from "application";
+import * as application from "tns-core-modules/application";
 
 @Component({
   selector: 'ns-map',
