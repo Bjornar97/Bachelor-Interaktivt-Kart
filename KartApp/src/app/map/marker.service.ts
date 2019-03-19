@@ -102,7 +102,7 @@ export class MarkerService {
         console.log("Tapped marker " + marker.id);
         globals.routerExtensions.navigateByUrl(url + marker.id);
       },
-      iconPath: iconPath,  
+      icon: iconPath
     }
     this.setLastId(marker.id);
     this.saveMarker(marker, type);
