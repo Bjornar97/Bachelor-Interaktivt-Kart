@@ -22,24 +22,21 @@ export class MarkerService {
     return this.getFolder().getFile("markersInfo.json");
   }
 
-  getInfo(): {ids: number[], idsMap: Map<number, string>, lastID: number}{
+  getInfo(): {idsType: {id: number, type: string}[], lastID: number}{
     var file = this.getInfoFile();
     try {
       var info = JSON.parse(file.readTextSync());
       if (info == undefined){
         info = {
-          ids: [],
-          idsMap: new Map<number, string>(),
+          idsType: [],
           lastID: 0
         }
       }
-      info.idsMap.set(0, "blabla");
       return info; 
     } catch (error) {
-      console.log("An error occured while getting info");
+      console.log("An error occured while getting info: " + error);
       info = {
-        ids: [],
-        idsMap: new Map<number, string>(),
+        idsType: [],
         lastID: 0
       }
       return info;
@@ -102,18 +99,19 @@ export class MarkerService {
       lng: lng,
       onTap: function(){
         // TODO: Open Drawer
-        console.log("Tapped marker");
+        console.log("Tapped marker " + marker.id);
         globals.routerExtensions.navigateByUrl(url + marker.id);
       },
       iconPath: iconPath,  
     }
-
+    this.setLastId(marker.id);
     this.saveMarker(marker, type);
     var info = this.getInfo();
+    info.idsType.push({
+      id: marker.id,
+      type: type
+    });
     console.dir(info);
-    info.ids.push(marker.id);
-    info.idsMap.set(marker.id, type);
-    info.lastID = marker.id;
     this.writeInfo(info);
     if (this.settingsService.getSetting(undefined, 2) != undefined){
       if (this.settingsService.getSetting(undefined, 2).value){
@@ -152,10 +150,10 @@ export class MarkerService {
     if (type != undefined){
       var info = this.getInfo();
       if (info != undefined){
-        if (info.ids != undefined){
-          info.ids.forEach((id) => {
-            if (info.idsMap.get(id) == type){
-              var marker = this.getMarker(id);
+        if (info.idsType != undefined){
+          info.idsType.forEach((value) => {
+            if (value.type == type){
+              var marker = this.getMarker(value.id);
               markers.push(marker);
             }
           });
