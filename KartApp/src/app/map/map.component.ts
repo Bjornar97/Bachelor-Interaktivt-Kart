@@ -267,10 +267,17 @@ export class MapComponent implements OnInit {
             if (center != undefined){
                 map.getZoomLevel().then((zoom) => {
                     if (zoom != undefined){
-                        this.mapSetting.value.lat = center.lat;
-                        this.mapSetting.value.lng = center.lng;
-                        this.mapSetting.value.zoomLevel = zoom;
-
+                        if (this.mapSetting.value.lat != undefined){
+                            this.mapSetting.value.lat = center.lat;
+                            this.mapSetting.value.lng = center.lng;
+                            this.mapSetting.value.zoomLevel = zoom;
+                        } else {
+                            this.mapSetting.value = {
+                                lat: center.lat,
+                                lng: center.lng,
+                                zoomLevel: zoom
+                            }
+                        }
                         this.settingsService.setSetting(this.mapSetting);
                     }
                 });
