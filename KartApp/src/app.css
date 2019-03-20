@@ -41,10 +41,16 @@ components that have the btn class name.
 .overlayBottomRow{
 }
 
+.shadowBox{
+    margin-top: -20dp;
+    z-index: 20;
+}
+
 .drawer{
     background-color: rgba(255, 255, 255, 0.8);
     border-top-left-radius: 20dp;
     border-top-right-radius: 20dp;
+    z-index: 18;
 }
 
 .drawerMaximized{
