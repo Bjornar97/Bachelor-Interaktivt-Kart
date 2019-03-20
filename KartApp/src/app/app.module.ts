@@ -10,6 +10,7 @@ registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
 
 import { SettingsService } from "./settings-page/settings.service";
+import { NgShadowModule } from 'nativescript-ng-shadow';
 
 @NgModule({
     bootstrap: [
@@ -17,7 +18,8 @@ import { SettingsService } from "./settings-page/settings.service";
     ],
     imports: [
         NativeScriptModule,
-        AppRoutingModule
+        AppRoutingModule,
+        NgShadowModule
     ],
     declarations: [
         AppComponent,

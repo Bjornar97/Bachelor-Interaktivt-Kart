@@ -1,6 +1,8 @@
-<GridLayout #Box rows="*, *" columns="*, auto" class="box">
-    <Label col="0" [text]="totalTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
-    <Label row="1" [text]="startTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
-
-    <Label rowSpan="2" col="1" text="Slett" textWrap="true" class="deleteBtn" (tap)="deleteTrip(Box)"></Label>
-</GridLayout>
+<ContentView class="outerBox" shadow elevation="2">
+    <GridLayout class="box" #Box rows="*, *" columns="*, auto">
+        <Label col="0" [text]="totalTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
+        <Label row="1" [text]="startTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
+    
+        <Label rowSpan="2" col="1" text="Slett" textWrap="true" class="deleteBtn" (tap)="deleteTrip(Box)"></Label>
+    </GridLayout>
+</ContentView>
