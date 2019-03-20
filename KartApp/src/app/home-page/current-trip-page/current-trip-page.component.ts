@@ -121,6 +121,9 @@ export class CurrentTripPageComponent implements OnInit {
         });
       } else if (pause){
         this.togglePause();
+        this.isLoading = false;
+      } else {
+        this.isLoading = false;
       }
     });
   }
