@@ -19,13 +19,11 @@ import { LocationClass } from '~/app/location';
 })
 export class CurrentTripPageComponent implements OnInit {
 
-  constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService) { 
+  constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService) { 
     page.actionBarHidden = true;
-    this.tripService = new TripService();
     this.locationClass = new LocationClass();
   }
 
-  private tripService: TripService;
   private trip: Trip;
 
   private locationClass: LocationClass;
@@ -50,11 +48,11 @@ export class CurrentTripPageComponent implements OnInit {
     console.log("Taking picture");
     camera.requestPermissions().then(
       () => {
-        camera.takePicture({saveToGallery: false}).then((value) => {
+        camera.takePicture({saveToGallery: false}).then((imageAsset) => {
           var image = new Image();
-          image.src = value;
+          image.src = imageAsset;
           this.imageSrc = image.src;
-          this.tripService.saveImage(image);
+          this.tripService.saveImage(imageAsset);
           var location = this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
             this.markerService.makeMarker(loc.lat, loc.lng, "marker/image/", "image", "res://image_marker_96"); // TODO: Add iconpath
           }).catch((error) => {

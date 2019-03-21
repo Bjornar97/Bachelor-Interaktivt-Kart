@@ -2,6 +2,7 @@ import { LocationClass, LocationObject } from "./location";
 import * as geolocation from "nativescript-geolocation";
 import { MainMap } from "./globals";
 import { TripService } from "./home-page/trip.service";
+import { ImageService } from "./home-page/image.service";
 
 export type Trip = {
     id: number,
@@ -16,7 +17,7 @@ export type Trip = {
     stopTime: Date,
     title?: string,
     description?: string,
-    images?: any[]
+    images?: any[],
     distanceMeters: number,
     duration?: number
 }
@@ -84,10 +85,10 @@ export class Tracker {
         this.accuracy = newAccuracy;
     }
 
-    public addImage(image){
+    public addImage(imageUrl: string){
         var imageObject = {
             timestamp: new Date(),
-            image: image
+            imageSrc: imageUrl
         }
         this.trip.images.push(imageObject);
     }
@@ -144,7 +145,7 @@ export class Tracker {
                 iosPausesLocationUpdatesAutomatically: false
         });
 
-        var tripservice = new TripService();
+        var tripservice = new TripService(new ImageService());
         var lastID = tripservice.getLastTripId();
 
         this.trip = {

@@ -6,13 +6,15 @@ import { HomeModule } from "./home-page.module";
 import { AppModule } from '../app.module';
 import { LocationClass } from '../location';
 import { Image } from 'tns-core-modules/ui/image/image';
+import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
+import { ImageService } from './image.service';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor() {
+  constructor(private imageService: ImageService) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1, true));
     }
@@ -258,7 +260,11 @@ export class TripService {
       tripTrips: this.tracker.getTripTrips(),
       totalTime: this.tracker.getTotalTime()
     }
-    currentTripFile.writeTextSync(JSON.stringify(currentTrip));
+    try {
+      currentTripFile.writeTextSync(JSON.stringify(currentTrip));
+    } catch (error) {
+      console.log("Error in pauseTrip while saving currentTrip to file: " + error);
+    }
   }
 
   /**
@@ -288,7 +294,13 @@ export class TripService {
     var trip = this.tracker.endTrip();
     this.getCurrentTripFile().removeSync();
     var file = this.makeTripFile(this.tracker.getTripID());
-    file.writeTextSync(JSON.stringify(trip), (error) => {
+    try {
+      var jsonTrip = JSON.stringify(trip);
+    } catch (error) {
+      console.log("An error occured while stringifying trip. " + error);
+    }
+    
+    file.writeTextSync(jsonTrip, (error) => {
       console.log("ERROR: tripService: Error while writing trip to file: " + error);
     });
     var infoFile = this.getTripFolder().getFile("Info.json");
@@ -405,9 +417,14 @@ export class TripService {
   }
 
 
-  saveImage(image: Image){
+  saveImage(image: ImageAsset){
     if (this.isTrip()){
-      this.tracker.addImage(image);
+      try {
+        var imageUrl = this.imageService.saveImage(image);
+        this.tracker.addImage(imageUrl);
+      } catch (error) {
+        console.log("An error occured in saveImage in tripService: " + error);
+      }
     } else {
       console.log("ERROR in saveImage in TripService: There is no trip going on");
     }

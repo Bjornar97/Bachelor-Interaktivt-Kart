@@ -11,11 +11,10 @@ import { RouterExtensions } from 'nativescript-angular/router';
 export class MarkerService {
 
   constructor(private settingsService: SettingsService) { 
-
   }
 
   getFolder(){
-    return fs.knownFolders.documents().getFolder("Markers")
+    return fs.knownFolders.documents().getFolder("Markers");
   }
 
   getInfoFile(){
@@ -23,9 +22,10 @@ export class MarkerService {
   }
 
   getInfo(): {idsType: {id: number, type: string}[], lastID: number}{
-    var file = this.getInfoFile();
+    let file = this.getInfoFile();
+    let info;
     try {
-      var info = JSON.parse(file.readTextSync());
+      info = JSON.parse(file.readTextSync());
       if (info == undefined){
         info = {
           idsType: [],
@@ -41,25 +41,27 @@ export class MarkerService {
       }
       return info;
     }
-
   }
 
-  writeInfo(info){
+  deleteMarker(id: number){
+    let file = this.getInfoFile();
+    try {
+      let info: {idsType: {type: string, id: number}[]} = JSON.parse(file.readTextSync());
+      let newInfo = info.idsType.filter((value) => {
+        return value.id != id;
+      });
+      this.writeInfo(newInfo);
+    } catch (error) {
+      console.log("ERROR while deleting marker: " + error);
+    }
+  }
+
+  private writeInfo(info){
     try {
       this.getInfoFile().writeText(JSON.stringify(info)); 
     } catch (error) {
       console.log("ERROR in writeInfo in markerService: " + error);
     }
-  }
-
-  private getLastId(){
-    return this.getInfo().lastID;
-  }
-
-  private setLastId(id: number){
-    var info = this.getInfo();
-    info.lastID = id;
-    this.writeInfo(info);
   }
 
   /**
@@ -68,17 +70,21 @@ export class MarkerService {
    * @param marker The marker you want to save
    * @param type The type of the marker. Supported types: "image"
    */
-  saveMarker(marker: MapboxMarker, type: string){
-    var folder = this.getFolder();
-
-    if (type == "image"){
-      var imageFolder = folder.getFolder("images");
-      var file = imageFolder.getFile("image" + marker.id);
-      try {
-        file.writeText(JSON.stringify(marker)); 
-      } catch (error) {
-        console.log("ERROR in saveMarker in markerService: " + error);
+  saveMarker(marker: MapboxMarker, type: string, url: string){
+    let folder = this.getFolder()
+    let file = folder.getFile("marker" + marker.id + ".json");
+    try {
+      let markerObject = {
+        id: marker.id,
+        lat: marker.lat,
+        lng: marker.lng,
+        icon: marker.icon,
+        path: url,
+        type: type
       }
+      file.writeText(JSON.stringify(markerObject));
+    } catch (error) {
+      console.log("ERROR in saveMarker in markerService: " + error);
     }
   }
 
@@ -92,30 +98,28 @@ export class MarkerService {
    * @param iconPath If you want to show an image or icon, provide the url to it. Optional
    */
   makeMarker(lat: number, lng: number, url: string, type: string, iconPath?: string){
-    var lastId: number = this.getLastId();
+    let info = this.getInfo();
+    let id = info.lastID + 1;
     var marker = <MapboxMarker>{
-      id: lastId + 1,
+      id: id,
       lat: lat,
       lng: lng,
       onTap: function(){
         // TODO: Open Drawer
-        console.log("Tapped marker " + marker.id);
-        globals.routerExtensions.navigateByUrl(url + marker.id);
+        console.log("Tapped marker " + id);
+        globals.routerExtensions.navigateByUrl(url + id);
       },
       icon: iconPath
     }
-    this.setLastId(marker.id);
-    this.saveMarker(marker, type);
-    var info = this.getInfo();
+    this.saveMarker(marker, type, url);
     info.idsType.push({
-      id: marker.id,
+      id: id,
       type: type
     });
-    console.dir(info);
+    info.lastID = id;
     this.writeInfo(info);
-    if (this.settingsService.getSetting(undefined, 2) != undefined){
+    if (this.settingsService.getSetting(undefined, 2) != undefined && type == "image"){
       if (this.settingsService.getSetting(undefined, 2).value){
-        console.log("Adding marker to the map");
         globals.MainMap.addMarkers([marker]);
       }
     } else {
@@ -130,13 +134,25 @@ export class MarkerService {
     return marker;
   }
 
-  private getMarker(id: number){
-    var file = this.getFolder().getFile("image" + id);
+  private getMarker(id: number): MapboxMarker{
+    let file = this.getFolder().getFile("marker" + id + ".json");
     try {
-      var marker = JSON.parse(file.readTextSync());
+      let markerObject = JSON.parse(file.readTextSync());
+      let marker = <MapboxMarker>{
+        id: markerObject.id,
+        lat: markerObject.lat,
+        lng: markerObject.lng,
+        icon: markerObject.icon,
+        onTap: function(){
+          console.log("Tapped marker " + id);
+          globals.routerExtensions.navigateByUrl(markerObject.url + id);
+        }
+      }
       return marker;
     } catch (error) {
       console.log("ERROR in getMarker in markerService: " + error);
+      file.remove();
+      this.deleteMarker(id);
     }
   }
   /**
@@ -145,18 +161,24 @@ export class MarkerService {
    * @param type The type of the marker, for example "image". 
    * @param ids The ids of the markers you want to get
    */
-  getMarkers(type?: string, ids?: number[]){
-    var markers = [];
+  getMarkers(type?: string, ids?: number[]): MapboxMarker[]{
+    let markers = [];
     if (type != undefined){
-      var info = this.getInfo();
+      let info = this.getInfo();
       if (info != undefined){
         if (info.idsType != undefined){
           info.idsType.forEach((value) => {
             if (value.type == type){
-              var marker = this.getMarker(value.id);
-              markers.push(marker);
+              let marker = this.getMarker(value.id);
+              if (marker != undefined){
+                markers.push(marker);
+              } else {
+                this.deleteMarker(value.id);
+              }
             }
           });
+        } else {
+          console.log("idsType is not defined!");
         }
       }
       return markers;
@@ -166,7 +188,7 @@ export class MarkerService {
       });
       return markers;
     } else {
-      console.log("ERROR in getMarkers in markerService: Neither Type nor ids were specified, and can therefore not return anything")
+      console.log("ERROR in getMarkers in markerService: Neither Type nor ids were specified, and can therefore not return anything");
     }
   }
 }

@@ -16,10 +16,9 @@ import * as globals from "../globals";
 })
 export class HomePageComponent implements OnInit {
 
-    constructor(page: Page, private routerext: RouterExtensions, private router: Router) {
+    constructor(page: Page, private routerext: RouterExtensions, private router: Router, private tripService: TripService) {
         // Use the component constructor to inject providers.
         page.actionBarHidden = true;
-        this.tripService = new TripService();
         if (globals.MainTracker == undefined){
             console.log("Main tracker does not exist,  making a new one");
             globals.setTracker(new Tracker(1, false));
@@ -42,8 +41,6 @@ export class HomePageComponent implements OnInit {
     private trips: Trip[];
     private isTrip: boolean;
     private isPaused: boolean;
-
-    private tripService: TripService;
 
     private tripText = "Ny Tur";
     private tripClass = "newTripBtn";
@@ -117,7 +114,8 @@ export class HomePageComponent implements OnInit {
     }
 
     deleteTripFolder(){
-        this.tripService.deleteFolder();
+        //this.tripService.deleteFolder();
+        fs.knownFolders.documents().clear();
     }
 
     ngOnInit(): void {

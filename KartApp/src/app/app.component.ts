@@ -20,7 +20,7 @@ import { isAndroid } from "tns-core-modules/platform";
 export class AppComponent { 
     private settingsService: SettingsService;
 
-    constructor(private routerExtensions: RouterExtensions){
+    constructor(private routerExtensions: RouterExtensions, private tripService: TripService){
         console.log("Creating app component!");
         this.locationService = new LocationClass(1);
         if (globals.settingsService != undefined){
@@ -30,12 +30,10 @@ export class AppComponent {
             this.settingsService = new SettingsService();
             globals.setSettingsService(this.settingsService);
         }
-        this.tripService = new TripService();   
         globals.setRouterExtensions(this.routerExtensions);
     }
 
     private locationService: LocationClass;
-    private tripService: TripService;
     private showLocationButton = true;
 
     private drawer = {
