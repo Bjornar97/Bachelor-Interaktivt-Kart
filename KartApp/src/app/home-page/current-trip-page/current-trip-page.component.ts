@@ -54,7 +54,7 @@ export class CurrentTripPageComponent implements OnInit {
           this.imageSrc = image.src;
           this.tripService.saveImage(imageAsset);
           var location = this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
-            this.markerService.makeMarker(loc.lat, loc.lng, "marker/image/", "image", "res://image_marker_96"); // TODO: Add iconpath
+            this.markerService.makeMarker(loc.lat, loc.lng, "marker/image/", "image", "res://image_marker_96");
           }).catch((error) => {
             console.log("ERROR in OpenCamera in currentTripPage: Error while getting location: " + error);
           });
