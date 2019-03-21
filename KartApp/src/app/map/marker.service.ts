@@ -79,7 +79,7 @@ export class MarkerService {
         lat: marker.lat,
         lng: marker.lng,
         icon: marker.icon,
-        path: url,
+        url: url,
         type: type
       }
       file.writeText(JSON.stringify(markerObject));
@@ -106,7 +106,7 @@ export class MarkerService {
       lng: lng,
       onTap: function(){
         // TODO: Open Drawer
-        console.log("Tapped marker " + id);
+        console.log("Tapped marker " + id + ". URL: " + url + id);
         globals.routerExtensions.navigateByUrl(url + id);
       },
       icon: iconPath
@@ -144,7 +144,7 @@ export class MarkerService {
         lng: markerObject.lng,
         icon: markerObject.icon,
         onTap: function(){
-          console.log("Tapped marker " + id);
+          console.log("Tapped marker " + id + ". URL: " + markerObject.url + id);
           globals.routerExtensions.navigateByUrl(markerObject.url + id);
         }
       }
