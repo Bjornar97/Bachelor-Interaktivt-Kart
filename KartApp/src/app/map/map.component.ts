@@ -154,7 +154,7 @@ export class MapComponent implements OnInit {
         if (LocationObject == undefined){
             console.log("map.component: location not specified. Trying to find current location");
             this.locationClass.getLocation(maxAge, 10000, 0)
-                .then(function(result){
+                .then((result) => {
                     location = result;
                     map.animateCamera({
                         // Target is the destination for the camera, which is the location of the device
@@ -165,7 +165,8 @@ export class MapComponent implements OnInit {
                         zoomLevel: zoomLevel, // Zoom level on Android
                         altitude: altitude, // altitude above the ground in metres on iOS
                         duration: duration // How long the animation lasts
-                    }).then(function() {
+                    }).then(() => {
+                        this.saveMapPosition(result);
                         if (track){
                             globals.MainMap.trackUser();
                         }
@@ -292,33 +293,7 @@ export class MapComponent implements OnInit {
     }
 
     map.setOnScrollListener((point?) => {
-        this.currentPoint = point;
-        if (!this.saved){
-            console.log("Saving");
-            this.saved = true;
-            setTimeout(() => {
-                map.getZoomLevel().then((zoom) => {
-                    if (zoom != undefined && this.mapSetting.value != undefined){
-                        if (this.mapSetting.value.lat != undefined){
-                            this.mapSetting.value.lat = this.currentPoint.lat;
-                            this.mapSetting.value.lng = this.currentPoint.lng;
-                            this.mapSetting.value.zoomLevel = zoom;
-                        } else {
-                            this.mapSetting.value = {
-                                lat: point.lat,
-                                lng: point.lng,
-                                zoomLevel: zoom
-                            }
-                        }
-                        this.settingsService.setSetting(this.mapSetting);
-                        this.saved = false;
-                    }
-                });
-                this.saved = false;
-            }, 1000);
-        } else {
-
-        }
+        this.saveMapPosition(point);
     });
 
     // App went to background...
@@ -335,6 +310,36 @@ export class MapComponent implements OnInit {
         this.setMapStyle(this.styles[styleSetting.value].name);
     }
 
+  }
+
+  public saveMapPosition(point: {lat: number, lng: number}){
+    this.currentPoint = point;
+    if (!this.saved){
+        console.log("Saving");
+        this.saved = true;
+        setTimeout(() => {
+            this.map.getZoomLevel().then((zoom) => {
+                if (zoom != undefined && this.mapSetting.value != undefined){
+                    if (this.mapSetting.value.lat != undefined){
+                        this.mapSetting.value.lat = this.currentPoint.lat;
+                        this.mapSetting.value.lng = this.currentPoint.lng;
+                        this.mapSetting.value.zoomLevel = zoom;
+                    } else {
+                        this.mapSetting.value = {
+                            lat: point.lat,
+                            lng: point.lng,
+                            zoomLevel: zoom
+                        }
+                    }
+                    this.settingsService.setSetting(this.mapSetting);
+                    this.saved = false;
+                }
+            });
+            this.saved = false;
+        }, 1000);
+    } else {
+
+    }
   }
 
   private saved: boolean;
