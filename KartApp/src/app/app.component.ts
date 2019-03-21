@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
-import {screen} from "platform"
+import {screen} from "tns-core-modules/platform";
 import { LocationClass } from "./location";
 import * as globals from "./globals";
 import { SettingsService, Setting } from "./settings-page/settings.service";
@@ -9,7 +9,7 @@ import * as fs from 'tns-core-modules/file-system';
 import * as application from "tns-core-modules/application";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { TripService } from "./home-page/trip.service";
-import { isAndroid } from "platform";
+import { isAndroid } from "tns-core-modules/platform";
 
 @Component({
     moduleId: module.id,
@@ -20,7 +20,7 @@ import { isAndroid } from "platform";
 export class AppComponent { 
     private settingsService: SettingsService;
 
-    constructor(private routerExtensions: RouterExtensions){
+    constructor(private routerExtensions: RouterExtensions, private tripService: TripService){
         console.log("Creating app component!");
         this.locationService = new LocationClass(1);
         if (globals.settingsService != undefined){
@@ -30,11 +30,10 @@ export class AppComponent {
             this.settingsService = new SettingsService();
             globals.setSettingsService(this.settingsService);
         }
-        this.tripService = new TripService();   
+        globals.setRouterExtensions(this.routerExtensions);
     }
 
     private locationService: LocationClass;
-    private tripService: TripService;
     private showLocationButton = true;
 
     private drawer = {

@@ -1,6 +1,7 @@
 import { MapComponent } from "./map/map.component";
 import { Tracker } from "./tracker";
 import { SettingsService, Setting } from "./settings-page/settings.service";
+import { RouterExtensions } from "nativescript-angular/router";
 
 //The main map of the application.
 export var MainMap: MapComponent;
@@ -12,6 +13,12 @@ export function setMap(map){
 
 export function getMap(){
     return MainMap
+}
+
+export var routerExtensions: RouterExtensions;
+
+export function setRouterExtensions(routerExt: RouterExtensions){
+    routerExtensions = routerExt;
 }
 
 // Comment about this here

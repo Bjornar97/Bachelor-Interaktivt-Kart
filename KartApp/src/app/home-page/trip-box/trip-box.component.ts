@@ -5,9 +5,9 @@ import { formatDate } from '@angular/common';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { View } from 'tns-core-modules/ui/page/page';
-import { screen } from "platform";
+import { screen } from "tns-core-modules/platform";
 
-let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
 @Component({
   selector: 'ns-trip-box',
@@ -59,12 +59,11 @@ export class TripBoxComponent implements OnInit {
     this.trip = this.tripService.getTrip(this.id);
     if (this.trip != undefined){
       this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
-      var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}
-      // this.startTimeString = this.trip.startTime.toLocaleDateString("en-US", options); // Not working...
 
       var dateString: string;
       var time = this.trip.startTime;
-      dateString =  days[time.getDay() - 1] + " " + time.getDate().toString() + "." + time.getMonth().toString() + "." + time.getFullYear().toString() + " " + time.getHours().toString() + ":" + time.getMinutes().toString();
+
+      dateString =  days[time.getDay()] + " " + time.getDate().toString() + "." + time.getMonth().toString() + "." + time.getFullYear().toString() + " " + time.getHours().toString() + ":" + time.getMinutes().toString();
       this.startTimeString = dateString;
     }
   }

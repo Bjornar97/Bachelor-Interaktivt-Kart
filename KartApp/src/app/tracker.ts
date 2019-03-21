@@ -2,6 +2,7 @@ import { LocationClass, LocationObject } from "./location";
 import * as geolocation from "nativescript-geolocation";
 import { MainMap } from "./globals";
 import { TripService } from "./home-page/trip.service";
+import { ImageService } from "./home-page/image.service";
 
 export type Trip = {
     id: number,
@@ -10,12 +11,15 @@ export type Trip = {
     finished: boolean,
     startTime: Date,
     pauses?: {
-        from: Date,
-        to: Date
+        from: LocationObject,
+        to: LocationObject
     }[]
     stopTime: Date,
     title?: string,
-    description?: string
+    description?: string,
+    images?: any[],
+    distanceMeters: number,
+    duration?: number
 }
 
 export class Tracker {
@@ -81,7 +85,15 @@ export class Tracker {
         this.accuracy = newAccuracy;
     }
 
-    private logPoint(point){
+    public addImage(imageUrl: string){
+        var imageObject = {
+            timestamp: new Date(),
+            imageSrc: imageUrl
+        }
+        this.trip.images.push(imageObject);
+    }
+
+    private logPoint(point: geolocation.Location){
         console.log("Logging point " + point.timestamp.valueOf());
         var location: LocationObject = {
           id: point.timestamp.valueOf(),
@@ -98,7 +110,7 @@ export class Tracker {
         var i = 0;
         console.log("Added point");
 
-        this.lastPoint = point;
+        this.lastPoint = location;
     }
 
     private logError(error: Error){
@@ -133,7 +145,7 @@ export class Tracker {
                 iosPausesLocationUpdatesAutomatically: false
         });
 
-        var tripservice = new TripService();
+        var tripservice = new TripService(new ImageService());
         var lastID = tripservice.getLastTripId();
 
         this.trip = {
@@ -142,7 +154,9 @@ export class Tracker {
             points: [],
             finished: false,
             startTime: new Date(),
-            stopTime: undefined
+            stopTime: undefined,
+            distanceMeters: 0,
+            images: [],
         }
 
         console.log("Started logging of " + watchID);
@@ -155,10 +169,23 @@ export class Tracker {
 
     public pauseTrip(){
         console.log("Pausing in tracker");
-        this.trip.stopTime = new Date();
-        this.paused = true;
-        this.totalTime += this.trip.stopTime.getTime() - this.trip.startTime.getTime();
         geolocation.clearWatch(this.trip.watchId);
+        this.locationClass.getLocation().then((loc) => {
+            this.logPoint({
+                altitude: loc.altitude,
+                direction: loc.direction,
+                horizontalAccuracy: loc.horizontalAccuracy,
+                latitude: loc.lat,
+                longitude: loc.lng,
+                speed: loc.speed,
+                timestamp: loc.timestamp,
+                verticalAccuracy: loc.verticalAccuracy
+            });
+            this.trip.stopTime = new Date();
+            this.paused = true;
+            this.totalTime += this.trip.stopTime.getTime() - this.trip.startTime.getTime();
+        });
+        
     }
 
     public unpauseTrip(){
@@ -186,7 +213,9 @@ export class Tracker {
             watchId: watchID,
             finished: false,
             points: [],
-            stopTime: undefined
+            stopTime: undefined,
+            distanceMeters: 0,
+            images: []
         }
         this.tripTrips[this.trip.id] = this.trip;
         this.trip = newTrip;
@@ -210,6 +239,8 @@ export class Tracker {
         var finalTrip: Trip;
         var first = true;
         var prev: Trip;
+        var distance = 0;
+        var duration = 0;
         try {
             this.tripTrips.forEach((trip) => {
                 if (trip != null){
@@ -223,24 +254,40 @@ export class Tracker {
                             points: trip.points,
                             startTime: trip.startTime,
                             stopTime: undefined,
+                            distanceMeters: 0,
+                            images: []
                         }
                         first = false;
                     } else {
                         console.log("Not first trip");
                         finalTrip.pauses.push({
-                            from: prev.stopTime,
-                            to: trip.startTime
+                            from: prev.points[prev.points.length - 1],
+                            to: trip.points[0]
                         });
                         trip.points.forEach((point) => {
                             finalTrip.points.push(point);
                         });
                     }
+                    
+                    trip.points.forEach((point, i, array) => {
+                        if (i > 0){
+                            distance += this.locationClass.findDistance(array[i], point);
+                        }
+                    });
+
+                    trip.images.forEach((image) => {
+                        finalTrip.images.push(image);
+                    });
+                    
+                    duration += trip.stopTime.getTime() - trip.startTime.getTime();
                     prev = trip;   
                 } else {
                     console.log("Trip was null, skipping");
                 }
             });
-            finalTrip.stopTime = this.tripTrips.pop().stopTime;
+            finalTrip.distanceMeters = distance;
+            finalTrip.duration = duration;
+            finalTrip.stopTime = this.tripTrips[this.tripTrips.length - 1].stopTime;
         } catch (error) {
             console.log("There was an error while processing the trip");
             console.log(error);

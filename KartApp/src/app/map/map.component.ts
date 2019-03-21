@@ -3,7 +3,8 @@ import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitu
 import { LocationClass, LocationObject } from "../location";
 import * as globals from "../globals";
 import { SettingsService, Setting } from '../settings-page/settings.service';
-import * as application from "application";
+import * as application from "tns-core-modules/application";
+import { MarkerService } from './marker.service';
 
 @Component({
   selector: 'ns-map',
@@ -153,7 +154,7 @@ export class MapComponent implements OnInit {
         if (LocationObject == undefined){
             console.log("map.component: location not specified. Trying to find current location");
             this.locationClass.getLocation(maxAge, 10000, 0)
-                .then(function(result){
+                .then((result) => {
                     location = result;
                     map.animateCamera({
                         // Target is the destination for the camera, which is the location of the device
@@ -164,7 +165,8 @@ export class MapComponent implements OnInit {
                         zoomLevel: zoomLevel, // Zoom level on Android
                         altitude: altitude, // altitude above the ground in metres on iOS
                         duration: duration // How long the animation lasts
-                    }).then(function() {
+                    }).then(() => {
+                        this.saveMapPosition(result);
                         if (track){
                             globals.MainMap.trackUser();
                         }
@@ -196,7 +198,7 @@ export class MapComponent implements OnInit {
         }
     }
 
-    private mapSaveInterval;
+    private markerService: MarkerService;
 
   // Waits until the map is ready
   onMapReady(args): void {
@@ -205,6 +207,8 @@ export class MapComponent implements OnInit {
     if (this.main == "true"){
     globals.setMap(this);
     }
+
+    this.markerService = new MarkerService(this.settingsService);
 
     // Getting map position from settingsService
     var mapSetting = this.settingsService.getSetting(undefined, 31);
@@ -220,7 +224,34 @@ export class MapComponent implements OnInit {
         }
     }
 
-    var map = this.map;
+    let imageMarkerSetting = this.settingsService.getSetting(undefined, 2);
+    if (imageMarkerSetting != undefined){
+        console.log("imageMarkerSetting is defined");
+        if (imageMarkerSetting.value){
+            console.log("imageMarkerSetting is true");
+            let markers = this.markerService.getMarkers("image");
+            console.log("Got markers: ");
+            console.dir(markers);
+            this.map.addMarkers(markers);
+        } else {
+            console.log("imageMarkerSetting is false");
+        }
+    } else {
+        console.log("imageMarkerSetting is not defined");
+        imageMarkerSetting = {
+            id: 2,
+            name: "showImageMarkers",
+            type: "switch",
+            value: true
+        }
+        let markers = this.markerService.getMarkers("image");
+        console.dir(markers);
+        this.map.addMarkers(markers);
+
+        this.settingsService.setSetting(imageMarkerSetting);
+    }
+
+    let map = this.map;
 
     // If the setting exists, it uses that to set the center and zoom level of the map
     if (this.mapSetting.value != undefined){
@@ -261,46 +292,17 @@ export class MapComponent implements OnInit {
         });
     }
 
-    this.mapSaveInterval = setInterval(() => {
-        console.log("Interval");
-        map.getCenter().then((center) => {
-            if (center != undefined){
-                map.getZoomLevel().then((zoom) => {
-                    if (zoom != undefined){
-                        this.mapSetting.value.lat = center.lat;
-                        this.mapSetting.value.lng = center.lng;
-                        this.mapSetting.value.zoomLevel = zoom;
-
-                        this.settingsService.setSetting(this.mapSetting);
-                    }
-                });
-            }
-        });
-    }, 10000);
+    map.setOnScrollListener((point?) => {
+        this.saveMapPosition(point);
+    });
 
     // App went to background...
     application.on(application.suspendEvent,() => {
-        clearInterval(this.mapSaveInterval);
     });
 
     // App was reopened...
     application.on(application.resumeEvent, () => {
-        this.mapSaveInterval = setInterval(() => {
-            console.log("Interval");
-            map.getCenter().then((center) => {
-                if (center != undefined){
-                    map.getZoomLevel().then((zoom) => {
-                        if (zoom != undefined){
-                            this.mapSetting.value.lat = center.lat;
-                            this.mapSetting.value.lng = center.lng;
-                            this.mapSetting.value.zoomLevel = zoom;
-    
-                            this.settingsService.setSetting(this.mapSetting);
-                        }
-                    });
-                }
-            });
-        }, 10000);
+       
     });
 
     var styleSetting = globals.settingsService.getSetting(undefined, 11);
@@ -309,6 +311,39 @@ export class MapComponent implements OnInit {
     }
 
   }
+
+  public saveMapPosition(point: {lat: number, lng: number}){
+    this.currentPoint = point;
+    if (!this.saved){
+        console.log("Saving");
+        this.saved = true;
+        setTimeout(() => {
+            this.map.getZoomLevel().then((zoom) => {
+                if (zoom != undefined && this.mapSetting.value != undefined){
+                    if (this.mapSetting.value.lat != undefined){
+                        this.mapSetting.value.lat = this.currentPoint.lat;
+                        this.mapSetting.value.lng = this.currentPoint.lng;
+                        this.mapSetting.value.zoomLevel = zoom;
+                    } else {
+                        this.mapSetting.value = {
+                            lat: point.lat,
+                            lng: point.lng,
+                            zoomLevel: zoom
+                        }
+                    }
+                    this.settingsService.setSetting(this.mapSetting);
+                    this.saved = false;
+                }
+            });
+            this.saved = false;
+        }, 1000);
+    } else {
+
+    }
+  }
+
+  private saved: boolean;
+  private currentPoint;
 
   private mapSetting: Setting;
 

@@ -99,6 +99,8 @@ export class SettingsService implements OnInit{
    * 
    * 1: Auto Rotate Setting.
    * 
+   * 2: Image Marker Setting. Should image markers appear on the map.
+   * 
    * 11: Map menu setting.
    * 
    * 21: Drawer setting.

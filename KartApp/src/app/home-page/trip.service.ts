@@ -4,13 +4,17 @@ import { Trip, Tracker } from '../tracker';
 import * as fs from 'tns-core-modules/file-system';
 import { HomeModule } from "./home-page.module";
 import { AppModule } from '../app.module';
+import { LocationClass } from '../location';
+import { Image } from 'tns-core-modules/ui/image/image';
+import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
+import { ImageService } from './image.service';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor() {
+  constructor(private imageService: ImageService) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1, true));
     }
@@ -115,10 +119,6 @@ export class TripService {
       var trip: Trip = JSON.parse(tripText);
       trip.startTime = new Date(trip.startTime);
       trip.stopTime = new Date(trip.stopTime);
-      trip.pauses.forEach((pause) => {
-        pause.from = new Date(pause.from);
-        pause.to = new Date(pause.to);
-      });
       return trip;
     } catch (error) {
       console.log("ERROR in tripService(getTrip): " + error);
@@ -155,6 +155,11 @@ export class TripService {
     this.getCurrentTripFile().removeSync();
   }
 
+  sortTrips(_trips: Trip[]){
+    // Sortere etter startTime. f. eks: trip[x].startTime
+
+  }
+
   /**
    *  getTrips() - Get all finished trips from the json files.
    */
@@ -177,6 +182,7 @@ export class TripService {
           }
         }
       });
+      // trips = sortTrips(trips);
       return trips;
     } catch (error) {
       console.log("ERROR in tripService(getTrips): " + error);
@@ -254,7 +260,11 @@ export class TripService {
       tripTrips: this.tracker.getTripTrips(),
       totalTime: this.tracker.getTotalTime()
     }
-    currentTripFile.writeTextSync(JSON.stringify(currentTrip));
+    try {
+      currentTripFile.writeTextSync(JSON.stringify(currentTrip));
+    } catch (error) {
+      console.log("Error in pauseTrip while saving currentTrip to file: " + error);
+    }
   }
 
   /**
@@ -284,7 +294,13 @@ export class TripService {
     var trip = this.tracker.endTrip();
     this.getCurrentTripFile().removeSync();
     var file = this.makeTripFile(this.tracker.getTripID());
-    file.writeTextSync(JSON.stringify(trip), (error) => {
+    try {
+      var jsonTrip = JSON.stringify(trip);
+    } catch (error) {
+      console.log("An error occured while stringifying trip. " + error);
+    }
+    
+    file.writeTextSync(jsonTrip, (error) => {
       console.log("ERROR: tripService: Error while writing trip to file: " + error);
     });
     var infoFile = this.getTripFolder().getFile("Info.json");
@@ -303,6 +319,114 @@ export class TripService {
       }
       infoFile.writeTextSync(JSON.stringify(info));
       return trip;
+    }
+  }
+
+  /**
+   * getTripEvents - Get all events in a trip, including pauses, in between pauses and pictures taken on the trip. Pictures is not fully implemented yet.
+   * 
+   * @param id The id of the trip
+   * 
+   * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
+   */
+  getTripEvents(id): {
+    events: {
+      timestamp: Date,
+      type: string,
+      value: any,
+    }[]
+  } {
+    var trip = this.getTrip(id);
+    var result = {
+      events: []
+    };
+    if (trip != undefined){
+      if (trip.pauses != undefined){
+
+        var lastPoint: number;
+        var first = true;
+        var locationClass = new LocationClass();
+
+        trip.pauses.forEach((pause) => {
+          if (first){
+
+            lastPoint = trip.points.findIndex(function(value): boolean {
+              return value.id == pause.from.id;
+            });
+
+            var duration = new Date(pause.from.timestamp).getTime() - trip.startTime.getTime();
+            var distance = 0;
+            if (trip.points.length > 1){
+              for (let i = 1; i < lastPoint; i++) {
+                distance += locationClass.findDistance(trip.points[i-1], trip.points[i]);
+              }
+            }
+            var walkEvent = {
+              timestamp: trip.startTime,
+              type: "walk",
+              value: {
+                duration: duration,
+                AverageSpeed: distance / duration
+              }
+            }
+            first = false;
+          } else {
+            var point = trip.points.findIndex(function(value): boolean {
+              return value.id == pause.from.id;
+            });
+            var duration = new Date(pause.from.timestamp).getTime() - new Date(trip.points[lastPoint + 1].timestamp).getTime();
+            var distance = 0;
+            if (trip.points.length > 1){
+              for (let i = 1; i < point; i++){
+                distance += locationClass.findDistance(trip.points[i-1], trip.points[i]);
+              }
+            }
+
+            var walkEvent = {
+              timestamp: trip.points[lastPoint + 1].timestamp,
+              type: "walk",
+              value: {
+                duration: duration,
+                AverageSpeed: distance / duration
+              }
+
+            }
+          }
+          var event = {
+            timestamp: pause.from.timestamp,
+            type: "pause",
+            value: {
+              from: new Date(pause.from.timestamp),
+              to: new Date(pause.to.timestamp)
+            }
+          }
+          result.events.push(walkEvent, event);
+        });
+        if (trip.images != undefined){
+          trip.images.forEach((image) => {
+            // TODO: Legge til bildet her.
+          });
+        }
+    
+        // TODO: Sortere her
+      }
+    }
+    
+
+    return result;
+  }
+
+
+  saveImage(image: ImageAsset){
+    if (this.isTrip()){
+      try {
+        var imageUrl = this.imageService.saveImage(image);
+        this.tracker.addImage(imageUrl);
+      } catch (error) {
+        console.log("An error occured in saveImage in tripService: " + error);
+      }
+    } else {
+      console.log("ERROR in saveImage in TripService: There is no trip going on");
     }
   }
 
@@ -333,7 +457,7 @@ export class TripService {
 
     if (Trip.pauses != undefined){
       Trip.pauses.forEach(pause => {
-        time -= pause.to.getTime() - pause.from.getTime();
+        time -= new Date(pause.to.timestamp).getTime() - new Date(pause.from.timestamp).getTime();
       });
     }
     return time;
