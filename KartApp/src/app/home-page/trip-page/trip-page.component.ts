@@ -10,8 +10,6 @@ import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
 import { ImageService } from '../image.service';
 
-let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
-
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
 @Component({
@@ -47,10 +45,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private startTimeString: string;
   private stopTimeString: string;
   private distanceString: string;
-
-  private totalTimeString: string;
-  private startTimeString;
-  private stopTimeString;
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
