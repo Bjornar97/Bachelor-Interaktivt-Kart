@@ -11,8 +11,6 @@ import { DrawerClass } from '~/app/drawer';
 import * as globals from "../../globals";
 import { ImageService } from '../image.service';
 
-let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
-
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
 @Component({
@@ -43,10 +41,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  private totalTimeString: string;
-  private startTimeString;
-  private stopTimeString;
 
   private totalTimeString: string;
   private startTimeString;
