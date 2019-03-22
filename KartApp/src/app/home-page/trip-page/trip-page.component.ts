@@ -9,6 +9,7 @@ import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
 import * as globals from "../../globals";
+import { ImageService } from '../image.service';
 
 let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
 
@@ -22,13 +23,14 @@ let days = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søn
 export class TripPageComponent implements OnInit, OnDestroy {
   private drawer: DrawerClass;
 
-  constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute) { 
+  constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute, private imageService: ImageService) { 
     this.drawer = globals.getDrawer();
   }
 
   private sub;
   private backEvent;
   private trip: Trip;
+  private events;
 
   private goBack(){
     this.routerExtensions.navigate(["home"], {
