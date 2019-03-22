@@ -1,6 +1,7 @@
 /* Add mobile styles for the component here.  */
 .page {
-  align-items: center;
+  align-items: center;    
+  background-color: transparent;
   flex-direction: column;
 }
   .form {
@@ -11,15 +12,21 @@
   }
  
   .linje-under{
-    border-color:rgb(194, 188, 188);
+    border-color:gray;
     border-width: 0 0 1 0;
     text-align: left;
+    margin-top:20;
+   
+    
+  }
+  #my-button{
+    background-color:#00b300;
   }
   
   .KartApp{
     font-style:italic;
     font-size: 20;
-    color:green;
+    color:#00b300;
     
   }
 
