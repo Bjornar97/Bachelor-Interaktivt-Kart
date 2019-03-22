@@ -31,7 +31,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private startTimeString;
   private stopTimeString;
 
-
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.trip = this.tripService.getTrip(parseInt(params['id']));
