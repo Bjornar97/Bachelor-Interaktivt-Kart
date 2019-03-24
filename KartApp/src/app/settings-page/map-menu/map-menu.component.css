@@ -1,7 +1,7 @@
 /* Add mobile styles for the component here.  */
 
 .setting{
-    padding: 10dp;
+    padding: 20dp;
     font-size: 18;
     text-align: left;
     border-color: #aaa;
@@ -27,10 +27,4 @@
     border-width: 0 0 2px 0;
     border-color: #aaa;
     padding-bottom: 10dp;
-}
-
-.picker{
-    width: 50%;
-    height: 100dp;
-    margin: 10dp 0 10dp 0;
 }
