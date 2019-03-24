@@ -6,18 +6,34 @@ import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 
 export class DrawerClass {
 
-    constructor() {
-        if (globals.settingsService != undefined){
-            this.settingsService = globals.settingsService;
-        } else {
-            console.log("Need to make new settings-service");
-            this.settingsService = new SettingsService();
-            globals.setSettingsService(this.settingsService);
-        }
-    }
-
     private settingsService: SettingsService;
     private drawerSetting: Setting;
+
+    constructor() {
+        if (globals.settingsService == undefined){
+            console.log("Need to make new settings-service");
+            globals.setSettingsService(new SettingsService());
+        }
+        this.settingsService = globals.settingsService;
+
+        // Getting the drawer from settings
+        var drawersetting: Setting = this.settingsService.getSetting(undefined, 48);
+        console.dir(this.drawerSetting);
+        if (drawersetting != undefined){
+            this.drawer.initialHeight = drawersetting.value;
+            this.drawerSetting = drawersetting;
+        } else {
+            drawersetting = {
+                id: 48,
+                name: "drawerSetting",
+                type: "Object",
+                value: this.drawer.initialHeight
+            }
+            console.log("DrawerSetting does not exist");
+            this.settingsService.setSetting(drawersetting);
+            this.drawerSetting = drawersetting;
+        }
+    }
 
     public drawer = {
         startHeight: 100, // Brukt til å regne ut høyden ved endring i høyde.
@@ -101,7 +117,7 @@ export class DrawerClass {
                 this.drawerSetting.value = this.drawer.initialHeight;
                 this.settingsService.setSetting(this.drawerSetting);
             } else {
-                console.log("ERROR in app.component: Could not set setting drawerSetting, because it is not defined");
+                console.log("ERROR in drawer: Could not set setting drawerSetting, because it is not defined");
             }
         }
 
@@ -184,7 +200,7 @@ export class DrawerClass {
                 this.setDrawerHeight();
             } else if (drawerLoc.currentSpeed < -2.2) { // Endre på tallet for å endre på grensen for minimering.
                 this.setDrawerHeight(0);
-            } else if (Math.abs(drawerLoc.currentSpeed) > 0.4) {
+            } else if (Math.abs(drawerLoc.currentSpeed) > 0.2) {
                 this.setDrawerHeight(drawerLoc.startHeight - args.deltaY + (drawerLoc.currentSpeed * 70));
             } else {
                 this.setDrawerHeight(drawerLoc.startHeight - args.deltaY);
@@ -201,25 +217,4 @@ export class DrawerClass {
             this.openDrawer(height, buttonName);
         }
     }
-
-    ngOnInit() {
-        // Getting the drawer from settings
-        var drawersetting: Setting = this.settingsService.getSetting(undefined, 48);
-        console.dir(this.drawerSetting);
-        if (drawersetting != undefined){
-            this.drawer.initialHeight = drawersetting.value;
-            this.drawerSetting = drawersetting;
-        } else {
-            drawersetting = {
-                id: 48,
-                name: "drawerSetting",
-                type: "Object",
-                value: this.drawer.initialHeight
-            }
-            console.log("DrawerSetting does not exist");
-            this.settingsService.setSetting(drawersetting);
-            this.drawerSetting = drawersetting;
-        }
-    }
-
 }

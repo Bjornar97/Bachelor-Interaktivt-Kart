@@ -47,7 +47,7 @@ export function setTracker(tracker: Tracker) {
 export var SettingsList: Setting[];
 
 // Drawer
-export var Drawer: DrawerClass;
+var Drawer: DrawerClass;
 
 export function getDrawer(){
     if (Drawer == undefined){
