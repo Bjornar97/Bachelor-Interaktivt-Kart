@@ -1,33 +1,69 @@
 /* Add mobile styles for the component here.  */
 
+ActionBar {
+    background-color: #fff;
+    color: #000000;
+}
 
 .container{
     text-align: left;
+    background-color: #fff;
+    margin: 20dp 5dp 0 5dp;
+}
+
+.title{
+    color: #008000;
+    font-size: 15;
+    font-weight: bold;
+    padding: 20dp 15dp 10dp 15dp;
 }
 
 .setting{
-    padding: 15dp;
-    font-size: 18;
+    padding: 20dp 15dp;
+    font-size: 17;
     text-align: left;
-    border-color: #777;
-    border-width: 0 0 2px 0;
     color: #000;
 }
 
-.labelSwitch:highlighted{
-    background-color: #aaa;
+.settingLabel{
+    min-height: 20dp;
 }
 
 .switch{
     text-align: right;
-    background-color: red;
-}
-
-.first{
-    border-width: 2px 0 2px 0;
 }
 
 .header{
     margin-bottom: 10dp;
     font-size: 20;
+    color: #000;
+}
+
+.mapBtn {
+    background-color: #fff;
+    border-color: #008000;
+    border-width: 2dp;
+    font-size: 16;
+    text-align: center;
+    padding: 15dp 10dp;
+    color: #000;
+}
+
+.mapBtn.first {
+    border-radius: 10dp 0 0 10dp;
+    border-width: 2dp 0 2dp 2dp;
+}
+
+.mapBtn.last {
+    border-radius: 0 10dp 10dp 0;
+    border-width: 2dp 2dp 2dp 0;
+}
+
+.mapBtn.selected {
+    background-color: #008000;
+    color: #fff;
+}
+
+.mapBtnContainer {
+    margin: 10dp;
 }

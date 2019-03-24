@@ -18,7 +18,7 @@
         <StackLayout width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility" dock="bottom">
             <AbsoluteLayout width="100%" (pan)="onPan($event)">
                 <GridLayout rows="*" columns="*, auto, *" width="100%">
-                    <Button col="0" text="< Tilbake" (pan)="onPan($event)" (tap)="backBtnPress()" class="backBtn"></Button>
+                    <!--<Button col="0" text="< Tilbake" (pan)="onPan($event)" (tap)="backBtnPress()" class="backBtn"></Button>-->
                     <Label col="1" text="&#xf2d1;" fontSize="15" class="far" textWrap="true" class="fal fa-window-minimize drag"></Label>
                 </GridLayout>
             </AbsoluteLayout>

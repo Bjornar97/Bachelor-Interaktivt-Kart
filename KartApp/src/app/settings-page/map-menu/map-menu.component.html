@@ -1,8 +1,24 @@
-<StackLayout>
-    <Label text="Kartinstillinger" textWrap="true" class="header"></Label>
-    <GridLayout rows="*, *" columns="*, auto" class="setting first" shadow="2">
-        <Label row="0" col="0" text="Karttype" (tap)="toggleMapOptions()" [class]="open" class="text" textWrap="true"></Label>
-        <Label row="0" col="1" text="downarrow" textWrap="true" [class]="open" class="text"></Label>
-        <ListPicker row="1" colSpan="2" class="picker" *ngIf="showMapStyleOptions" [selectedIndex]="selectedIndex" (selectedIndexChange)="mapStyleIndexChanged($event)" [items]="mapStyleOptions"></ListPicker>
-    </GridLayout>
-</StackLayout>
+<ActionBar title="Kartinnstillinger">
+        <NavigationButton text="Tilbake" android.systemIcon="ic_menu_back" 
+            (tap)="onNavBtnTap()"></NavigationButton>
+    </ActionBar>
+<ScrollView>
+    <StackLayout>
+        <StackLayout class="container" shadow elevation="2">
+            <Label text="Karttype" textWrap="true" class="title"></Label>            
+            <GridLayout rows="auto" columns="*,*,*" class="mapBtnContainer">
+                <Label col="0" text="Friluftsliv" (tap)="mapStyleChanged('outdoors')" [ngClass]="{selected: mapStyle === 'outdoors'}" class="mapBtn first"></Label>
+                <Label col="1" text="Satellitt" (tap)="mapStyleChanged('satellite')" [ngClass]="{selected: mapStyle === 'satellite'}" class="mapBtn"></Label>
+                <Label col="2" text="Veikart" (tap)="mapStyleChanged('street')" [ngClass]="{selected: mapStyle === 'street'}" class="mapBtn last"></Label>
+            </GridLayout>
+                <!--<ListPicker row="1" colSpan="2" class="picker" *ngIf="showMapStyleOptions" [selectedIndex]="selectedIndex" (selectedIndexChange)="mapStyleIndexChanged($event)" [items]="mapStyleOptions"></ListPicker>-->
+        </StackLayout>
+        <StackLayout class="container" shadow elevation="2">
+            <Label text="Kartet" textWrap="true" class="title"></Label>
+            <GridLayout rows="*" columns="*, auto" class="setting">
+                <Label col="0" text="Roter kart automatisk mens du flytter deg" class="labelSwitch" (tap)="changeRotateSwitch()" textWrap="true"></Label>
+                <Switch col="1" [checked]="isAutoRotate" class="switch" (checkedChange)="onAutoRotateChecked($event)"></Switch>
+            </GridLayout>
+        </StackLayout>
+    </StackLayout>
+</ScrollView>
