@@ -8,27 +8,27 @@
             <ContentView top="20dp" width="100%" shadow elevation="8" shadow shadowOffset="-5">
                 <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayBottomRow" width="100%" shadow elevation="8" shadow shadowOffset="-10">
                     <GridLayout row="0" rows="*" colSpan="3" columns="*,*,*">
-                        <Button height="50dp" row="0" col="0" text="&#xf015;" android:class="fa fas fa-home-lg p-5" fontSize="30" [nsRouterLink]="['/home']" pageTransition="fade" clearHistory="true" (tap)="onButtonPress('home')" [class]="buttons.home.buttonClass"></Button>
-                        <Button height="50dp" row="0" col="1" text="&#xf2bb;" fontSize="30" [nsRouterLink]="['/account']" pageTransition="fade" (tap)="onButtonPress('account')" clearHistory="true" [class]="buttons.account.buttonClass"></Button>
-                        <Button height="50dp" row="0" col="2" text="&#xf013;" fontSize="30" [nsRouterLink]="['/settings']" pageTransition="fade" (tap)="onButtonPress('settings')" clearHistory="true" [class]="buttons.settings.buttonClass"></Button>
+                        <Button height="50dp" row="0" col="0" text="&#xf015;" android:class="fa fas fa-home-lg p-5" fontSize="30" [nsRouterLink]="['/home']" pageTransition="fade" clearHistory="true" (tap)="drawer.onButtonPress('home')" [class]="drawer.buttons.home.buttonClass"></Button>
+                        <Button height="50dp" row="0" col="1" text="&#xf2bb;" fontSize="30" [nsRouterLink]="['/account']" pageTransition="fade" (tap)="drawer.onButtonPress('account')" clearHistory="true" [class]="drawer.buttons.account.buttonClass"></Button>
+                        <Button height="50dp" row="0" col="2" text="&#xf013;" fontSize="30" [nsRouterLink]="['/settings']" pageTransition="fade" (tap)="drawer.onButtonPress('settings')" clearHistory="true" [class]="drawer.buttons.settings.buttonClass"></Button>
                     </GridLayout> 
                 </GridLayout>
             </ContentView>
         </AbsoluteLayout>
-        <StackLayout width="100%" [class]="drawer.drawerClass" [style]="drawer.visibility" dock="bottom">
-            <AbsoluteLayout width="100%" (pan)="onPan($event)">
+        <StackLayout width="100%" [class]="drawer.drawer.drawerClass" [style]="drawer.drawer.visibility" dock="bottom">
+            <AbsoluteLayout width="100%" (pan)="drawer.onPan($event)">
                 <GridLayout rows="*" columns="*, auto, *" width="100%">
-                    <Button col="0" text="< Tilbake" (pan)="onPan($event)" (tap)="backBtnPress()" class="backBtn"></Button>
+                    <Button col="0" text="< Tilbake" (pan)="drawer.onPan($event)" (tap)="backBtnPress()" class="backBtn"></Button>
                     <Label col="1" text="&#xf2d1;" fontSize="15" class="far" textWrap="true" class="fal fa-window-minimize drag"></Label>
                 </GridLayout>
             </AbsoluteLayout>
-            <ContentView width="100%" [height]="drawer.height" horizontalAlignment="center">
+            <ContentView width="100%" [height]="drawer.drawer.height" horizontalAlignment="center">
                 <page-router-outlet></page-router-outlet>
             </ContentView>
         </StackLayout>
         <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayMapButtons" dock="bottom" width="100%" isPassThroughParentEnabled="true">
             <Label row="0" col="2" text="" textWrap="true" class="roundThing"></Label>
-            <StackLayout row="0" col="2" *ngIf="showLocationButton" class="fabButtonContainer">
+            <StackLayout row="0" col="2" class="fabButtonContainer">
                 <!-- Go to location button with icon -->
                 <FAB
                     (tap)="goToLocation()" 
