@@ -19,12 +19,12 @@ ActionBar {
     font-size: 12;
     margin-right: 5dp;
     margin-top: 0;
-    color: #555;
+    color: #888;
 }
 
 .infoText {
     font-size: 12;
-    color: #555;
+    color: #888;
 }
 
 .outer {
