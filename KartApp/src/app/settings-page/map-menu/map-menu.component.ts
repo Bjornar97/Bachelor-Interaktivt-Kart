@@ -4,79 +4,91 @@ import { Page } from 'tns-core-modules/ui/page/page';
 import { ListPicker } from "tns-core-modules/ui/list-picker";
 import * as globals from '~/app/globals';
 import { SettingsService, Setting } from '../settings.service';
+import { Switch } from 'tns-core-modules/ui/switch/switch';
+import { RouterExtensions } from 'nativescript-angular/router';
+import { DrawerClass } from '~/app/drawer';
 
 let mapStylesStrings = ["Satellitt", "Friluftsliv", "Veikart"]
 
 @Component({
   selector: 'ns-menu',
   templateUrl: './map-menu.component.html',
-  styleUrls: ['./map-menu.component.css'],
+  styleUrls: ['../settings-page.component.css'],
   moduleId: module.id,
 })
 export class MapMenuComponent implements OnInit {
-
-  // TODO: Get settings from the settings service when that is finnished
   private settingsService: SettingsService;
+  private drawer: DrawerClass;
+
   private mapStyleSetting: Setting;
+  private autoRotateSetting: Setting;
+ 
+  private isAutoRotate = true;
+  private mapStyle = 'outdoors';
 
-  private mapStyleOptions;
-  private showMapStyleOptions = false;
-
-  private selectedIndex = 1;
-
-  private mapStylesMap: Map<number, string>;
-
-  private open = "closed";
-
-  constructor(page: Page) { 
-    page.actionBarHidden = true;
+  constructor(page: Page, private routerExtensions: RouterExtensions) { 
+    page.actionBarHidden = false;
     this.settingsService = globals.settingsService;
     var setting = this.settingsService.getSetting(undefined, 11);
     if (setting != undefined){ 
       this.mapStyleSetting = setting;
-      this.selectedIndex = setting.value;
+      this.mapStyle = setting.value;
     } else{
       this.mapStyleSetting = {
         id: 11,
         name: "mapStyle",
-        type: "listPicker",
-        value: 1
+        type: "buttonRow",
+        value: 'outdoors'
       }
     }
+    this.autoRotateSetting = this.settingsService.getSetting(undefined, 1);
 
-    var mapStyles = [];
-    var i = 0;
-    this.mapStylesMap = new Map();
+    this.drawer = globals.getDrawer();
 
-    var englishNames = ["satellite", "outdoors", "street"];
-
-    mapStylesStrings.forEach(option => {
-      mapStyles.push(option);
-      this.mapStylesMap.set(i, englishNames[i]);
-      i++;
-    });
-
-    this.mapStyleOptions = mapStyles;
-
-  }
-
-  toggleMapOptions(){
-    if (this.showMapStyleOptions){
-      this.showMapStyleOptions = false;
-      this.open = "closed";
+    if (this.autoRotateSetting == undefined || null){ 
+      this.autoRotateSetting = {
+        id: 1,
+        name: "autoRotate",
+        type: "switch",
+        value: this.isAutoRotate
+      }
+      this.settingsService.setSetting(this.autoRotateSetting);
     } else {
-      this.showMapStyleOptions = true;
-      this.open = "open";
+      this.isAutoRotate = this.autoRotateSetting.value;
     }
+    globals.MainMap.setAutoRotate(this.isAutoRotate);
   }
 
-  mapStyleIndexChanged(args){
-    let picker = <ListPicker>args.object;
-    console.log("Changing mapStyle to " + this.mapStylesMap.get(picker.selectedIndex));
-    globals.MainMap.setMapStyle(this.mapStylesMap.get(picker.selectedIndex));
-    this.mapStyleSetting.value = picker.selectedIndex;
+  private onNavBtnTap() {
+    this.routerExtensions.backToPreviousPage();
+  }
+
+  mapStyleChanged(style){
+    globals.MainMap.setMapStyle(style);
+    this.mapStyleSetting.value = style;
+    this.mapStyle = style;
     this.settingsService.setSetting(this.mapStyleSetting);
-    // TODO: Save it to the settingsService
+  }
+
+  onAutoRotateChecked(args){
+    let Switch = <Switch>args.object;
+    this.isAutoRotate = Switch.checked;
+    this.autoRotateSetting.value = Switch.checked;
+    this.settingsService.setSetting(this.autoRotateSetting);
+    globals.MainMap.setAutoRotate(Switch.checked);
+  }
+
+  changeRotateSwitch(){
+    var autorotate = this.isAutoRotate;
+    if (autorotate){
+      autorotate = false;
+    } else { 
+      autorotate = true;
+    }
+    this.autoRotateSetting.value = autorotate;
+    this.isAutoRotate = autorotate;
+    this.settingsService.setSetting(this.autoRotateSetting);
+    globals.MainMap.setAutoRotate(autorotate);
   }
 
   ngOnInit() {

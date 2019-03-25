@@ -25,8 +25,8 @@ export class AccountPageComponent implements OnInit {
       textField.android.setHintTextColor(color.android);
     }
     else if(this.page.ios){
-      var placeholder=textField.ios.valueForKey("placeholderLabel")
-      placeholder.textColor=color.ios;
+      //var placeholder=textField.ios.valueForKey("placeholderLabel")
+      //placeholder.textColor=color.ios;
     }
   }
 

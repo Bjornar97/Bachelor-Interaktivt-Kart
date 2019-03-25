@@ -307,7 +307,7 @@ export class MapComponent implements OnInit {
 
     var styleSetting = globals.settingsService.getSetting(undefined, 11);
     if (styleSetting != undefined){
-        this.setMapStyle(this.styles[styleSetting.value].name);
+        this.setMapStyle(styleSetting.value);
     }
 
   }
