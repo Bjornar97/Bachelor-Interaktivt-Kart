@@ -6,6 +6,7 @@ import * as globals from '~/app/globals';
 import { SettingsService, Setting } from '../settings.service';
 import { Switch } from 'tns-core-modules/ui/switch/switch';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { DrawerClass } from '~/app/drawer';
 
 let mapStylesStrings = ["Satellitt", "Friluftsliv", "Veikart"]
 
@@ -17,6 +18,7 @@ let mapStylesStrings = ["Satellitt", "Friluftsliv", "Veikart"]
 })
 export class MapMenuComponent implements OnInit {
   private settingsService: SettingsService;
+  private drawer: DrawerClass;
   private mapStyleSetting: Setting;
   private autoRotateSetting: Setting;
  
@@ -48,6 +50,8 @@ export class MapMenuComponent implements OnInit {
       }
     }
     this.autoRotateSetting = this.settingsService.getSetting(undefined, 1);
+
+    this.drawer = globals.getDrawer();
 
     if (this.autoRotateSetting == undefined || null){ 
       this.autoRotateSetting = {
