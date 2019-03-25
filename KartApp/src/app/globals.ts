@@ -2,6 +2,7 @@ import { MapComponent } from "./map/map.component";
 import { Tracker } from "./tracker";
 import { SettingsService, Setting } from "./settings-page/settings.service";
 import { RouterExtensions } from "nativescript-angular/router";
+import { DrawerClass } from "~/app/drawer";
 
 //The main map of the application.
 export var MainMap: MapComponent;
@@ -44,3 +45,14 @@ export function setTracker(tracker: Tracker) {
 
 // Settings
 export var SettingsList: Setting[];
+
+// Drawer
+var Drawer: DrawerClass;
+
+export function getDrawer(){
+    if (Drawer == undefined){
+        console.log("Creating drawer");
+        Drawer = new DrawerClass();
+    } 
+    return Drawer;
+}

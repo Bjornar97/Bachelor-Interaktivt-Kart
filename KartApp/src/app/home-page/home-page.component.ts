@@ -7,6 +7,7 @@ import { RouterExtensions } from "nativescript-angular/router";
 import {Router, Event, NavigationEnd} from '@angular/router';
 import * as fs from 'tns-core-modules/file-system';
 import * as globals from "../globals";
+import { DrawerClass } from "~/app/drawer";
 
 @Component({
     selector: "Home",
@@ -15,6 +16,7 @@ import * as globals from "../globals";
     styleUrls: ["./home-page.component.css"]
 })
 export class HomePageComponent implements OnInit {
+    private drawer: DrawerClass;
 
     constructor(page: Page, private routerext: RouterExtensions, private router: Router, private tripService: TripService) {
         // Use the component constructor to inject providers.
@@ -23,6 +25,8 @@ export class HomePageComponent implements OnInit {
             console.log("Main tracker does not exist,  making a new one");
             globals.setTracker(new Tracker(1, false));
         }
+
+        this.drawer = globals.getDrawer();
 
         this.checkPrevTrip();
         this.tripText = this.checkTrip();

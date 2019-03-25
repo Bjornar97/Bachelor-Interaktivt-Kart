@@ -1,6 +1,6 @@
 <GridLayout rows="auto, *">
     <StackLayout row="1">
-        <Label text="Hjem" class="header" textWrap="true"></Label>
+        <Label text="Hjem" class="header" (pan)="drawer.onPan($event)" textWrap="true"></Label>
         <GridLayout *ngIf="isTrip" columns="*, auto" [class]="currentTripBoxClass" [nsRouterLink]="['./currentTrip']"  pageTransition="slideLeft">
             <Label col="0" [text]="currentTripText" textWrap="true" class="label"></Label>
             <Label col="1" text="arrow" textWrap="true" class="label"></Label>
