@@ -5,10 +5,13 @@ ActionBar {
     color: #000000;
 }
 
+.containerShadowBox{
+    margin: 20dp 5dp 0 5dp;
+}
+
 .container{
     text-align: left;
     background-color: #fff;
-    margin: 20dp 5dp 0 5dp;
 }
 
 .title{
