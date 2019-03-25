@@ -85,6 +85,10 @@ export class DrawerClass {
         }
     }
 
+    public getMaxHeight(){
+        return this.drawer.maxHeight;
+    }
+
     public setDrawerHeight(height = this.drawer.maxHeight, isPanning = false){
         var drawerLoc = this.drawer;
 
