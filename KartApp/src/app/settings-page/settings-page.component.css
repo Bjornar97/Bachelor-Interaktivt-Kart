@@ -57,16 +57,13 @@ ActionBar {
 
 .switch[checked=false] {
     text-align: right;
-    background-color: #555;
 }
 
 .switch[checked=true] {
     text-align: right;
-    background-color: #008000;
 }
 
-.iosSwitch{
-    color: #fff;
+.iosSwitch[checked=true]{
     background-color: #008000;
 }
 
@@ -76,6 +73,11 @@ ActionBar {
 
 .androidSwitch[checked=false] {
     color: #ddd;
+    background-color: #555;
+}
+
+.androidSwitch[checked=true] {
+    background-color: #008000;
 }
 
 .header{
