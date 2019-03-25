@@ -31,6 +31,10 @@ ActionBar {
     padding-bottom: 20dp;
 }
 
+.containerShadowBox{
+    margin: 20dp 5dp 0 5dp;
+}
+
 .container{
     text-align: left;
     background-color: #fff;
