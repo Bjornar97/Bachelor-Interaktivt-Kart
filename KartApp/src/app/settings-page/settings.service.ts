@@ -15,22 +15,6 @@ export type Setting = {
 })
 export class SettingsService implements OnInit{
 
-  private getFolder(){
-    return knownFolders.documents().getFolder("Settings");
-  }
-
-  private getFile(){
-    var folder = this.getFolder();
-    return folder.getFile("settings.json");
-  }
-
-  private settingsMap: Map<number, string>;
-
-  private settingsList: Setting[];
-  private settingsListSuccess: boolean;
-
-  private lastSave: Date;
-
   constructor() { 
     var settingsFile = this.getFile();
     this.settingsList = [];
@@ -53,13 +37,27 @@ export class SettingsService implements OnInit{
     this.settingsListSuccess = true;
   }
 
+  private settingsMap: Map<number, string>;
+  private settingsList: Setting[];
+  private settingsListSuccess: boolean;
+
+  private lastSave: Date;
+  private saving = false;
+
+  private getFolder(){
+    return knownFolders.documents().getFolder("Settings");
+  }
+
+  private getFile(){
+    var folder = this.getFolder();
+    return folder.getFile("settings.json");
+  }
+
   getSettingsList(): Setting[]{
     var settings = this.settingsList;
     return settings;
   }
-
-  private saving = false;
-
+  
   setSetting(Setting: Setting){
     console.log("Got into setSetting in service");
     this.settingsList[Setting.id] = Setting;

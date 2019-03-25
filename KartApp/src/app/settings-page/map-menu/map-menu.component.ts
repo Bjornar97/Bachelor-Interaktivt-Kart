@@ -19,19 +19,12 @@ let mapStylesStrings = ["Satellitt", "Friluftsliv", "Veikart"]
 export class MapMenuComponent implements OnInit {
   private settingsService: SettingsService;
   private drawer: DrawerClass;
+
   private mapStyleSetting: Setting;
   private autoRotateSetting: Setting;
  
   private isAutoRotate = true;
-
-  private mapStyleOptions;
-  private showMapStyleOptions = false;
-
-  private selectedIndex = 1;
-
-  private mapStylesMap: Map<number, string>;
-
-  private open = "closed";
+  private mapStyle = 'outdoors';
 
   constructor(page: Page, private routerExtensions: RouterExtensions) { 
     page.actionBarHidden = false;
@@ -40,7 +33,6 @@ export class MapMenuComponent implements OnInit {
     if (setting != undefined){ 
       this.mapStyleSetting = setting;
       this.mapStyle = setting.value;
-      this.selectedIndex = setting.value;
     } else{
       this.mapStyleSetting = {
         id: 11,
@@ -65,28 +57,11 @@ export class MapMenuComponent implements OnInit {
       this.isAutoRotate = this.autoRotateSetting.value;
     }
     globals.MainMap.setAutoRotate(this.isAutoRotate);
-
-    var mapStyles = [];
-    var i = 0;
-    this.mapStylesMap = new Map();
-
-    var englishNames = ["satellite", "outdoors", "street"];
-
-    mapStylesStrings.forEach(option => {
-      mapStyles.push(option);
-      this.mapStylesMap.set(i, englishNames[i]);
-      i++;
-    });
-
-    this.mapStyleOptions = mapStyles;
-
   }
 
   private onNavBtnTap() {
     this.routerExtensions.backToPreviousPage();
   }
-
-  private mapStyle = 'outdoors';
 
   mapStyleChanged(style){
     globals.MainMap.setMapStyle(style);

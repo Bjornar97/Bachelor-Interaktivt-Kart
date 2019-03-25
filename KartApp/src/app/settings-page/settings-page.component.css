@@ -1,14 +1,40 @@
 /* Add mobile styles for the component here.  */
 
 ActionBar {
-    background-color: #fff;
+    background-color: transparent;
     color: #000000;
+    border-bottom-color: transparent;
+    border-bottom-width: 1dp;
+}
+
+.ActionbarUndeline {
+    border-bottom-color: #cccccc;
+    border-bottom-width: 0;
+    margin: 0 5dp;
+    height: 1dp;
+}
+
+.labelIcon {
+    font-family: 'FontAwesome', 'Font-Awesome';
+    font-size: 12;
+    margin-right: 5dp;
+    margin-top: 0;
+    color: #555;
+}
+
+.infoText {
+    font-size: 12;
+    color: #555;
+}
+
+.outer {
+    padding-bottom: 20dp;
 }
 
 .container{
     text-align: left;
     background-color: #fff;
-    margin: 20dp 5dp 0 5dp;
+    margin: 15dp 5dp 5dp 5dp;
 }
 
 .title{
@@ -25,12 +51,27 @@ ActionBar {
     color: #000;
 }
 
-.settingLabel{
-    min-height: 20dp;
+.switch[checked=false] {
+    text-align: right;
+    background-color: #555;
 }
 
-.switch{
+.switch[checked=true] {
     text-align: right;
+    background-color: #008000;
+}
+
+.iosSwitch{
+    color: #fff;
+
+}
+
+.androidSwitch {
+    color: #008000;
+}
+
+.androidSwitch[checked=false] {
+    color: #ddd;
 }
 
 .header{
