@@ -90,6 +90,7 @@ export class HomePageComponent implements OnInit {
 
     ngOnInit(): void {
         // Init your component properties here.
-        this.trips = this.tripService.getTrips();
+        var tripsUnsorted=this.tripService.getTrips();
+        this.trips=this.tripService.sortTrips(tripsUnsorted);
     }
 }

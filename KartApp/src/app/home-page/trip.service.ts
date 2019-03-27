@@ -163,9 +163,17 @@ export class TripService {
     this.getCurrentTripFile().removeSync();
   }
 
-  sortTrips(_trips: Trip[]){
+  sortTrips(trips: Trip[]){
     // Sortere etter startTime. f. eks: trip[x].startTime
-
+    return trips.sort((n1,n2) => {
+    if (n1.startTime.getTime() > n2.startTime.getTime()) {
+      return 1;
+  }
+    if (n1.startTime.getTime() < n2.startTime.getTime()) {
+      return -1;
+  }
+      return 0;
+   });
   }
 
   /**
