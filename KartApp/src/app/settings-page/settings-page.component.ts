@@ -5,6 +5,7 @@ import { SettingsService, Setting } from "./settings.service";
 import { Switch } from "tns-core-modules/ui/switch";
 import * as globals from '../globals';
 import { DrawerClass } from '~/app/drawer';
+import { Color } from "tns-core-modules/color";
 
 @Component({
   selector: 'ns-settings-page',
@@ -33,7 +34,6 @@ export class SettingsPageComponent implements OnInit {
 
 
   ngOnInit() {
-
   }
 
 }
