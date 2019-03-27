@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
-import { Color } from "color";
+import { Color } from "tns-core-modules/color"; 
 
 @Component({
   selector: 'ns-account-page',
