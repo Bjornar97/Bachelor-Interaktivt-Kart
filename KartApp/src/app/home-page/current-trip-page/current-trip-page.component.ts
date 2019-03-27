@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
-import { Trip } from '~/app/tracker';
+import { Trip, Tracker } from '~/app/tracker';
 import { TripService } from '../trip.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as camera from "nativescript-camera";
@@ -8,6 +8,8 @@ import { Image } from "tns-core-modules/ui/image";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { MarkerService } from '~/app/map/marker.service';
 import { LocationClass } from '~/app/location';
+import * as globals from "~/app/globals";
+import { DrawerClass } from '~/app/drawer';
 
 
 @Component({
@@ -20,10 +22,11 @@ import { LocationClass } from '~/app/location';
 export class CurrentTripPageComponent implements OnInit {
 
   constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService) { 
-    page.actionBarHidden = true;
     this.locationClass = new LocationClass();
+    this.tracker = globals.MainTracker;
   }
 
+  private tracker: Tracker;
   private trip: Trip;
 
   private locationClass: LocationClass;
@@ -33,13 +36,17 @@ export class CurrentTripPageComponent implements OnInit {
 
   private imageSrc;
 
-  private timeSpent: string = "00:00";
-
   private btnActiveText = "Pause";
   private btnActiveClass = " btn btn-pause";
 
   private height = 200; // Want to get the drawer height into this
   private isLoading = false;
+
+  private drawer: DrawerClass;
+
+  private goBack(){
+    this.routerExtensions.backToPreviousPage();
+  }
 
   /**
    * OpenCamera() - Opens the native camera on the device, so you can take pictures.
@@ -72,14 +79,12 @@ export class CurrentTripPageComponent implements OnInit {
    */
   private togglePause(){
     if (!this.paused){
-      this.pauseInterval();
       this.paused = true;
       this.tripService.pauseTrip();
       this.btnActiveText = "Play";
       this.btnActiveClass = "btn btn-play";
     } else { 
       this.paused = false;
-      this.startInterval();
       this.tripService.unpauseTrip();
       this.btnActiveText = "Pause";
       this.btnActiveClass = "btn btn-pause";
@@ -99,6 +104,8 @@ export class CurrentTripPageComponent implements OnInit {
       pause = false;
     }
 
+    var tripBefore = this.tripService.getCurrentTrip();
+
     let options = {
       title: "Stopp tur",
       message: "Er du sikker på at du vil stoppe turen?",
@@ -110,13 +117,19 @@ export class CurrentTripPageComponent implements OnInit {
     dialogs.confirm(options).then((result) => {
       console.log("After dialog");
       if (result){
-        this.pauseInterval();
-        this.trip = this.tripService.endTrip();
-        this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
-          animated: true,
-          clearHistory: true,
-          transition: {name: "slideLeft"}
-        });
+        try {
+          this.trip = this.tripService.endTrip();
+          this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
+            animated: true,
+            clearHistory: true,
+            transition: {name: "slideLeft"}
+          });
+        } catch (error) {
+          console.log("ERROR while stopping trip in current-trip.component.ts: " + error);
+          console.dir(tripBefore);
+
+
+        }
       } else if (pause){
         this.togglePause();
         this.isLoading = false;
@@ -124,26 +137,6 @@ export class CurrentTripPageComponent implements OnInit {
         this.isLoading = false;
       }
     });
-  }
-
-
-  private interval;
-
-  /**
-   * startInterval() - Start the interval that updates the timer. Every second it checks how long the trip has been going for, and updates the string used in the view.
-   */
-  private startInterval(){
-    this.timeSpent = this.tripService.getTotalTime();
-    this.interval = setInterval(() => {
-      this.timeSpent = this.tripService.getTotalTime();
-    }, 1000);
-  }
-
-  /**
-   * pauseInterval() - Stop the interval, because then the trip is paused, there is no need for updating the timer.
-   */
-  private pauseInterval(){
-    clearInterval(this.interval);
   }
 
   ngOnInit() {
@@ -154,22 +147,18 @@ export class CurrentTripPageComponent implements OnInit {
 
       if (this.tripService.isPaused()){
         console.log("Paused");
-        this.pauseInterval();
-        this.timeSpent = this.tripService.getTotalTime();
         this.paused = true;
         this.btnActiveText = "Play";
         this.btnActiveClass = "btn btn-play";
-      } else {
-        this.startInterval();
       }
       // If there is no trip going on, start a new trip.
     } else {
       this.tripService.startTrip();
       this.trip = this.tripService.getCurrentTrip();
-      this.startTime = this.trip.startTime;
-      this.timeSpent = this.tripService.getTotalTime();
-      this.startInterval();
     }
+
+    this.drawer = globals.getDrawer();
+    this.drawer.setDrawerHeight(220);
   }
 
 }

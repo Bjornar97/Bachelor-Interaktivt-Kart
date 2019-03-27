@@ -3,6 +3,7 @@ import * as geolocation from "nativescript-geolocation";
 import { MainMap } from "./globals";
 import { TripService } from "./home-page/trip.service";
 import { ImageService } from "./home-page/image.service";
+import * as globals from "~/app/globals";
 
 export type Trip = {
     id: number,
@@ -41,6 +42,8 @@ export class Tracker {
     private paused: boolean;
     private totalTime: number = 0;
 
+    public totalTimeString: string = "00:00";
+
     private drawOnMap: boolean = false;
     private polyLines: number[] = [];
 
@@ -55,12 +58,23 @@ export class Tracker {
     public loadTrip(tripID: number, trip: Trip, tripTrips: Trip[], totalTime: number){
         trip.startTime = new Date(trip.startTime);
         trip.stopTime = new Date(trip.stopTime);
+        tripTrips.forEach((trip) => {
+            trip.startTime = new Date(trip.startTime);
+            trip.stopTime = new Date(trip.stopTime);
+            trip.points.forEach((pnt) => {
+                pnt.timestamp = new Date(pnt.timestamp);
+            });
+        });
+        trip.points.forEach((pnt) => {
+            pnt.timestamp = new Date(pnt.timestamp);
+        });
         this.trip = trip;
         this.tripID = tripID;
         this.tripTrips = tripTrips;
         this.totalTime = totalTime;
         this.paused = true;
         this.status = true;
+        this.totalTimeString = this.getTotalTimeString();
     }
 
     /**
@@ -158,7 +172,7 @@ export class Tracker {
             distanceMeters: 0,
             images: [],
         }
-
+        this.startInterval();
         console.log("Started logging of " + watchID);
         this.totalTime = 0;
         this.tripID = this.trip.id;
@@ -168,6 +182,10 @@ export class Tracker {
     }
 
     public pauseTrip(){
+        this.paused = true;
+        this.pauseInterval();
+        this.trip.stopTime = new Date();
+        this.totalTime += this.trip.stopTime.getTime() - this.trip.startTime.getTime();
         console.log("Pausing in tracker");
         geolocation.clearWatch(this.trip.watchId);
         this.locationClass.getLocation().then((loc) => {
@@ -181,14 +199,12 @@ export class Tracker {
                 timestamp: loc.timestamp,
                 verticalAccuracy: loc.verticalAccuracy
             });
-            this.trip.stopTime = new Date();
-            this.paused = true;
-            this.totalTime += this.trip.stopTime.getTime() - this.trip.startTime.getTime();
         });
         
     }
 
     public unpauseTrip(){
+        this.paused = false;
         console.log("Unpausing trip in tracker");
         var watchID = geolocation.watchLocation((point) => {
             console.log("New movement with accuracy " + this.accuracy);
@@ -219,13 +235,14 @@ export class Tracker {
         }
         this.tripTrips[this.trip.id] = this.trip;
         this.trip = newTrip;
-        this.paused = false;
+        this.startInterval();
         return this.totalTime;
     }
 
     public endTrip(): Trip{
         console.log("Stopping Trip " + this.trip.id);
         geolocation.clearWatch(this.trip.watchId);
+        this.pauseInterval();
         this.trip.stopTime = new Date();
         this.tripTrips.push(this.trip);
         var finalTrip = this.processTrip();
@@ -244,6 +261,7 @@ export class Tracker {
         try {
             this.tripTrips.forEach((trip) => {
                 if (trip != null){
+                    console.log("Processing subTrip: " + trip.id);
                     if (first){
                         console.log("First trip");
                         finalTrip = {
@@ -279,7 +297,13 @@ export class Tracker {
                         finalTrip.images.push(image);
                     });
                     
-                    duration += trip.stopTime.getTime() - trip.startTime.getTime();
+                    if (trip.startTime != undefined && trip.stopTime != undefined){
+                        try {
+                            duration += trip.stopTime.getTime() - trip.startTime.getTime();
+                        } catch (error) {
+                            console.log("Something bad happened while processing subTrip " + trip.id + ": " + error);
+                        }
+                    }
                     prev = trip;   
                 } else {
                     console.log("Trip was null, skipping");
@@ -298,6 +322,23 @@ export class Tracker {
         return finalTrip;
     }
 
+    private interval;
+
+    private startInterval(){
+        this.totalTimeString = this.getTotalTimeString();
+        this.interval = setInterval(() => {
+          this.totalTimeString = this.getTotalTimeString();
+        }, 1000);
+    }
+    
+    /**
+     * pauseInterval() - Stop the interval, because then the trip is paused, there is no need for updating the timer.
+     */
+    private pauseInterval(){
+    clearInterval(this.interval);
+    }
+    
+
     /**
      * getTrip - Get the trip as it is AFTER the last pause
      */
@@ -305,9 +346,21 @@ export class Tracker {
         return this.trip;
     }
 
-    public getTotalTime(){
+    getTotalTime(){
         return this.totalTime;
     }
+
+    getTotalTimeString(){
+        var trip = this.getTrip();
+        var time;
+        console.log("Time: " + this.totalTime);
+        if (this.isPaused()){
+          time = globals.timeConversion(this.totalTime);
+        } else {
+          time = globals.timeConversion(this.totalTime + (Date.now() - trip.startTime.getTime()));
+        }
+        return time;
+      }
 
     public getStatus(){
         if (this.status === false){

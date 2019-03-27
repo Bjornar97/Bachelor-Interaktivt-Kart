@@ -6,6 +6,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { View } from 'tns-core-modules/ui/page/page';
 import { screen } from "tns-core-modules/platform";
+import * as globals from "~/app/globals";
 
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
@@ -26,6 +27,8 @@ export class TripBoxComponent implements OnInit {
   
   @Output()
   delete = new EventEmitter<string>();
+
+  private checked: boolean = false;
 
   private trip: Trip;
   private totalTimeString: string;
@@ -55,10 +58,18 @@ export class TripBoxComponent implements OnInit {
     });
   }
 
+  toggleCheck(){
+    if (this.checked) {
+      this.checked = false;
+    } else {
+      this.checked = true;
+    }
+  }
+
   ngOnInit() {
     this.trip = this.tripService.getTrip(this.id);
     if (this.trip != undefined){
-      this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
+      this.totalTimeString = globals.timeConversion(this.tripService.getTripTime(this.trip));
 
       var dateString: string;
       var time = this.trip.startTime;
