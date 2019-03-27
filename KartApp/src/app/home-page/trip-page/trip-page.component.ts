@@ -7,6 +7,7 @@ import { Page, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { ActivatedRoute } from '@angular/router';
 import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
+import { ImageService } from '../image.service';
 
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
@@ -19,13 +20,14 @@ let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lør
 })
 export class TripPageComponent implements OnInit, OnDestroy {
 
-  constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute) { 
+  constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute, private imageService: ImageService) { 
     page.actionBarHidden = true;
   }
 
   private sub;
   private backEvent;
   private trip: Trip;
+  private events;
 
   private totalTimeString: string;
   private startTimeString;
@@ -56,6 +58,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
     });
     MainMap.removeLine();
     MainMap.drawLine(this.trip.points, "red", 3, 0.8);
+
+    this.events = this.tripService.getTripEvents(this.trip.id);
 
     if (this.trip != undefined){
       this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
