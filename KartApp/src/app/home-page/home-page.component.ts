@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, ElementRef, ViewChild } from "@angular/core";
 import { Page } from "tns-core-modules/ui/page/page";
 import { TripService } from "./trip.service";
-import { AppComponent } from "../app.component";
 import { Trip, Tracker } from "../tracker";
 import { RouterExtensions } from "nativescript-angular/router";
 import {Router, Event, NavigationEnd} from '@angular/router';
@@ -20,37 +19,42 @@ export class HomePageComponent implements OnInit {
 
     constructor(page: Page, private routerext: RouterExtensions, private router: Router, private tripService: TripService) {
         // Use the component constructor to inject providers.
-        page.actionBarHidden = true;
         if (globals.MainTracker == undefined){
             console.log("Main tracker does not exist,  making a new one");
             globals.setTracker(new Tracker(1, false));
         }
-
+        
         this.drawer = globals.getDrawer();
+        this.tracker = globals.MainTracker;
 
         this.checkPrevTrip();
-        this.tripText = this.checkTrip();
+        this.checkTrip();
 
         this.router.events.subscribe((val) => {
             if(val instanceof NavigationEnd){
                 if(this.router.url == "/home"){
                     this.trips = this.tripService.getTrips();
                     this.isTrip = this.tripService.isTrip();
-                    this.tripText = this.checkTrip();
+                    this.checkTrip();
                 };
             } 
         });
     }
-        
+    private tracker: Tracker;
+
     private trips: Trip[];
     private isTrip: boolean;
     private isPaused: boolean;
 
-    private tripText = "Ny Tur";
-    private tripClass = "newTripBtn";
+    private checkedAll: boolean = false;
 
-    private currentTripBoxClass: string = "currentTripBox currentPaused";
-    private currentTripText: string = "Tur satt på pause";
+    private toggleCheckAll(){
+        if (this.checkedAll) {
+            this.checkedAll = false;
+        } else {
+            this.checkedAll = true;
+        }
+    }
 
     delete(trip: Trip){
         delete this.trips[this.trips.indexOf(trip)];
@@ -62,23 +66,26 @@ export class HomePageComponent implements OnInit {
     private checkTrip(){
         if (this.tripService.isTrip()){
             if (this.tripService.isPaused()){
+                console.log("Trip is paused");
                 this.isPaused = true;
-                this.currentTripBoxClass = "currentTripBox currentPaused";
-                this.currentTripText = "Tur satt på pause";
             } else {
+                console.log("Trip is not paused");
                 this.isPaused = false;
-                this.currentTripBoxClass = "currentTripBox currentPlay";
-                this.currentTripText = "Tur pågår";
             }
 
             this.isTrip = true;
-            this.tripClass = "tripBtn oldTripBtn";
-            return "Gå til tur";
         } else {
             this.isTrip = false;
-            this.tripClass = "tripBtn newTripBtn";
-            return "Ny Tur";
         }
+    }
+
+    private togglePause(){
+        if (this.tripService.isPaused()){
+            this.tripService.unpauseTrip();
+        } else {
+            this.tripService.pauseTrip();
+        }
+        this.checkTrip();
     }
 
     /**
@@ -86,6 +93,7 @@ export class HomePageComponent implements OnInit {
      */
     private checkPrevTrip(){
         if (this.tripService.isTrip()){
+            console.log("A trip is ongoing already!")
             return;
         }
         try {
@@ -99,27 +107,26 @@ export class HomePageComponent implements OnInit {
             var trip: Trip = currentTrip.trip;
             var tripTrips: Trip[] = currentTrip.tripTrips;
             var totalTime = currentTrip.totalTime;
+            console.dir(currentTrip);
             // Checking if the last trip was finished
             if (!this.tripService.doesTripExist(tripID)){
                 console.log("Prev trip not finsihed");
                 // If it wasnt, we resume the trip
-                var date = new Date(trip.stopTime);
-                if ((Date.now() - date.getTime()) < 24 * 60 * 60 * 1000){
+                var date = new Date(trip.startTime);
+                if ((Date.now() - date.getTime()) < 48 * 60 * 60 * 1000 && !trip.finished){
                     console.log("Resuming Trip");
-                    globals.MainTracker.loadTrip(tripID,trip, tripTrips, totalTime);
+                    globals.MainTracker.loadTrip(tripID, trip, tripTrips, totalTime);
                     // TODO: Open the drawer and select button. Maybe show error.
                     //this.routerext.navigateByUrl("home/currentTrip");
                 }
-            }    
+            } else {
+                console.log("Trip exists already: ");
+                console.dir(this.tripService.getTrip(tripID));
+            }
         } catch (error) {
             console.log("There was an error while resuming previous trip");
             console.log(error);
         }   
-    }
-
-    deleteTripFolder(){
-        //this.tripService.deleteFolder();
-        fs.knownFolders.documents().clear();
     }
 
     ngOnInit(): void {

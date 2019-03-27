@@ -93,10 +93,19 @@ export class TripService {
    * @returns true if the trip exist, false if not.
    */
   doesTripExist(id: number){
-    var folder = this.getTripFolder();
-    if (fs.File.exists(fs.path.join(folder.path, "Trip" + id + ".json"))){
-      return true;
+    try {
+      var folder = this.getTripFolder();
+      if (fs.File.exists(fs.path.join(folder.path, "Trip" + id + ".json"))){
+        if (this.getTrip(id).finished == true){
+          return true;
+        } else {
+          return false;
+        }
     } else {
+      return false;
+    }
+    } catch (error) {
+      console.log("Error: " + error);
       return false;
     }
   }
@@ -260,6 +269,7 @@ export class TripService {
       tripTrips: this.tracker.getTripTrips(),
       totalTime: this.tracker.getTotalTime()
     }
+    console.log("TotalTime: " + currentTrip.totalTime);
     try {
       currentTripFile.writeTextSync(JSON.stringify(currentTrip));
     } catch (error) {
@@ -436,14 +446,7 @@ export class TripService {
    * @returns the total time in a string in this format: hh:mm:ss. If its less than one hour, this is returned: mm:ss
    */
   getTotalTime(){
-    var trip = this.tracker.getTrip();
-    var time;
-    if (this.isPaused()){
-      time = this.timeConversion(this.tracker.getTotalTime());
-    } else {
-      time = this.timeConversion(this.tracker.getTotalTime() + (Date.now() - trip.startTime.getTime()));
-    }
-    return time;
+    return this.tracker.getTotalTimeString();
   }
 
   /**
@@ -461,29 +464,6 @@ export class TripService {
       });
     }
     return time;
-  }
-
-  /**
-   * timeConversion - Converts time in milliseconds to a readable string in this format: hh:mm:ss. If less than one hour: mm:ss
-   * 
-   * @param millisec The total time in milliseconds
-   */
-  public timeConversion(millisec) {
-    var totalTime = millisec;
-
-    var totalHours = Math.floor(totalTime / 3600000);
-    var totalMinutes = Math.floor((totalTime % 3600000) / 60000);
-    var totalSeconds = Math.floor((totalTime % 60000) / 1000);
-
-    var hrs = (totalHours < 10) ? ("0" + totalHours) : totalHours;
-    var min = (totalMinutes < 10) ? ("0" + totalMinutes) : totalMinutes;
-    var sec = (totalSeconds < 10) ? ("0" + totalSeconds) : totalSeconds;
-    
-    if (totalHours < 1) {
-        return min + ":" + sec;
-    } else {
-        return hrs + ":" + min + ":" + sec;
-    }
   }
 
   /**

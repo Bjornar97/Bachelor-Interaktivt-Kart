@@ -1,8 +1,17 @@
 <ContentView #Box class="outerBox" shadow elevation="2">
-    <GridLayout class="box" rows="*, *" columns="*, auto">
-        <Label col="0" [text]="totalTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
-        <Label row="1" [text]="startTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
-    
-        <Label rowSpan="2" col="1" text="Slett" textWrap="true" class="deleteBtn" (tap)="deleteTrip(Box)"></Label>
+    <GridLayout class="box" rows="*, *, *" columns="auto, *">
+        <CheckBox col="0" rowSpan="2" class="checkBox" fillColor="#008000" [checked]="checked" (checkedChange)="toggleCheck()"></CheckBox>
+        <Label col="1" row="0" class="boxLabel" [text]="startTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
+        <Label col="1" row="1" class="boxLabel" [text]="totalTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
+        <GridLayout row="2" colSpan="2" rows="auto" columns="*, *" class="actionRow">
+            <StackLayout orientation="horizontal" col="0" horizontalAlignment="center" verticalAlignment="center" class="actionLabel first">
+                <Label text="&#xf1e0;" class="fontIcon actionIcon" textWrap="false"></Label>
+                <Label text=" Del" class="actionText" textWrap="false" verticalAlignment="center"></Label>
+            </StackLayout>
+            <StackLayout orientation="horizontal" col="1" horizontalAlignment="center" verticalAlignment="center" class="actionLabel" (tap)="deleteTrip(Box)">
+                <Label text="&#xf1f8;" class="fontIcon actionIcon" textWrap="false"></Label>
+                <Label text=" Slett" class="actionText" verticalAlignment="center" textWrap="false"></Label>
+            </StackLayout>
+        </GridLayout>
     </GridLayout>
 </ContentView>

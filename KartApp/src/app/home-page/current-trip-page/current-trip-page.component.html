@@ -1,3 +1,6 @@
+<ActionBar title="Du er på tur" icon="" class="action-bar">
+    <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
+</ActionBar>
 <DockLayout stretchLastChild="true">
     <GridLayout dock="bottom" class="grid" width="100%" rows="*, *" columns="*, *" *ngIf="height > 150">
         <StackLayout row="0" col="0" class="leftTopContainer">
@@ -9,7 +12,7 @@
             <Button text="Stop" (tap)="stopTrip()" class="btn btn-stop"></Button>
         </StackLayout>
         <StackLayout row="1" col="0"  class="timeContainer">
-            <Label class="time" [text]="timeSpent" textWrap="true"></Label>
+            <Label class="time" [text]="tracker.totalTimeString" textWrap="true"></Label>
         </StackLayout>
         <StackLayout row="1" col="1" class="pictureBtnContainer">
             <Button class="pictureBtn" text="Ta bilde" (tap)="OpenCamera()"></Button>
@@ -22,7 +25,7 @@
     
     <StackLayout orientation="horizontal" *ngIf="height <= 150" verticalAlignment="center" horizontalAlignment="center">
         <StackLayout class="timeContainer small">
-            <Label class="time small" [text]="timeSpent" textWrap="true"></Label>
+            <Label class="time small" [text]="tracker.totalTimeString" textWrap="true"></Label>
         </StackLayout>
         <StackLayout class="controlBtnContainer small" orientation="horizontal" horizontalAlignment="center">
             <Button [text]="btnActiveText" [class]="btnActiveClass" (tap)="togglePause()"></Button>
