@@ -162,10 +162,10 @@ export class TripService {
   sortTrips(trips: Trip[]){
     // Sortere etter startTime. f. eks: trip[x].startTime
     return trips.sort((n1,n2) => {
-    if (n1.startTime.getTime() > n2.startTime.getTime()) {
+    if (n1.startTime > n2.startTime) {
       return -1;
   }
-    if (n1.startTime.getTime() < n2.startTime.getTime()) {
+    if (n1.startTime < n2.startTime) {
       return 1;
   }
       return 0;
