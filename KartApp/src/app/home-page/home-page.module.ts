@@ -7,13 +7,15 @@ import { TripBoxComponent } from './trip-box/trip-box.component';
 import { TripPageComponent } from './trip-page/trip-page.component';
 import { CurrentTripPageComponent } from './current-trip-page/current-trip-page.component';
 import { NgShadowModule } from 'nativescript-ng-shadow';
+import { TNSCheckBoxModule } from "nativescript-checkbox/angular";
 
 
 @NgModule({
     imports: [
         NativeScriptCommonModule,
         HomeRoutingModule,
-        NgShadowModule
+        NgShadowModule,
+        TNSCheckBoxModule
     ],
     declarations: [
         HomePageComponent,

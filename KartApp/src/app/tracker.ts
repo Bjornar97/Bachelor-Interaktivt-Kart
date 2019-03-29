@@ -3,97 +3,86 @@ import * as geolocation from "nativescript-geolocation";
 import { MainMap } from "./globals";
 import { TripService } from "./home-page/trip.service";
 import { ImageService } from "./home-page/image.service";
+import * as globals from "~/app/globals";
 
 export type Trip = {
     id: number,
-    watchId: number,
-    points: LocationObject[],
-    finished: boolean,
-    startTime: Date,
-    pauses?: {
-        from: LocationObject,
-        to: LocationObject
+    startTime: number,
+    stopTime: number,
+    walks: {
+        points: LocationObject[],
+        startTime: number,
+        stopTime: number
     }[]
-    stopTime: Date,
     title?: string,
     description?: string,
-    images?: any[],
+    images?: {
+        timestamp: number,
+        markerId: number,
+        imageSrc: string
+    }[],
     distanceMeters: number,
-    duration?: number
+    duration: number
+}
+
+type subTrip = {
+    watchId: number,
+    points: LocationObject[],
+    startTime: number,
+    stopTime?: number
 }
 
 export class Tracker {
-    constructor(defaultAccuracy: number, drawOnMap: boolean) {
+    constructor(defaultAccuracy: number) {
         this.accuracy = defaultAccuracy;
         this.locationClass = new LocationClass();
-        this.drawOnMap = drawOnMap;
     }
     private accuracy: number;
     private locationClass: LocationClass;
 
-    private lastPoint: LocationObject;
     private status: boolean = false;
-    private trip: Trip;
+    private subTrip: subTrip;
     private tripID: number;
+    private lastAccuracy: number;
 
     // An array of all the "trips" in this trip. Every time you pause and unpause the trip, a new "trip" is created and added to this
-    private tripTrips: Trip[];
+    private Trip: Trip;
+    private lastPoint: LocationObject;
     private paused: boolean;
-    private totalTime: number = 0;
 
-    private drawOnMap: boolean = false;
-    private polyLines: number[] = [];
+    public gpsSignalStrength = 0;
 
-    public getTripTrips(){
-        return this.tripTrips;
-    }
+    public totalTimeString: string = "00:00";
 
     public getTripID(){
         return this.tripID;
     }
 
-    public loadTrip(tripID: number, trip: Trip, tripTrips: Trip[], totalTime: number){
-        trip.startTime = new Date(trip.startTime);
-        trip.stopTime = new Date(trip.stopTime);
-        this.trip = trip;
-        this.tripID = tripID;
-        this.tripTrips = tripTrips;
-        this.totalTime = totalTime;
+    public loadTrip(trip: Trip){
+        this.tripID = trip.id;
+        this.Trip = trip;
         this.paused = true;
         this.status = true;
-    }
-
-    /**
-     * setDrawOnMap - Should it be drawn on the main map as you go?
-     * 
-     * @param value Set it to true to enable drawing on the map as you go along, set to false to disable it.
-     */
-    public setDrawOnMap(value: boolean){
-        this.drawOnMap = value;
-        if (value === true){
-            var _this = this;
-            MainMap.drawLine(this.trip.points).then(function(id){
-                _this.polyLines.push(id);
-            });
-            this.polyLines.push();
-        } else if (value === false){
-            MainMap.removeLine(this.polyLines);
-        }
+        this.totalTimeString = this.getTotalTimeString();
     }
 
     public setAccuracy(newAccuracy: number){
         this.accuracy = newAccuracy;
     }
 
-    public addImage(imageUrl: string){
+    public addImage(markerId: number, imageUrl: string){
         var imageObject = {
-            timestamp: new Date(),
+            timestamp: new Date().getTime(),
+            markerId: markerId,
             imageSrc: imageUrl
         }
-        this.trip.images.push(imageObject);
+        if (this.Trip.images == undefined) {
+            this.Trip.images = [];
+        }
+        this.Trip.images.push(imageObject);
     }
 
-    private logPoint(point: geolocation.Location){
+    private logPoint(point: geolocation.Location, force: boolean = false){
         console.log("Logging point " + point.timestamp.valueOf());
         var location: LocationObject = {
           id: point.timestamp.valueOf(),
@@ -106,11 +95,34 @@ export class Tracker {
           timestamp: point.timestamp,
           verticalAccuracy: point.verticalAccuracy
         }
-        this.trip.points.push(location);
-        var i = 0;
+        if (location.horizontalAccuracy > 50){
+            this.gpsSignalStrength = 0;
+        } else if (location.horizontalAccuracy > 20){
+            this.gpsSignalStrength = 1;
+        } else if (location.horizontalAccuracy > 10){
+            this.gpsSignalStrength = 2;
+        } else {
+            this.gpsSignalStrength = 3;
+        }
+        if (this.lastPoint != undefined){
+            if (LocationClass.findDistance(this.lastPoint, location) < this.lastAccuracy && !force) {
+                if (location.horizontalAccuracy < this.lastAccuracy) {
+                    this.subTrip.points.pop();
+                    this.subTrip.points.push(location);
+                    this.lastAccuracy = location.horizontalAccuracy;
+                    this.lastPoint = location;
+                }
+            } else if (this.gpsSignalStrength > 0){
+                this.subTrip.points.push(location);
+                this.lastPoint = location;
+                this.lastAccuracy = location.horizontalAccuracy;
+            }
+        } else if (this.gpsSignalStrength > 0){
+            this.subTrip.points.push(location);
+            this.lastPoint = location;
+            this.lastAccuracy = location.horizontalAccuracy;
+        }
         console.log("Added point");
-
-        this.lastPoint = location;
     }
 
     private logError(error: Error){
@@ -121,19 +133,26 @@ export class Tracker {
     /**
      * startTrip - Start the tracking
      */
-    public startTrip() {
+    public startTrip(id: number) {
         if (this.getStatus() == true){
             console.log("There is already a trip ongoing!");
-            return new Error("There is alredy a trip ongoing!");
+        }
+        
+        this.Trip = {
+            id: id,
+            distanceMeters: 0,
+            startTime: new Date().getTime(),
+            stopTime: undefined,
+            walks: [],
+            duration: 0
         }
 
-        var _this = this;
         console.log("Logging location");
-        var watchID = geolocation.watchLocation(function(point){
-            console.log("New movement with accuracy " + _this.accuracy);
-            _this.logPoint(point);
-            }, function(error){
-            _this.logError(error);
+        var watchID = geolocation.watchLocation((point) => {
+            console.log("New movement with accuracy " + this.accuracy);
+            this.logPoint(point);
+            }, (error) => {
+            this.logError(error);
             }, 
             {
                 desiredAccuracy: this.accuracy, 
@@ -145,31 +164,41 @@ export class Tracker {
                 iosPausesLocationUpdatesAutomatically: false
         });
 
-        var tripservice = new TripService(new ImageService());
-        var lastID = tripservice.getLastTripId();
-
-        this.trip = {
-            id: lastID + 1,
+        this.subTrip = {
             watchId: watchID,
             points: [],
-            finished: false,
-            startTime: new Date(),
-            stopTime: undefined,
-            distanceMeters: 0,
-            images: [],
+            startTime: new Date().getTime(),
         }
-
+        this.startInterval();
         console.log("Started logging of " + watchID);
-        this.totalTime = 0;
-        this.tripID = this.trip.id;
+        this.tripID =  id;
         this.status = true;
         this.paused = false;
-        this.tripTrips = [];
     }
+
+    private pausing: boolean = false;
 
     public pauseTrip(){
         console.log("Pausing in tracker");
-        geolocation.clearWatch(this.trip.watchId);
+        if (this.paused){
+            console.log("Already paused");
+        }
+        if (this.pausing) {
+            console.log("Trying to pause while pauing");
+            return;
+        }
+        this.pausing = true;
+        this.pauseInterval();
+        this.subTrip.stopTime = new Date().getTime();
+        this.Trip.duration += this.subTrip.stopTime - this.subTrip.startTime;
+        let prevPoint = null;
+        this.subTrip.points.forEach((point) => {
+            if (prevPoint != null) {
+                this.Trip.distanceMeters += LocationClass.findDistance(prevPoint, point);
+            }
+            prevPoint = point;
+        });
+        geolocation.clearWatch(this.subTrip.watchId);
         this.locationClass.getLocation().then((loc) => {
             this.logPoint({
                 altitude: loc.altitude,
@@ -180,18 +209,23 @@ export class Tracker {
                 speed: loc.speed,
                 timestamp: loc.timestamp,
                 verticalAccuracy: loc.verticalAccuracy
+            }, true);
+
+            this.Trip.walks.push({
+                points: this.subTrip.points,
+                startTime: this.subTrip.startTime,
+                stopTime: new Date().getTime()
             });
-            this.trip.stopTime = new Date();
+
             this.paused = true;
-            this.totalTime += this.trip.stopTime.getTime() - this.trip.startTime.getTime();
+            this.pausing = false;
         });
-        
     }
 
     public unpauseTrip(){
+        this.paused = false;
         console.log("Unpausing trip in tracker");
         var watchID = geolocation.watchLocation((point) => {
-            console.log("New movement with accuracy " + this.accuracy);
             this.logPoint(point);
             }, (error) => {
             this.logError(error);
@@ -205,114 +239,76 @@ export class Tracker {
                 iosAllowsBackgroundLocationUpdates: true,
                 iosPausesLocationUpdatesAutomatically: false
         });
-
-
-        var newTrip: Trip = {
-            startTime: new Date(),
-            id: this.trip.id + 1,
+        
+        var newSubTrip: subTrip = {
+            startTime: new Date().getTime(),
             watchId: watchID,
-            finished: false,
             points: [],
-            stopTime: undefined,
-            distanceMeters: 0,
-            images: []
+            stopTime: undefined
         }
-        this.tripTrips[this.trip.id] = this.trip;
-        this.trip = newTrip;
-        this.paused = false;
-        return this.totalTime;
+        this.subTrip = newSubTrip;
+
+        this.startInterval();
+        return this.Trip.duration;
     }
 
+    /**
+     * endTrip - Stops the trip and returns the finished trip.
+     */
     public endTrip(): Trip{
-        console.log("Stopping Trip " + this.trip.id);
-        geolocation.clearWatch(this.trip.watchId);
-        this.trip.stopTime = new Date();
-        this.tripTrips.push(this.trip);
-        var finalTrip = this.processTrip();
+        console.log("Stopping Trip " + this.tripID);
+        this.pauseTrip();
+        this.pauseInterval();
+        this.subTrip.stopTime = new Date().getTime();
+        this.Trip.stopTime = this.subTrip.stopTime;
         this.status = false;
         console.log("Finished ending of trip");
-        return finalTrip;
+        return this.Trip;
     }
 
-    private processTrip(){
-        console.log("Processing trip");
-        var finalTrip: Trip;
-        var first = true;
-        var prev: Trip;
-        var distance = 0;
-        var duration = 0;
-        try {
-            this.tripTrips.forEach((trip) => {
-                if (trip != null){
-                    if (first){
-                        console.log("First trip");
-                        finalTrip = {
-                            id: this.tripID,
-                            watchId: undefined,
-                            finished: true,
-                            pauses: [],
-                            points: trip.points,
-                            startTime: trip.startTime,
-                            stopTime: undefined,
-                            distanceMeters: 0,
-                            images: []
-                        }
-                        first = false;
-                    } else {
-                        console.log("Not first trip");
-                        finalTrip.pauses.push({
-                            from: prev.points[prev.points.length - 1],
-                            to: trip.points[0]
-                        });
-                        trip.points.forEach((point) => {
-                            finalTrip.points.push(point);
-                        });
-                    }
-                    
-                    trip.points.forEach((point, i, array) => {
-                        if (i > 0){
-                            distance += this.locationClass.findDistance(array[i], point);
-                        }
-                    });
+    private interval;
 
-                    trip.images.forEach((image) => {
-                        finalTrip.images.push(image);
-                    });
-                    
-                    duration += trip.stopTime.getTime() - trip.startTime.getTime();
-                    prev = trip;   
-                } else {
-                    console.log("Trip was null, skipping");
-                }
-            });
-            finalTrip.distanceMeters = distance;
-            finalTrip.duration = duration;
-            finalTrip.stopTime = this.tripTrips[this.tripTrips.length - 1].stopTime;
-        } catch (error) {
-            console.log("There was an error while processing the trip");
-            console.log(error);
-            return;
-        }
-        
-        console.log("Finished processing!");
-        return finalTrip;
+    private startInterval(){
+        this.totalTimeString = this.getTotalTimeString();
+        this.interval = setInterval(() => {
+          this.totalTimeString = this.getTotalTimeString();
+        }, 1000);
     }
+    
+    /**
+     * pauseInterval() - Stop the interval, because then the trip is paused, there is no need for updating the timer.
+     */
+    private pauseInterval(){
+    clearInterval(this.interval);
+    }
+    
 
     /**
      * getTrip - Get the trip as it is AFTER the last pause
      */
     public getTrip(){
-        return this.trip;
+        return this.Trip;
     }
 
-    public getTotalTime(){
-        return this.totalTime;
+    getDuration(){
+        return this.Trip.duration;
     }
+
+    getTotalTimeString(){
+        var time;
+        if (this.isPaused()){
+          time = globals.timeConversion(this.Trip.duration);
+        } else {
+          time = globals.timeConversion(this.Trip.duration + (new Date().getTime() - this.subTrip.startTime));
+        }
+        console.log(time);
+        return time;
+      }
 
     public getStatus(){
         if (this.status === false){
             return false;
-        } else if (typeof this.trip.stopTime == undefined){
+        } else if (typeof this.Trip.stopTime == undefined){
             return new Error("Something is not right. Status is false but does not have a stop time!");
         } else {
             return true;
@@ -320,7 +316,6 @@ export class Tracker {
     }
 
     public isPaused(){
-        return this.paused;
+        return this.paused || this.pausing;
     }
-
 }

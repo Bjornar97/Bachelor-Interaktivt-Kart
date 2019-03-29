@@ -2,14 +2,44 @@
 
 .box{
     text-align: left;
-    padding: 20dp;
+    padding: 10dp 0 0 0;
+    color: #666;
+}
+
+.boxLabel {
+    padding: 5dp;
+    font-size: 16;
+}
+
+.checkBox {
+    font-size: 20;
+    margin-left: 5dp;
+}
+
+.actionLabel {
+    font-size: 16;
+    padding: 5dp;
+}
+
+.actionText {
+    vertical-align: center;
+    padding: 5dp;
+}
+
+.actionIcon {
+    padding: 0 5dp;
+    font-size: 24;
 }
 
 .outerBox{
-    margin: 5dp 10dp 5dp 10dp;
+    margin: 5dp 10dp 20dp 10dp;
     background-color: #fff;
 }
 
-.deleteBtn{
-    padding: 10dp 5dp 10dp 5dp;
+.actionRow {
+    padding: 5dp 0;
+    width: 100%;
+    margin-top: 10dp;
+    border-color: #aaa;
+    border-top-width: 1dp;
 }

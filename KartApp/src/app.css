@@ -145,3 +145,9 @@ components that have the btn class name.
     background-color: rgba(255, 255, 255, 0.5);
     z-index: 100;
 }
+
+.container {
+    text-align: left;
+    background-color: #fff;
+    margin: 15dp 5dp 5dp 5dp;
+}

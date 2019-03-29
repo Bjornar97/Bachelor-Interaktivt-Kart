@@ -76,7 +76,7 @@ export class LocationClass {
     
   }
 
-  private convertToGeoLocation(points: LocationObject[]): geolocation.Location[]{
+  private static convertToGeoLocation(points: LocationObject[]): geolocation.Location[]{
     var newArray: Location[] = [];
     points.forEach(function(point){
       newArray.push({
@@ -101,7 +101,7 @@ export class LocationClass {
    * 
    * @returns The distance in meters
    */
-  public findDistance(firstPoint: LocationObject, secondPoint: LocationObject) {
+  public static findDistance(firstPoint: LocationObject, secondPoint: LocationObject) {
     var geoPoints = this.convertToGeoLocation([firstPoint, secondPoint]);
     var first = true;
     var firstP: Location;
@@ -120,7 +120,7 @@ export class LocationClass {
   /**
    * getLocation - get the current location of the device
    * 
-   * @param accuracy "high" is using gps, about 3 metres, "any" is using wifi or cell towers and have lower accuracy(100-500 meters).
+   * @param accuracy if it is 1, it is using gps, about 3 metres, 0 is using wifi or cell towers and have lower accuracy(100-500 meters).
    *    Use "any" if you dont need the accuracy as it uses less power
    * 
    * @param maxAge How old the location can be in milliseconds. If maxAge = 5000, then you will get back a location that is less than 5 seconds old.
@@ -128,29 +128,40 @@ export class LocationClass {
    * @param maxTimeout How long it can try to get the location before aborting in milliseconds.
    */
   public getLocation(maxAge = 5000, maxTimeout = 20000, accuracy = this.defaultAccuracy): Promise<LocationObject> {
-    this.locationEnabled();
     var newPoint = this.newPoint;
-
     return new Promise((resolve, reject) => {
-      // if(!this.locationEnabled()){
-      //   console.error("Location not enabled")
-      //   reject(new Error("Location not enabled"));
-      // }
-
-      geolocation.getCurrentLocation({desiredAccuracy: accuracy, maximumAge: maxAge, timeout: maxTimeout})
-        .then(function (loc) {
-          var point = newPoint(loc.timestamp, loc.latitude, loc.longitude, loc.horizontalAccuracy, loc.speed, loc.direction, loc.altitude, loc.verticalAccuracy);
-          resolve(point);
-      }, function (reason){
-            console.error(reason);
-            reject(new Error("Error while getting your location " + reason));
+      let getlocation = function(){
+        geolocation.getCurrentLocation({desiredAccuracy: accuracy, maximumAge: maxAge, timeout: maxTimeout})
+            .then(function (loc) {
+              var point = newPoint(loc.timestamp, loc.latitude, loc.longitude, loc.horizontalAccuracy, loc.speed, loc.direction, loc.altitude, loc.verticalAccuracy);
+              resolve(point);
+              }, function (reason){
+                console.error(reason);
+                reject(new Error("Error while getting your location " + reason));
+            });
+          };
+      geolocation.isEnabled().then((result) => {
+        if (result){
+          getlocation();
+        } else {
+          geolocation.enableLocationRequest(true, true).then(() => {
+            getlocation();
+          });
+          console.log("Permission denied");
+          // TODO: Show error-message to user
+        }
       });
     }) 
   }
 
   
   ngOnInit() {
-      this.locationEnabled();
+    geolocation.isEnabled().then((result) => {
+      if (!result){
+        console.log("Location not enabled, asking for permission");
+        geolocation.enableLocationRequest();
+      }
+    });
   }
 
 }

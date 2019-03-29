@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Trip } from '~/app/tracker';
 import { TripService } from '../trip.service';
 import { formatDate } from '@angular/common';
@@ -6,6 +6,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { View } from 'tns-core-modules/ui/page/page';
 import { screen } from "tns-core-modules/platform";
+import * as globals from "~/app/globals";
 
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
@@ -16,7 +17,7 @@ let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lør
   providers: [TripService],
   moduleId: module.id,
 })
-export class TripBoxComponent implements OnInit {
+export class TripBoxComponent implements OnInit, OnChanges {
 
   constructor(private tripService: TripService, private routerExt: RouterExtensions) { 
 
@@ -26,6 +27,8 @@ export class TripBoxComponent implements OnInit {
   
   @Output()
   delete = new EventEmitter<string>();
+
+  private checked: boolean = false;
 
   private trip: Trip;
   private totalTimeString: string;
@@ -55,16 +58,38 @@ export class TripBoxComponent implements OnInit {
     });
   }
 
+  drawCheck(){
+    if (this.trip == undefined){
+      return;
+    }
+    if (this.checked){
+      console.log("It is checked, drawing");
+      this.tripService.drawTrip(this.trip.id);
+    } else {
+      console.log("Not checked, removing");
+      this.tripService.unDrawTrip(this.trip.id);
+    }
+  }
+
+  toggleCheck(){
+    if (this.checked) {
+      this.checked = false;
+    } else {
+      this.checked = true;
+    }
+    this.drawCheck();
+  }
+
+  ngOnChanges(){
+    this.drawCheck();
+  }
+
   ngOnInit() {
     this.trip = this.tripService.getTrip(this.id);
     if (this.trip != undefined){
-      this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
-
-      var dateString: string;
-      var time = this.trip.startTime;
-
-      dateString =  days[time.getDay()] + " " + time.getDate().toString() + "." + time.getMonth().toString() + "." + time.getFullYear().toString() + " " + time.getHours().toString() + ":" + time.getMinutes().toString();
-      this.startTimeString = dateString;
+      this.totalTimeString = globals.timeConversion(this.trip.duration);
+      var time = new Date(this.trip.startTime);
+      this.startTimeString = globals.timeMaker(time);
     }
   }
 

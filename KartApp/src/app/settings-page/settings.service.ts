@@ -105,6 +105,8 @@ export class SettingsService implements OnInit{
    * 
    * 31: Map position setting.
    * 
+   * 41: tripActive
+   * 
    * @returns The setting you asked for. If it does not exist, it doesnt return anything
    */
   getSetting(SettingName?: string, SettingId?: number): Setting {

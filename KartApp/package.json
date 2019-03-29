@@ -1,11 +1,11 @@
 {
     "nativescript": {
         "id": "org.nativescript.KartApp",
-        "tns-ios": {
-            "version": "5.2.0"
-        },
         "tns-android": {
             "version": "5.2.1"
+        },
+        "tns-ios": {
+            "version": "5.2.0"
         }
     },
     "description": "NativeScript Application",
@@ -23,6 +23,7 @@
         "@angular/router": "~7.1.0",
         "nativescript-angular": "~7.1.0",
         "nativescript-camera": "^4.2.0",
+        "nativescript-checkbox": "^3.0.3",
         "nativescript-floatingactionbutton": "^5.0.0",
         "nativescript-geolocation": "^4.4.2",
         "nativescript-mapbox": "^4.4.1",

@@ -38,8 +38,6 @@ export class MapComponent implements OnInit {
     }
     
     private settingsService: SettingsService;
-    private settings: Setting[];
-    private autoRotate = true;
 
     @Input() main: string;
     private locationClass: LocationClass;
@@ -54,7 +52,9 @@ export class MapComponent implements OnInit {
     }
 
     setAutoRotate(value: boolean){
-        this.autoRotate = value;
+        let setting = this.settingsService.getSetting(undefined, 1);
+        setting.value = value;
+        this.settingsService.setSetting(setting);
     }
 
     /**
@@ -94,7 +94,7 @@ export class MapComponent implements OnInit {
      * @param width The width of the line. default: 1.
      * @param opacity The opacity of the line. Default: 0.7.
      */
-    public drawLine(points: LatLng[], color = "#ff0000", width = 1, opacity = 0.7){
+    public drawLine(points: LatLng[], id?: number, color = "#ff0000", width = 1, opacity = 0.7){
         // var LatLngPoints: LatLng[] = [];
         // points.forEach(function(point){
         //     LatLngPoints.push({
@@ -102,7 +102,8 @@ export class MapComponent implements OnInit {
         //         lng: point.lng
         //     });
         // });
-        var promise = this.map.addPolyline({color: color, points: points, width: width, opacity: opacity});
+        var promise = this.map.addPolyline({id: id, color: color, points: points, width: width, opacity: opacity});
+        console.log("Drew line");
         return promise;
     }
 
@@ -115,7 +116,7 @@ export class MapComponent implements OnInit {
     }
 
     public trackUser(){
-        var bearing = this.autoRotate;
+        var bearing = this.settingsService.getSetting(undefined, 1).value;
         if (bearing){
             this.map.trackUser({mode: "FOLLOW_WITH_HEADING", animated: true});
         } else {

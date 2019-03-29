@@ -1,10 +1,15 @@
-.header{
-    color: #000;
-    font-size: 20;
-    padding: 0 10dp 10dp 10dp;
-    margin: 0;
-    border-color: #aaa;
-    border-width: 0 0 2px 0;
+ActionBar {
+    background-color: transparent;
+    color: #000000;
+    border-bottom-color: transparent;
+    border-bottom-width: 1dp;
+}
+
+.ActionbarUnderline {
+    border-bottom-color: #cccccc;
+    border-bottom-width: 1dp;
+    margin: 0 5dp;
+    height: 1dp;
 }
 
 .page{
@@ -12,18 +17,29 @@
 }
 
 .tripsHeader{
-    border-color: #aaa;
     text-align: left;
-    font-size: 18;
-    margin-top: 10dp;
-    margin-left: 10dp;
+    font-weight: bold;
+    padding: 20dp 10dp 5dp 10dp;
+}
+
+.headerText {
+    color: #008000;
+    font-size: 20;
+}
+
+.seeAllText {
+    font-size: 16;
+    color: #666666;
+}
+
+.checkAllBox {
+    margin-left: 5dp;
 }
 
 .tripBtn{
     height: 60;
 	width: 60;
 	margin: 15;
-	background-color: #ff4081;
 	horizontal-align: right;
 	vertical-align: bottom;
 }
@@ -39,15 +55,44 @@
 }
 
 .currentTripBox{
-    margin: 10dp 0 5dp 0;
-    color: #000;
     font-size: 18;
     text-align: left;
-    width: 100%;
-    height: 70dp;
-    border-radius: 20dp;
-    background-color: #fff;
-    
+    height: 80dp;
+    padding: 15dp 15dp 15dp 10dp;
+}
+
+.currentTripTitle {
+    font-size: 15;
+    margin-bottom: 5dp;
+    font-weight: bold;
+    color: #008000;
+}
+
+.TripPaused {
+    border-color: #ffff00;
+    border-width: 1dp;
+}
+
+.fontIcon {
+    font-family: 'FontAwesome', 'Font-Awesome';
+    color: #0077ee;
+    font-size: 42;
+    padding-right: 20dp;
+    vertical-align: center;
+}
+
+.far {
+    font-family: "Font Awesome 5 Free", "fa-regular-400";
+    font-weight: 400;
+}
+
+.TripPlaying {
+    border-color: #008000;
+    border-width: 1dp;
+}
+
+.currentTripText {
+    font-size: 15;
 }
 
 .currentPaused{
@@ -60,9 +105,12 @@
     border-width: 5;
 }
 
-.currentTripBox .label{
-    vertical-align: center;
-    margin: 0 5dp 0 10dp;
+.offTripFAB {
+    background-color: #0077ee;
+}
+
+.onTripFAB {
+    background-color: #008000;
 }
 
 .newTripContainer{
