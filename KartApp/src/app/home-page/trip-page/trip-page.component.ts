@@ -60,7 +60,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
     MainMap.drawLine(this.trip.points, "red", 3, 0.8);
 
     this.events = this.tripService.getTripEvents(this.trip.id);
-
+    
     if (this.trip != undefined){
       this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
       var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}
