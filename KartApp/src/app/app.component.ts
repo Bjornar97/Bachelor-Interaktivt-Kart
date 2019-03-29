@@ -95,6 +95,41 @@ export class AppComponent {
         }
     }
 
+    
+    /**
+     * Check if the previous trip was finished. If it wasnt, load the trip into the tracker so it can continue.
+     */
+    private checkPrevTrip(){
+        if (this.tripService.isTrip()){
+            console.log("A trip is ongoing already!")
+            return;
+        }
+        try {
+            // Check if a trip is currently going on when opening the app:
+            let folder = fs.knownFolders.documents().getFolder("Trips");
+                // Getting the file
+            let file = folder.getFile("CurrentTrip.json");
+            let result = JSON.parse(file.readTextSync());
+            
+            // Checking if the last trip was finished
+            if (!this.tripService.doesTripExist(result.trip.id)){
+                console.log("Prev trip not finsihed, resuming trip");
+                globals.MainTracker.loadTrip(result.trip, result.paused, result.subtrip);
+                this.routerExtensions.navigateByUrl("home/currentTrip").then((value) => {
+                    if (value){
+                        console.log("Navigation succeded");
+                        this.drawer.openDrawer(undefined, "home");
+                    }
+                });
+            } else {
+                console.log("Trip exists already: ");
+            }
+        } catch (error) {
+            console.log("There was an error while resuming previous trip");
+            console.log(error);
+        }   
+    }
+
     ngOnInit(): void {
         // When back button on android is pressed, check if you are on startpage, and promt you if you want to shut the app down.
         if (isAndroid) {
@@ -135,6 +170,9 @@ export class AppComponent {
             }
             file.writeTextSync(JSON.stringify(info));
         }
+
+        this.checkPrevTrip();
+
         console.log("App component initiallized");
     }
 }
