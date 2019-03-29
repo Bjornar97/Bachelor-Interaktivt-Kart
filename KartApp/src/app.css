@@ -151,3 +151,17 @@ components that have the btn class name.
     background-color: #fff;
     margin: 15dp 5dp 5dp 5dp;
 }
+
+ActionBar {
+    background-color: transparent;
+    color: #000000;
+    border-bottom-color: transparent;
+    border-bottom-width: 1dp;
+}
+
+.ActionbarUndeline {
+    border-bottom-color: #cccccc;
+    border-bottom-width: 0;
+    margin: 0 5dp;
+    height: 1dp;
+}
