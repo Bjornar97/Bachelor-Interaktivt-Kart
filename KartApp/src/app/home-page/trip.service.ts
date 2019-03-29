@@ -374,7 +374,7 @@ export class TripService {
             lastPoint = point;
           });
 
-          let duration = (walk.stopTime - walk.startTime) * 1000;
+          let duration = (walk.stopTime - walk.startTime) / 60000;
           let walkEvent = {
             timestamp: walk.startTime,
             type: "walk",
@@ -382,7 +382,7 @@ export class TripService {
               distanceMeters: distance,
               startTime: walk.startTime,
               stopTime: walk.stopTime,
-              avgSpeed: duration / (distance * 1000)
+              avgSpeed: duration / (distance / 1000)
             }
           }
 
