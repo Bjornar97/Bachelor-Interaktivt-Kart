@@ -23,11 +23,6 @@
                 <Label col="1" row="0" textWrap="true"></Label>           
         </GridLayout>
 
-        <StackLayout *ngFor="let event of events.events">
-                <Image *ngIf="event.type == 'image'" src="event.value"></Image>
-        </StackLayout>
-        
-
     </StackLayout>
     
     <StackLayout *ngFor="let event of events">
