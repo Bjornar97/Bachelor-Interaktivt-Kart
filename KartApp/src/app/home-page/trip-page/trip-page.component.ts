@@ -49,7 +49,9 @@ export class TripPageComponent implements OnInit, OnDestroy {
       // In a real app: dispatch action to load the details here.
     });
     MainMap.removeLine();
-    MainMap.drawLine(this.trip.points, "red", 3, 0.8);
+    this.trip.walks.forEach((walk) => {
+      MainMap.drawLine(walk.points);
+    });
   }
 
   ngOnDestroy(){

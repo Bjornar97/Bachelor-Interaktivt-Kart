@@ -8,15 +8,16 @@ import { LocationClass } from '../location';
 import { Image } from 'tns-core-modules/ui/image/image';
 import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
 import { ImageService } from './image.service';
+import { MarkerService } from '../map/marker.service';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor(private imageService: ImageService) {
+  constructor(private imageService: ImageService, private markerService: MarkerService) {
     if (globals.MainTracker == undefined){
-      globals.setTracker(new Tracker(1, true));
+      globals.setTracker(new Tracker(1));
     }
     this.tracker = globals.MainTracker;
   }
@@ -96,11 +97,7 @@ export class TripService {
     try {
       var folder = this.getTripFolder();
       if (fs.File.exists(fs.path.join(folder.path, "Trip" + id + ".json"))){
-        if (this.getTrip(id).finished == true){
-          return true;
-        } else {
-          return false;
-        }
+        return true;
     } else {
       return false;
     }
@@ -126,8 +123,6 @@ export class TripService {
         });
       }
       var trip: Trip = JSON.parse(tripText);
-      trip.startTime = new Date(trip.startTime);
-      trip.stopTime = new Date(trip.stopTime);
       return trip;
     } catch (error) {
       console.log("ERROR in tripService(getTrip): " + error);
@@ -237,19 +232,34 @@ export class TripService {
       console.log("ERROR: Trip is already started");
       return new Error("En tur pågår allerede");
     } else {
-      this.tracker.startTrip();
-      var trip = this.tracker.getTrip();
+      let id = this.getLastTripId() + 1;
+      this.tracker.startTrip(id);
       var file = this.getTripFolder().getFile("Info.json");
       var info;
       try {
         var value = file.readTextSync();
         info = JSON.parse(value);
-        info.lastTripID = trip.id;
+        info.lastTripID = id;
         file.writeTextSync(JSON.stringify(info));
-        return trip.id;
+        return id;
       } catch (error) {
         console.log("ERROR in tripService(startTrip): " + error);
       }
+    }
+  }
+
+
+  saveCurrentTrip(){
+    var trip = this.tracker.getTrip();
+    let paused = this.tracker.isPaused();
+    if (!paused){
+      this.tracker.pauseTrip();
+    }
+    var currentTripFile = this.getCurrentTripFile();
+    try {
+      currentTripFile.writeTextSync(JSON.stringify({trip: trip, paused: paused}));
+    } catch (error) {
+      console.log("Error in pauseTrip while saving currentTrip to file: " + error);
     }
   }
 
@@ -261,20 +271,7 @@ export class TripService {
       return;
     }
     this.tracker.pauseTrip();
-    var trip = this.tracker.getTrip();
-    var currentTripFile = this.getCurrentTripFile();
-    var currentTrip = {
-      tripID: this.tracker.getTripID(),
-      trip: trip,
-      tripTrips: this.tracker.getTripTrips(),
-      totalTime: this.tracker.getTotalTime()
-    }
-    console.log("TotalTime: " + currentTrip.totalTime);
-    try {
-      currentTripFile.writeTextSync(JSON.stringify(currentTrip));
-    } catch (error) {
-      console.log("Error in pauseTrip while saving currentTrip to file: " + error);
-    }
+    this.saveCurrentTrip();
   }
 
   /**
@@ -295,6 +292,22 @@ export class TripService {
     return this.tracker.isPaused();
   }
 
+  drawTrip(id: number){
+    let trip = this.getTrip(id);
+    trip.walks.forEach((walk) => {
+      globals.MainMap.drawLine(walk.points, walk.startTime);
+    });
+  }
+
+  unDrawTrip(id: number){
+    let trip = this.getTrip(id);
+    let ids = [];
+    trip.walks.forEach((walk) => {
+      ids.push(walk.startTime);
+    });
+    globals.MainMap.removeLine(ids);
+  }
+
   /**
    * endTrip() - End the current trip.
    * 
@@ -303,7 +316,7 @@ export class TripService {
   endTrip(): Trip{
     var trip = this.tracker.endTrip();
     this.getCurrentTripFile().removeSync();
-    var file = this.makeTripFile(this.tracker.getTripID());
+    var file = this.makeTripFile(trip.id);
     try {
       var jsonTrip = JSON.stringify(trip);
     } catch (error) {
@@ -340,98 +353,99 @@ export class TripService {
    * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
    */
   getTripEvents(id): {
-    events: {
       timestamp: Date,
       type: string,
       value: any,
-    }[]
-  } {
+    }[] 
+    {
     var trip = this.getTrip(id);
-    var result = {
-      events: []
-    };
+    var events = [];
+
     if (trip != undefined){
-      if (trip.pauses != undefined){
-
-        var lastPoint: number;
-        var first = true;
-        var locationClass = new LocationClass();
-
-        trip.pauses.forEach((pause) => {
-          if (first){
-
-            lastPoint = trip.points.findIndex(function(value): boolean {
-              return value.id == pause.from.id;
-            });
-
-            var duration = new Date(pause.from.timestamp).getTime() - trip.startTime.getTime();
-            var distance = 0;
-            if (trip.points.length > 1){
-              for (let i = 1; i < lastPoint; i++) {
-                distance += locationClass.findDistance(trip.points[i-1], trip.points[i]);
-              }
+      if (trip.walks != undefined){
+        let lastPauseEvent = null;
+        trip.walks.forEach((walk) => {
+          let lastPoint = null;
+          let distance = 0;
+          walk.points.forEach((point) => {
+            if (lastPoint != null){
+              distance += LocationClass.findDistance(lastPoint, point);
             }
-            var walkEvent = {
-              timestamp: trip.startTime,
-              type: "walk",
-              value: {
-                duration: duration,
-                AverageSpeed: distance / duration
-              }
-            }
-            first = false;
-          } else {
-            var point = trip.points.findIndex(function(value): boolean {
-              return value.id == pause.from.id;
-            });
-            var duration = new Date(pause.from.timestamp).getTime() - new Date(trip.points[lastPoint + 1].timestamp).getTime();
-            var distance = 0;
-            if (trip.points.length > 1){
-              for (let i = 1; i < point; i++){
-                distance += locationClass.findDistance(trip.points[i-1], trip.points[i]);
-              }
-            }
+            lastPoint = point;
+          });
 
-            var walkEvent = {
-              timestamp: trip.points[lastPoint + 1].timestamp,
-              type: "walk",
-              value: {
-                duration: duration,
-                AverageSpeed: distance / duration
-              }
-
+          let duration = (walk.stopTime - walk.startTime) * 1000;
+          let walkEvent = {
+            timestamp: walk.startTime,
+            type: "walk",
+            value: {
+              distanceMeters: distance,
+              startTime: walk.startTime,
+              stopTime: walk.stopTime,
+              avgSpeed: duration / (distance * 1000)
             }
           }
-          var event = {
-            timestamp: pause.from.timestamp,
+
+          let pauseEvent = {
+            timestamp: walk.stopTime,
             type: "pause",
             value: {
-              from: new Date(pause.from.timestamp),
-              to: new Date(pause.to.timestamp)
+              from: walk.stopTime,
+              to: undefined
             }
           }
-          result.events.push(walkEvent, event);
+
+          if (lastPauseEvent != null){
+            lastPauseEvent.value.to = walk.startTime;
+          }
+
+          lastPauseEvent = pauseEvent;
+          events.push(lastPauseEvent);
+          events.push(walkEvent);
         });
+
         if (trip.images != undefined){
           trip.images.forEach((image) => {
-            // TODO: Legge til bildet her.
+            if (image != null && image != undefined){
+              let imageEvent = {
+                timestamp: image.timestamp,
+                type: "image",
+                value: {
+                  markerId: image.markerId,
+                  imageSrc: image.imageSrc,
+                }
+              }
+              events.push(imageEvent);
+            }
           });
         }
-    
-        // TODO: Sortere her
+        
+        events.sort((eventA, eventB) => {
+          if (eventA.timestamp > eventB.timestamp){
+            return 1;
+          } else if (eventB.timestamp > eventB.timestamp){
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        
+        return events;
+      } else {
+        console.log("There is no walks here!");
       }
+    } else {
+      console.log("The trip is not defined!!!");
     }
-    
-
-    return result;
   }
 
 
-  saveImage(image: ImageAsset){
+  saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){
     if (this.isTrip()){
       try {
-        var imageUrl = this.imageService.saveImage(image);
-        this.tracker.addImage(imageUrl);
+        let marker = this.markerService.makeMarker(lat, lng, url, "image", iconPath);
+        var imageUrl = this.imageService.saveImage(image, marker.id);
+        this.tracker.addImage(marker.id, imageUrl);
       } catch (error) {
         console.log("An error occured in saveImage in tripService: " + error);
       }
@@ -445,25 +459,8 @@ export class TripService {
    * 
    * @returns the total time in a string in this format: hh:mm:ss. If its less than one hour, this is returned: mm:ss
    */
-  getTotalTime(){
+  getTotalTimeString(){
     return this.tracker.getTotalTimeString();
-  }
-
-  /**
-   * getTripTime() - Get the total time from the provided trip
-   * 
-   * @param Trip The trip to analyze
-   */
-  getTripTime(Trip: Trip){
-    var time: number;
-    time = Trip.stopTime.getTime() - Trip.startTime.getTime();
-
-    if (Trip.pauses != undefined){
-      Trip.pauses.forEach(pause => {
-        time -= new Date(pause.to.timestamp).getTime() - new Date(pause.from.timestamp).getTime();
-      });
-    }
-    return time;
   }
 
   /**

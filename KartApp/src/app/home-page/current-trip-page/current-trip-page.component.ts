@@ -10,7 +10,7 @@ import { MarkerService } from '~/app/map/marker.service';
 import { LocationClass } from '~/app/location';
 import * as globals from "~/app/globals";
 import { DrawerClass } from '~/app/drawer';
-
+import { on as applicationOn, launchEvent, suspendEvent, resumeEvent, exitEvent, lowMemoryEvent, uncaughtErrorEvent, ApplicationEventData } from "tns-core-modules/application";
 
 @Component({
   selector: 'ns-current-trip-page',
@@ -59,9 +59,8 @@ export class CurrentTripPageComponent implements OnInit {
           var image = new Image();
           image.src = imageAsset;
           this.imageSrc = image.src;
-          this.tripService.saveImage(imageAsset);
-          var location = this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
-            this.markerService.makeMarker(loc.lat, loc.lng, "marker/image/", "image", "res://image_marker_96");
+          this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
+            this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker_96");
           }).catch((error) => {
             console.log("ERROR in OpenCamera in currentTripPage: Error while getting location: " + error);
           });
@@ -159,6 +158,9 @@ export class CurrentTripPageComponent implements OnInit {
 
     this.drawer = globals.getDrawer();
     this.drawer.setDrawerHeight(220);
-  }
 
+    applicationOn(exitEvent, (args: ApplicationEventData) => {
+      this.tripService.saveCurrentTrip();
+  });
+  }
 }
