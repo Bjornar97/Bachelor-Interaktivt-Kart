@@ -58,13 +58,10 @@ export class Tracker {
         return this.tripID;
     }
 
-    public loadTrip(trip: Trip, paused: boolean){
+    public loadTrip(trip: Trip){
         this.tripID = trip.id;
         this.Trip = trip;
         this.paused = true;
-        if (!paused){
-            this.unpauseTrip();
-        }
         this.status = true;
         this.totalTimeString = this.getTotalTimeString();
     }
