@@ -73,7 +73,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
     this.tripService.drawTrip(this.trip.id);
 
     this.events = this.tripService.getTripEvents(this.trip.id);
-
+    
     if (this.trip != undefined){
       this.totalTimeString = globals.timeConversion(this.trip.duration);
       this.startTimeString = globals.timeMaker(new Date(this.trip.startTime));
