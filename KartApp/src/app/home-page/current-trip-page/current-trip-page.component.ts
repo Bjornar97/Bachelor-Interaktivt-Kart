@@ -11,6 +11,7 @@ import { LocationClass } from '~/app/location';
 import * as globals from "~/app/globals";
 import { DrawerClass } from '~/app/drawer';
 import { on as applicationOn, launchEvent, suspendEvent, resumeEvent, exitEvent, lowMemoryEvent, uncaughtErrorEvent, ApplicationEventData } from "tns-core-modules/application";
+import { Setting, SettingsService } from '~/app/settings-page/settings.service';
 
 @Component({
   selector: 'ns-current-trip-page',
@@ -21,7 +22,7 @@ import { on as applicationOn, launchEvent, suspendEvent, resumeEvent, exitEvent,
 })
 export class CurrentTripPageComponent implements OnInit {
 
-  constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService) { 
+  constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
     this.locationClass = new LocationClass();
     this.tracker = globals.MainTracker;
   }
@@ -160,7 +161,17 @@ export class CurrentTripPageComponent implements OnInit {
     this.drawer.setDrawerHeight(220);
 
     applicationOn(exitEvent, (args: ApplicationEventData) => {
-      this.tripService.saveCurrentTrip();
-  });
+      let tripActive: Setting = {
+        id: 41,
+        name: "tripActive",
+        value: false,
+        type: "Object"
+      }
+      if (!this.tripService.isPaused()) {
+        tripActive.value = true;
+        this.tripService.pauseTrip(); 
+      }
+      this.settingsService.setSetting(tripActive);
+    });
   }
 }

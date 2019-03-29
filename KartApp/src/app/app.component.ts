@@ -114,7 +114,7 @@ export class AppComponent {
             // Checking if the last trip was finished
             if (!this.tripService.doesTripExist(result.trip.id)){
                 console.log("Prev trip not finsihed, resuming trip");
-                globals.MainTracker.loadTrip(result.trip, result.paused, result.subtrip);
+                globals.MainTracker.loadTrip(result.trip);
                 this.routerExtensions.navigateByUrl("home/currentTrip").then((value) => {
                     if (value){
                         console.log("Navigation succeded");
@@ -123,6 +123,13 @@ export class AppComponent {
                 });
             } else {
                 console.log("Trip exists already: ");
+            }
+            
+            let tripActive = this.settingsService.getSetting(undefined, 41);
+            if (tripActive != undefined) {
+                if (tripActive.value) {
+                    this.tripService.unpauseTrip();
+                }
             }
         } catch (error) {
             console.log("There was an error while resuming previous trip");
