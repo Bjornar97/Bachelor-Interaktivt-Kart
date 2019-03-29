@@ -21,7 +21,7 @@ export class HomePageComponent implements OnInit {
         // Use the component constructor to inject providers.
         if (globals.MainTracker == undefined){
             console.log("Main tracker does not exist,  making a new one");
-            globals.setTracker(new Tracker(1, false));
+            globals.setTracker(new Tracker(1));
         }
         
         this.drawer = globals.getDrawer();
@@ -98,30 +98,23 @@ export class HomePageComponent implements OnInit {
         }
         try {
             // Check if a trip is currently going on when opening the app:
-            var folder = fs.knownFolders.documents().getFolder("Trips");
+            let folder = fs.knownFolders.documents().getFolder("Trips");
                 // Getting the file
-            var file = folder.getFile("CurrentTrip.json");
-            var currentTrip = JSON.parse(file.readTextSync());
-
-            var tripID = currentTrip.tripID;
-            var trip: Trip = currentTrip.trip;
-            var tripTrips: Trip[] = currentTrip.tripTrips;
-            var totalTime = currentTrip.totalTime;
-            console.dir(currentTrip);
+            let file = folder.getFile("CurrentTrip.json");
+            let result = JSON.parse(file.readTextSync());
+            
             // Checking if the last trip was finished
-            if (!this.tripService.doesTripExist(tripID)){
-                console.log("Prev trip not finsihed");
-                // If it wasnt, we resume the trip
-                var date = new Date(trip.startTime);
-                if ((Date.now() - date.getTime()) < 48 * 60 * 60 * 1000 && !trip.finished){
-                    console.log("Resuming Trip");
-                    globals.MainTracker.loadTrip(tripID, trip, tripTrips, totalTime);
-                    // TODO: Open the drawer and select button. Maybe show error.
-                    //this.routerext.navigateByUrl("home/currentTrip");
-                }
+            if (!this.tripService.doesTripExist(result.trip.id)){
+                console.log("Prev trip not finsihed, resuming trip");
+                globals.MainTracker.loadTrip(result.trip, result.paused);
+                this.routerext.navigateByUrl("home/currentTrip").then((value) => {
+                    if (value){
+                        console.log("Navigation succeded");
+                        this.drawer.openDrawer(undefined, "home");
+                    }
+                });
             } else {
                 console.log("Trip exists already: ");
-                console.dir(this.tripService.getTrip(tripID));
             }
         } catch (error) {
             console.log("There was an error while resuming previous trip");

@@ -25,7 +25,6 @@ ActionBar {
 .headerText {
     color: #008000;
     font-size: 20;
-
 }
 
 .seeAllText {
@@ -67,9 +66,6 @@ ActionBar {
     margin-bottom: 5dp;
     font-weight: bold;
     color: #008000;
-}
-
-.currentTripTextBox {
 }
 
 .TripPaused {

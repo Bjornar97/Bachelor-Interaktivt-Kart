@@ -21,9 +21,6 @@
     padding: 5dp;
 }
 
-.actionLabel.first {
-}
-
 .actionText {
     vertical-align: center;
     padding: 5dp;
@@ -35,7 +32,7 @@
 }
 
 .outerBox{
-    margin: 5dp 10dp 5dp 10dp;
+    margin: 5dp 10dp 20dp 10dp;
     background-color: #fff;
 }
 

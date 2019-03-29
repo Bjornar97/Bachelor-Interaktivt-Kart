@@ -41,7 +41,7 @@ export class AppComponent {
         globals.MainMap.getCenter().then((center) => {
             var centerPoint = this.locationService.newPoint(new Date(), center.lat, center.lng, 0);
             this.locationService.getLocation(5000, 5000, 1).then((location) => {
-                var distance = this.locationService.findDistance(centerPoint, location);
+                var distance = LocationClass.findDistance(centerPoint, location);
                 var duration = Math.abs(Math.log10(distance)*10);
                 globals.MainMap.getZoom().then((zoom) => {
                     var zoomlevel;
