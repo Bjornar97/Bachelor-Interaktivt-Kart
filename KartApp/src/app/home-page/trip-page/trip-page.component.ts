@@ -70,9 +70,24 @@ export class TripPageComponent implements OnInit, OnDestroy {
       // In a real app: dispatch action to load the details here.
     });
     MainMap.removeLine();
-    this.trip.walks.forEach((walk) => {
-      MainMap.drawLine(walk.points);
-    });
+    MainMap.drawLine(this.trip.points, "red", 3, 0.8);
+
+    this.events = this.tripService.getTripEvents(this.trip.id);
+    
+    if (this.trip != undefined){
+      this.totalTimeString = this.tripService.timeConversion(this.tripService.getTripTime(this.trip));
+      var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}
+      // this.startTimeString = this.trip.startTime.toLocaleDateString("en-US", options); // Not working...
+
+      var dateString: string;
+      var time = this.trip.startTime;
+      dateString =  days[time.getDay() - 1] + " " + time.getDate().toString() + "." + time.getMonth().toString() + "." + time.getFullYear().toString() + " " + time.getHours().toString() + ":" + time.getMinutes().toString();
+      this.startTimeString = dateString;
+      var dateStringStop;
+      var timeStop = this.trip.stopTime;
+      dateStringStop =  days[time.getDay() - 1] + " " + timeStop.getDate().toString() + "." + timeStop.getMonth().toString() + "." + timeStop.getFullYear().toString() + " " + timeStop.getHours().toString() + ":" + timeStop.getMinutes().toString();
+      this.stopTimeString = dateStringStop;
+    }
   }
 
   ngOnDestroy(){
