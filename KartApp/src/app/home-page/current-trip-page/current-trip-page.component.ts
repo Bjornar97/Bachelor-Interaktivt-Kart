@@ -113,9 +113,19 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
    */
   OpenCamera(){
     console.log("Taking picture");
+    let saveImageSetting = this.settingsService.getSetting(undefined, 4);
+    if (saveImageSetting == undefined || saveImageSetting == null){
+      saveImageSetting = {
+        id: 4,
+        name: "saveImage",
+        type: "switch",
+        value: false
+      }
+      this.settingsService.setSetting(saveImageSetting);
+    }
     camera.requestPermissions().then(
       () => {
-        camera.takePicture({saveToGallery: false}).then((imageAsset) => {
+        camera.takePicture({saveToGallery: saveImageSetting.value}).then((imageAsset) => {
           this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
             this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker_96").then(() => {
               this.trip = this.tripService.getCurrentTrip();

@@ -100,6 +100,8 @@ export class SettingsService implements OnInit{
    * 2: Image Marker Setting - Should image markers appear on the map.
    * 
    * 3: SnapSetting - Should the drawer snap into place
+   *
+   * 4: ImageSave - Should images taken in the app be saved to the gallery
    * 
    * 11: Map menu setting.
    * 
