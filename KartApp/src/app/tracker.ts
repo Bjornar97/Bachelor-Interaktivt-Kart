@@ -256,14 +256,37 @@ export class Tracker {
      * endTrip - Stops the trip and returns the finished trip.
      */
     public endTrip(): Trip{
-        console.log("Stopping Trip " + this.tripID);
-        this.pauseTrip();
-        this.pauseInterval();
-        this.subTrip.stopTime = new Date().getTime();
-        this.Trip.stopTime = this.subTrip.stopTime;
-        this.status = false;
-        console.log("Finished ending of trip");
+        try {
+            console.log("Stopping Trip " + this.tripID);
+            this.pauseTrip();
+            this.pauseInterval();
+            if (this.Trip == undefined){
+                throw new Error("Trip is undefined");
+            }
+            this.Trip.stopTime = this.subTrip.stopTime;
+            this.status = false;
+            console.log("Finished ending of trip");
+        } catch (error) {
+            console.log("ERROR in endTrip: " + error);
+            return {
+                id: undefined,
+                distanceMeters: 0,
+                duration: 0,
+                startTime: undefined,
+                stopTime: undefined,
+                walks: undefined
+            }
+        }
         return this.Trip;
+    }
+
+    public reset(){
+        this.status = false;
+        this.Trip = undefined;
+        this.pauseInterval();
+        this.lastPoint = undefined;
+        this.subTrip = undefined;
+        this.tripID = undefined;
     }
 
     private interval;
@@ -301,7 +324,6 @@ export class Tracker {
         } else {
           time = globals.timeConversion(this.Trip.duration + (new Date().getTime() - this.subTrip.startTime));
         }
-        console.log(time);
         return time;
       }
 
