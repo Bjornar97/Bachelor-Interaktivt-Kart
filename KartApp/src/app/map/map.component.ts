@@ -231,8 +231,6 @@ export class MapComponent implements OnInit {
         if (imageMarkerSetting.value){
             console.log("imageMarkerSetting is true");
             let markers = this.markerService.getMarkers("image");
-            console.log("Got markers: ");
-            console.dir(markers);
             this.map.addMarkers(markers);
         } else {
             console.log("imageMarkerSetting is false");
@@ -246,9 +244,7 @@ export class MapComponent implements OnInit {
             value: true
         }
         let markers = this.markerService.getMarkers("image");
-        console.dir(markers);
         this.map.addMarkers(markers);
-
         this.settingsService.setSetting(imageMarkerSetting);
     }
 
