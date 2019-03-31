@@ -42,7 +42,6 @@ export class SettingsPageComponent implements OnInit {
     this.settingsService.setSetting(this.DrawerSnapSetting);
   }
 
-<<<<<<< HEAD
   toggleImageSave(){
     this.isImageSave = !this.isImageSave;
     this.imageSaveSetting.value = this.isImageSave;
@@ -80,9 +79,6 @@ export class SettingsPageComponent implements OnInit {
       this.settingsService.setSetting(drawerSnapSetting);
     }
     this.DrawerSnapSetting = drawerSnapSetting;
-=======
-  ngOnInit() {
->>>>>>> Skiftet styling på switch
   }
 
 }
