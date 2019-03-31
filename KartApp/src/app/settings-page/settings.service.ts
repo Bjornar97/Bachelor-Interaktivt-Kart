@@ -99,6 +99,8 @@ export class SettingsService implements OnInit{
    * 
    * 2: Image Marker Setting. Should image markers appear on the map.
    * 
+   * 4: ImageSave - Should images get saved to the gallery
+   * 
    * 11: Map menu setting.
    * 
    * 21: Drawer setting.
