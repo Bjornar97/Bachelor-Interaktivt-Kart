@@ -136,8 +136,8 @@ export class Tracker {
     public startTrip(id: number) {
         if (this.getStatus() == true){
             console.log("There is already a trip ongoing!");
+            return;
         }
-        
         this.Trip = {
             id: id,
             distanceMeters: 0,
@@ -169,6 +169,7 @@ export class Tracker {
             points: [],
             startTime: new Date().getTime(),
         }
+        
         this.startInterval();
         console.log("Started logging of " + watchID);
         this.tripID =  id;
@@ -187,8 +188,8 @@ export class Tracker {
             console.log("Trying to pause while pauing");
             return;
         }
-        this.pausing = true;
         this.pauseInterval();
+        this.pausing = true;
         this.subTrip.stopTime = new Date().getTime();
         this.Trip.duration += this.subTrip.stopTime - this.subTrip.startTime;
         let prevPoint = null;
@@ -223,6 +224,7 @@ export class Tracker {
     }
 
     public unpauseTrip(){
+        this.startInterval();
         this.paused = false;
         console.log("Unpausing trip in tracker");
         var watchID = geolocation.watchLocation((point) => {
@@ -248,7 +250,6 @@ export class Tracker {
         }
         this.subTrip = newSubTrip;
 
-        this.startInterval();
         return this.Trip.duration;
     }
 
