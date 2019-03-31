@@ -10,12 +10,21 @@
                         <Label col="0" text="Kartinstillinger" [nsRouterLink]="['./menu/map']" pageTransition="slide" class="menu"></Label>
                         <Image col="1" src="res://baseline_chevron_right_black_24" [nsRouterLink]="['./menu/map']" pageTransition="slide"></Image>
                     </GridLayout>
+                    <GridLayout rows="*, *" columns="*, auto" class="setting" (tap)="toggleImageSave()">
+                        <Label col="0" text="Lagre bilder til galleriet" textWrap="true" class="settingLabel"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal">
+                            <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
+                            <Label text="Skal bilder du tar på tur lagres i galleriet på telefonen?" class="infoText" textWrap="true"></Label>
+                        </StackLayout>
+                        <Switch col="1" rowSpan="2" [checked]="isImageSave" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="imageSaveChanged($event)">
+                        </Switch>
+                    </GridLayout>
                 </StackLayout>
             </ContentView>
             <ContentView class="container" shadow elevation="2">
                 <StackLayout>
                     <Label class="title" text="Avansert" textWrap="true"></Label>
-                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                    <GridLayout rows="*, *" columns="*, auto" class="setting" (tap)="toggleDrawerSnap()">
                         <Label col="0" text="Festepunkter" textWrap="true" class="settingLabel"></Label>
                         <StackLayout col="0" row="1" orientation="horizontal">
                             <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>

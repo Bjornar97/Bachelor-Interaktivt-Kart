@@ -21,6 +21,7 @@ export class SettingsPageComponent implements OnInit {
   private drawer: DrawerClass;
 
   private isDrawerSnap = true;
+  private isImageSave = false;
 
   constructor(page: Page, private routerExtensions: RouterExtensions) {
     page.actionBarHidden = false;
@@ -28,8 +29,51 @@ export class SettingsPageComponent implements OnInit {
     this.drawer = globals.getDrawer();
   }
 
-  drawerSnapChange(args){
-    console.log("Changed");
+  toggleDrawerSnap(){
+    this.isDrawerSnap = !this.isDrawerSnap;
+  }
+
+  setDrawerSnapSetting(value: boolean){
+    let setting = this.settingsService.getSetting(undefined, 3);
+    if (setting == undefined){
+      setting = {
+        id: 3,
+        name: "drawerSnap",
+        type: "switch",
+        value: value
+      }
+    } else {
+      setting.value = value;
+    }
+
+    this.settingsService.setSetting(setting);
+  }
+
+  drawerSnapChange(args) {
+    let Switch = <Switch>args.object;
+    this.isDrawerSnap = Switch.checked;
+    this.setDrawerSnapSetting(this.isDrawerSnap);
+  }
+
+  toggleImageSave(){
+    this.isImageSave = !this.isImageSave;
+  }
+
+  imageSaveChanged(args){
+    let Switch = <Switch>args.object;
+    this.isImageSave = Switch.checked;
+    let setting = this.settingsService.getSetting(undefined, 4);
+    if (setting == undefined){
+      setting = {
+        id: 4,
+        name: "imageSave",
+        type: "switch",
+        value: this.isImageSave
+      }
+    } else {
+      setting.value = this.isImageSave;
+    }
+    this.settingsService.setSetting(setting);
   }
 
 
