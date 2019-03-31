@@ -7,6 +7,8 @@ import { Page, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { ActivatedRoute } from '@angular/router';
 import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
+import { DrawerClass } from '~/app/drawer';
+import * as globals from "../../globals";
 
 @Component({
   selector: 'ns-trip-page',
@@ -16,9 +18,10 @@ import { Trip } from '~/app/tracker';
   moduleId: module.id,
 })
 export class TripPageComponent implements OnInit, OnDestroy {
+  private drawer: DrawerClass;
 
   constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute) { 
-    page.actionBarHidden = true;
+    this.drawer = globals.getDrawer();
   }
 
   private sub;

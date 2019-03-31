@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Color } from "color";
+import { DrawerClass } from '~/app/drawer';
+import * as globals from "../globals";
 
 @Component({
   selector: 'ns-account-page',
@@ -9,13 +11,12 @@ import { Color } from "color";
   moduleId: module.id,
 })
 export class AccountPageComponent implements OnInit {
+  
+  private drawer: DrawerClass;
 
   constructor(private page: Page) {
     // Use the component constructor to inject providers.
-    page.actionBarHidden = true;
-
-    
-
+    this.drawer = globals.getDrawer();
 }
 
   ngOnInit() {

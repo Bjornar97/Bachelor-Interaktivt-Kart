@@ -1,17 +1,3 @@
-ActionBar {
-    background-color: transparent;
-    color: #000000;
-    border-bottom-color: transparent;
-    border-bottom-width: 1dp;
-}
-
-.ActionbarUnderline {
-    border-bottom-color: #cccccc;
-    border-bottom-width: 1dp;
-    margin: 0 5dp;
-    height: 1dp;
-}
-
 .page{
     padding-bottom: 100dp;
 }
