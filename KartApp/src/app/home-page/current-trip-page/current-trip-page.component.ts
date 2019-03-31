@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Trip, Tracker } from '~/app/tracker';
 import { TripService } from '../trip.service';
@@ -10,11 +10,51 @@ import { MarkerService } from '~/app/map/marker.service';
 import { LocationClass } from '~/app/location';
 import * as globals from "~/app/globals";
 import { DrawerClass } from '~/app/drawer';
-import { on as applicationOn, launchEvent, suspendEvent, resumeEvent, exitEvent, lowMemoryEvent, uncaughtErrorEvent, ApplicationEventData } from "tns-core-modules/application";
+import { on as applicationOn, exitEvent, ApplicationEventData } from "tns-core-modules/application";
 import { Setting, SettingsService } from '~/app/settings-page/settings.service';
+import { trigger, transition, style, animate, state } from "@angular/animations";
+
 
 @Component({
   selector: 'ns-current-trip-page',
+  animations: [
+    trigger("someAnimation", [
+      transition("gree", [
+        style({
+          opacity: "1"
+        }),
+        animate('2s', style({
+          opacity: "0.5"
+        })),
+      ]),
+      transition("yell", [
+        style({
+          opacity: "0.5"
+        }),
+        animate('4s', style({
+          opacity: "1"
+        })),
+      ]),
+    ]),
+    trigger('LoadingAnimation', [
+      transition(':enter', [
+        style({
+          backgroundColor: "green"
+        }),
+        animate('5s', style({
+          backroundColor: "yellow"
+        }))
+      ]),
+      transition(':leave', [
+        style({
+          backgroundColor: "yellow"
+        }),
+        animate('2s', style({
+          backgroundColor: "green"
+        }))
+      ]),
+    ]),
+  ],
   templateUrl: './current-trip-page.component.html',
   styleUrls: ['./current-trip-page.component.css'],
   providers: [TripService, MarkerService],
@@ -22,7 +62,7 @@ import { Setting, SettingsService } from '~/app/settings-page/settings.service';
 })
 export class CurrentTripPageComponent implements OnInit {
 
-  constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
+  constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
     this.locationClass = new LocationClass();
     this.tracker = globals.MainTracker;
   }
@@ -35,18 +75,32 @@ export class CurrentTripPageComponent implements OnInit {
   private startTime;
   private paused: boolean = false;
 
+  color = "";
+
+  gree(){
+    this.color = "gree";
+  }
+
+  yell(){
+    this.color = "yell";
+  }
+
+  changecol(){
+    console.log("Chagning color from " + this.color);
+    this.color == "gree" ? this.yell(): this.gree();
+  }
+
   private imageSrc;
 
   private btnActiveText = "Pause";
   private btnActiveClass = " btn btn-pause";
 
-  private height = 200; // Want to get the drawer height into this
   private isLoading = false;
 
   private drawer: DrawerClass;
 
   private goBack(){
-    this.routerExtensions.backToPreviousPage();
+    this.routerExtensions.navigate(["home"], {animated: true, transition: {name: "slideRight"}});
   }
 
   /**
@@ -127,8 +181,7 @@ export class CurrentTripPageComponent implements OnInit {
         } catch (error) {
           console.log("ERROR while stopping trip in current-trip.component.ts: " + error);
           console.dir(tripBefore);
-
-
+          this.routerExtensions.navigate(["home"], {animated: true, transition: {name: "slideRight"}});
         }
       } else if (pause){
         this.togglePause();
@@ -158,7 +211,7 @@ export class CurrentTripPageComponent implements OnInit {
     }
 
     this.drawer = globals.getDrawer();
-    this.drawer.setDrawerHeight(220);
+    this.drawer.setDrawerHeight(140);
 
     applicationOn(exitEvent, (args: ApplicationEventData) => {
       let tripActive: Setting = {
@@ -173,5 +226,6 @@ export class CurrentTripPageComponent implements OnInit {
       }
       this.settingsService.setSetting(tripActive);
     });
+
   }
 }

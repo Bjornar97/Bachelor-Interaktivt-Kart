@@ -314,13 +314,22 @@ export class TripService {
    * @returns The finished trip.
    */
   endTrip(): Trip{
-    var trip = this.tracker.endTrip();
-    this.getCurrentTripFile().removeSync();
-    var file = this.makeTripFile(trip.id);
+    try {
+      this.getCurrentTripFile().removeSync();
+      var trip = this.tracker.endTrip();
+      if (trip.id == undefined){
+        throw new Error("Trip is undefined!");
+      }
+      var file = this.makeTripFile(trip.id);
+    } catch (error) {
+      console.log("ERROR in TripService: " + error);
+      this.tracker.reset();
+    }
     try {
       var jsonTrip = JSON.stringify(trip);
     } catch (error) {
       console.log("An error occured while stringifying trip. " + error);
+      
     }
     
     file.writeTextSync(jsonTrip, (error) => {
@@ -424,12 +433,12 @@ export class TripService {
           if (eventA.timestamp > eventB.timestamp){
             return 1;
           } else if (eventB.timestamp > eventB.timestamp){
-            return 1;
+            return -1;
           } else {
             return 0;
           }
         });
-        
+        console.dir(events);
         return events;
       } else {
         console.log("There is no walks here!");
