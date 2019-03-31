@@ -32,7 +32,7 @@ export class MapComponent implements OnInit {
         }
     ]
     
-    constructor(){
+    constructor() {
         this.locationClass = new LocationClass(1);
         this.settingsService = globals.settingsService;
     }
@@ -116,7 +116,13 @@ export class MapComponent implements OnInit {
     }
 
     public trackUser(){
-        var bearing = this.settingsService.getSetting(undefined, 1).value;
+        var bearingSetting = this.settingsService.getSetting(undefined, 1);
+        let bearing;
+        if (bearingSetting == null){
+            bearing = true;
+        } else {
+            bearing = bearingSetting.value;
+        }
         if (bearing){
             this.map.trackUser({mode: "FOLLOW_WITH_HEADING", animated: true});
         } else {

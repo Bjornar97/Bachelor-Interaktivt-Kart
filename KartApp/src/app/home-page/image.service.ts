@@ -22,15 +22,18 @@ export class ImageService {
     return this.getPath(id);
   }
 
-  saveImage(image: ImageAsset, id: number){
+  saveImage(image: ImageAsset, id: number): Promise<string>{
     var path = this.getPath(id);
     const source = new ImageSource();
-    source.fromAsset(image).then((imageSource: ImageSource) => {
+    return new Promise(function(resolve, reject){
+      source.fromAsset(image).then((imageSource: ImageSource) => {
         const saved: boolean = imageSource.saveToFile(path, "png");
         if (saved){
-          console.log("Saved image " + (id) + "to file at: " + path);
+          resolve(path);
+        } else {
+          reject(new Error("The image was not saved"));
         }
       });
-    return path;
+    });
   }
 }
