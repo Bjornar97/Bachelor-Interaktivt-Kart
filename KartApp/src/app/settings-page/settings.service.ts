@@ -105,6 +105,8 @@ export class SettingsService implements OnInit{
    * 
    * 5: All ImageMarkers Setting - Should all imagemarkers be shown on the map. If false, it only shows the markers on the trips that is drawn on the map.
    * 
+   * 4: ImageSave - Should images get saved to the gallery
+   * 
    * 11: Map menu setting.
    * 
    * 21: Drawer setting.
