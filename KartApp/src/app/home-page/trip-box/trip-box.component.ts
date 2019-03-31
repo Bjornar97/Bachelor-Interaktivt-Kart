@@ -33,6 +33,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
   private trip: Trip;
   private totalTimeString: string;
   private startTimeString: string;
+  private durationString: string;
 
   deleteTrip(box: View){
     let options = {
@@ -46,7 +47,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
       var screenWidth = screen.mainScreen.widthDIPs;
       if (result){
         box.animate({
-          translate: {x: -(screenWidth) - 100, y: 0},
+          scale: {x: 0, y: 0},
           duration: 700,
           delay: 200
          }).then(() => {

@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Trip, Tracker } from '~/app/tracker';
 import { TripService } from '../trip.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as camera from "nativescript-camera";
-import { Image } from "tns-core-modules/ui/image";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { MarkerService } from '~/app/map/marker.service';
 import { LocationClass } from '~/app/location';
@@ -18,40 +17,18 @@ import { trigger, transition, style, animate, state } from "@angular/animations"
 @Component({
   selector: 'ns-current-trip-page',
   animations: [
-    trigger("someAnimation", [
-      transition("gree", [
-        style({
-          opacity: "1"
-        }),
-        animate('2s', style({
-          opacity: "0.5"
-        })),
+    trigger('imagesFadeInOut', [
+      state("visible", style({
+        opacity: 1
+      })),
+      state("notVisible", style({
+        opacity: 0
+      })),
+      transition("visible => notVisible", [
+        animate("1s")
       ]),
-      transition("yell", [
-        style({
-          opacity: "0.5"
-        }),
-        animate('4s', style({
-          opacity: "1"
-        })),
-      ]),
-    ]),
-    trigger('LoadingAnimation', [
-      transition(':enter', [
-        style({
-          backgroundColor: "green"
-        }),
-        animate('5s', style({
-          backroundColor: "yellow"
-        }))
-      ]),
-      transition(':leave', [
-        style({
-          backgroundColor: "yellow"
-        }),
-        animate('2s', style({
-          backgroundColor: "green"
-        }))
+      transition("notVisible => visible", [
+        animate("1s"),
       ]),
     ]),
   ],
@@ -60,7 +37,7 @@ import { trigger, transition, style, animate, state } from "@angular/animations"
   providers: [TripService, MarkerService],
   moduleId: module.id,
 })
-export class CurrentTripPageComponent implements OnInit {
+export class CurrentTripPageComponent implements OnInit, AfterViewInit {
 
   constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
     this.locationClass = new LocationClass();
@@ -72,7 +49,6 @@ export class CurrentTripPageComponent implements OnInit {
 
   private locationClass: LocationClass;
 
-  private startTime;
   private paused: boolean = false;
 
   color = "";
@@ -90,7 +66,7 @@ export class CurrentTripPageComponent implements OnInit {
     this.color == "gree" ? this.yell(): this.gree();
   }
 
-  private imageSrc;
+  private imageSrcs: any[] = [];
 
   private btnActiveText = "Pause";
   private btnActiveClass = " btn btn-pause";
@@ -100,7 +76,36 @@ export class CurrentTripPageComponent implements OnInit {
   private drawer: DrawerClass;
 
   private goBack(){
+    let height = this.drawer.drawer.heightInt;
+    let setting = this.settingsService.getSetting(undefined, 52);
+    if (setting == undefined) {
+      setting = {
+        id: 52,
+        name: "currentTripPageHeight",
+        type: "height",
+        value: height
+      }
+    }
+    if (height <= 350){
+      setting.value = 160;
+    } else {
+      setting.value = height;
+    }
+    this.settingsService.setSetting(setting);
     this.routerExtensions.navigate(["home"], {animated: true, transition: {name: "slideRight"}});
+  }
+
+  private timeMaker(timestamp: number) {
+    return globals.timeMaker(new Date(timestamp));
+  }
+
+  @ViewChild("scrollView") scrollView: ElementRef;
+
+  private scrollLoaded(){
+    console.log("Scrolling right");
+    setTimeout(() => {
+      this.scrollView.nativeElement.scrollToHorizontalOffset(100000);
+    }, 5000);
   }
 
   /**
@@ -111,11 +116,14 @@ export class CurrentTripPageComponent implements OnInit {
     camera.requestPermissions().then(
       () => {
         camera.takePicture({saveToGallery: false}).then((imageAsset) => {
-          var image = new Image();
-          image.src = imageAsset;
-          this.imageSrc = image.src;
           this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
-            this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker_96");
+            this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker_96").then(() => {
+              this.trip = this.tripService.getCurrentTrip();
+              console.dir(this.trip);
+              this.trip.images.forEach((image) => {
+                this.imageSrcs.push(image);
+              });
+            });
           }).catch((error) => {
             console.log("ERROR in OpenCamera in currentTripPage: Error while getting location: " + error);
           });
@@ -192,6 +200,37 @@ export class CurrentTripPageComponent implements OnInit {
     });
   }
 
+  goToMarker(id: number){
+    console.log(id);
+    if (id != undefined){
+      this.routerExtensions.navigate(["marker", "image", id], {
+        animated: true,
+        clearHistory: false,
+        transition: {
+          name: "fade"
+        }
+      });
+    }
+  }
+
+  ngAfterViewInit(){
+    let mountSetting = this.settingsService.getSetting(undefined, 3);
+    if (mountSetting != null && mountSetting != undefined){
+      if (mountSetting.value){
+        let heightSetting = this.settingsService.getSetting(undefined, 52);
+        if (heightSetting == undefined){
+          heightSetting = {
+            id: 52,
+            name: "currentTripPageHeight",
+            type: "height",
+            value: 160
+          }
+        }
+        this.drawer.setDrawerHeight(heightSetting.value);
+      }
+    }
+  }
+
   ngOnInit() {
     // Checks if there is a trip going on and chooses if the play-button or pause-button shuld be displayed
     if (this.tripService.isTrip()){
@@ -211,7 +250,6 @@ export class CurrentTripPageComponent implements OnInit {
     }
 
     this.drawer = globals.getDrawer();
-    this.drawer.setDrawerHeight(140);
 
     applicationOn(exitEvent, (args: ApplicationEventData) => {
       let tripActive: Setting = {

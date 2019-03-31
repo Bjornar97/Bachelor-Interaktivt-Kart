@@ -89,7 +89,7 @@ export function getDrawer(){
         let dateDay = date.getDay();
         let nowDay = now.getDay();
         if (now.getDay() == date.getDay()){
-            return "I dag kl. " + date.getHours() + ":" + date.getMinutes();
+            return "I dag kl. " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes(): date.getMinutes());
         } else {
             if((nowDay == 0 && dateDay == 6) || dateDay == nowDay - 1){
                 return "I går kl. " + date.getHours() + ":" + date.getHours();

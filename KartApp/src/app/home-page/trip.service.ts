@@ -9,13 +9,14 @@ import { Image } from 'tns-core-modules/ui/image/image';
 import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
 import { ImageService } from './image.service';
 import { MarkerService } from '../map/marker.service';
+import { RouterExtensions } from 'nativescript-angular/router';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor(private imageService: ImageService, private markerService: MarkerService) {
+  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
@@ -228,23 +229,35 @@ export class TripService {
    * @returns the id of the trip, or the error if one occures
    */
   startTrip(): number | Error{
-    if (this.tracker.getStatus()){
-      console.log("ERROR: Trip is already started");
-      return new Error("En tur pågår allerede");
-    } else {
-      let id = this.getLastTripId() + 1;
-      this.tracker.startTrip(id);
-      var file = this.getTripFolder().getFile("Info.json");
-      var info;
-      try {
-        var value = file.readTextSync();
-        info = JSON.parse(value);
-        info.lastTripID = id;
-        file.writeTextSync(JSON.stringify(info));
-        return id;
-      } catch (error) {
-        console.log("ERROR in tripService(startTrip): " + error);
+    try {
+      if (this.tracker.getStatus()){
+        console.log("ERROR: Trip is already started");
+        return new Error("En tur pågår allerede");
+      } else {
+        let id = this.getLastTripId() + 1;
+        this.tracker.startTrip(id);
+        var file = this.getTripFolder().getFile("Info.json");
+        var info;
+        try {
+          var value = file.readTextSync();
+          info = JSON.parse(value);
+          info.lastTripID = id;
+          file.writeTextSync(JSON.stringify(info));
+          return id;
+        } catch (error) {
+          console.log("ERROR in tripService(startTrip): " + error);
+        }
       }
+    } catch (error) {
+      this.tracker.reset();
+      this.routerExtensions.navigate(["home"], {
+        animated: true,
+        clearHistory: true,
+        transition: {
+          name: "slideRight"
+        }
+      })
+      console.log("ERROR in startTrip in tripService: " + error);
     }
   }
 
@@ -362,7 +375,7 @@ export class TripService {
    * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
    */
   getTripEvents(id): {
-      timestamp: Date,
+      timestamp: number,
       type: string,
       value: any,
     }[] 
@@ -450,17 +463,21 @@ export class TripService {
 
 
   saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){
-    if (this.isTrip()){
+    return new Promise((resolve, reject) => {
+      if (this.isTrip()){
       try {
         let marker = this.markerService.makeMarker(lat, lng, url, "image", iconPath);
-        var imageUrl = this.imageService.saveImage(image, marker.id);
-        this.tracker.addImage(marker.id, imageUrl);
+        this.imageService.saveImage(image, marker.id).then((path) => {
+          this.tracker.addImage(marker.id, path);
+          resolve();
+        });
       } catch (error) {
         console.log("An error occured in saveImage in tripService: " + error);
       }
-    } else {
-      console.log("ERROR in saveImage in TripService: There is no trip going on");
-    }
+      } else {
+        console.log("ERROR in saveImage in TripService: There is no trip going on");
+      }
+    });
   }
 
   /**

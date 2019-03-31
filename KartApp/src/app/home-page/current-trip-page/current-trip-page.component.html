@@ -1,36 +1,28 @@
-<ActionBar title="Du er på tur" icon="" class="action-bar">
+<ActionBar title="Du er på tur" icon="" class="action-bar" (pan)="drawer.onPan($event)">
     <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
 </ActionBar>
-<DockLayout stretchLastChild="true">
-    <GridLayout dock="bottom" class="grid" width="100%" rows="*, *" columns="*, *" *ngIf="height > 150">
-        <StackLayout row="0" col="0" class="leftTopContainer">
-            <ActivityIndicator [busy]="isLoading" class="activity-indicator"></ActivityIndicator>
-            <Image *ngIf="!paused" [src]="imageSrc" width="100%" height="100%"></Image>
-        </StackLayout>
-        <StackLayout row="0" col="1" class="controlBtnContainer" orientation="horizontal" horizontalAlignment="center">
-            <Button [text]="btnActiveText" [class]="btnActiveClass" (tap)="togglePause()"></Button>
-            <Button text="Stop" (tap)="stopTrip()" class="btn btn-stop"></Button>
-        </StackLayout>
-        <StackLayout row="1" col="0"  class="timeContainer">
-            <Label class="time" [text]="tracker.totalTimeString" textWrap="true"></Label>
-        </StackLayout>
-        <StackLayout row="1" col="1" class="pictureBtnContainer">
-            <Button class="pictureBtn" text="Ta bilde" (tap)="OpenCamera()"></Button>
-        </StackLayout>
-    </GridLayout>
+<AbsoluteLayout *ngIf="isLoading" width="50" height="100%" class="absCont" horizontalAlignment="center">
+    <Label text="" cornerRadius="50%" top="10" textWrap="true" class="loadingCircle" shadow="8"></Label>
+    <ActivityIndicator busy="true" top="15" left="5" class="activity-indicator"></ActivityIndicator>
+</AbsoluteLayout>
 
-    <StackLayout dock="top">
-            <Image [src]="imageSrc" width="100%" height="100%"></Image>
+<DockLayout stretchLastChild="true" class="dock">
+    <StackLayout dock="bottom" class="dockBottom" height="150" width="100%">
+        <GridLayout rows="*, auto, auto" columns="auto, *, auto">
+            <Button row="0" col="0" [ngClass]="{pause: !paused, play: paused}" class="controlButton" [text]="paused ? '&#xf04b;': '&#xf04c;'" (tap)="togglePause()"></Button>
+            <Button row="0" col="2" text="&#xf04d;" (tap)="stopTrip()" class="stop controlButton"></Button>
+            <Label row="2" col="1" text="&#xf030;" class="iconFont" (tap)="OpenCamera()" textWrap="true"></Label>
+            <Label row="0" col="1" [text]="tracker.totalTimeString" verticalAlignment="center" textWrap="true" class="timeText"></Label>
+        </GridLayout>
     </StackLayout>
-    
-    <StackLayout orientation="horizontal" *ngIf="height <= 150" verticalAlignment="center" horizontalAlignment="center">
-        <StackLayout class="timeContainer small">
-            <Label class="time small" [text]="tracker.totalTimeString" textWrap="true"></Label>
+    <ScrollView #scrollView dock="top" orientation="horizontal" [ngClass]="{invisible: drawer.drawer.heightInt < 280}" (loaded)="scrollLoaded($event)">
+        <StackLayout orientation="horizontal" class="list-group" height="300">
+            <GridLayout *ngFor="let image of trip.images" id="{{ 'id' + image.markerId }}" (tap)="goToMarker(image.markerId)" rows="*, auto" columns="300" class="list-group-item m-15"> 
+                <Image row="0" rowSpan="2" [src]="image.imageSrc" stretch="aspectFill"></Image>
+                <StackLayout row="1" class="list-group-item" opacity="0.7" backgroundColor="#008000" color="black">
+                    <Label class="list-group-item-heading" [text]="timeMaker(image.timestamp)" opacity="1"  color="white"></Label>
+                </StackLayout>
+            </GridLayout> 
         </StackLayout>
-        <StackLayout class="controlBtnContainer small" orientation="horizontal" horizontalAlignment="center">
-            <Button [text]="btnActiveText" [class]="btnActiveClass" (tap)="togglePause()"></Button>
-            <Button text="Stop" (tap)="stopTrip()" class="btn btn-stop"></Button>
-            <Button class="pictureBtn small" text="Ta bilde" (tap)="OpenCamera()"></Button>
-        </StackLayout>
-    </StackLayout>
+    </ScrollView>
 </DockLayout>
