@@ -49,6 +49,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private totalTimeString: string;
   private startTimeString: string;
   private stopTimeString: string;
+  private distanceString: string;
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -73,8 +74,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
       // In a real app: dispatch action to load the details here.
     });
-    globals.MainMap.removeLine();
     // TODO: Tegne trip i kartet
+    this.tripService.drawTrip(this.trip.id);
 
     console.log("Getting trip events: ");
     this.events = this.tripService.getTripEvents(this.trip.id);
@@ -85,11 +86,13 @@ export class TripPageComponent implements OnInit, OnDestroy {
       this.totalTimeString = globals.timeConversion(this.trip.duration);
       this.startTimeString = globals.timeMaker(new Date(this.trip.startTime));
       this.stopTimeString = globals.timeMaker(new Date(this.trip.stopTime));
+      this.distanceString = (this.trip.distanceMeters / 1000).toFixed(2);
     }
     console.log("Finished making strings");
   }
 
   ngOnDestroy(){
+    this.tripService.unDrawTrip(this.trip.id);
     this.sub.unsubscribe();
     if (isAndroid) {
       application.android.removeEventListener(application.AndroidApplication.activityBackPressedEvent);
