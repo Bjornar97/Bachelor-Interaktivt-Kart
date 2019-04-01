@@ -8,7 +8,6 @@ import { ActivatedRoute } from '@angular/router';
 import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
-import * as globals from "../../globals";
 import { ImageService } from '../image.service';
 
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
