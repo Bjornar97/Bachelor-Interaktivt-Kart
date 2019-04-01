@@ -150,7 +150,7 @@ export class MarkerService {
         lat: markerObject.lat,
         lng: markerObject.lng,
         icon: markerObject.icon,
-        onTap: function(){
+        onTap: () => {
           console.log("Tapped marker " + id + ". URL: " + markerObject.url + id);
           this.ngZone.run(() => {
             this.drawer.openDrawer();

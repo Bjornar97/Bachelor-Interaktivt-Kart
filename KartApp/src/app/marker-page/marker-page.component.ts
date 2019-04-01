@@ -26,8 +26,11 @@ export class MarkerPageComponent implements OnInit {
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
+      console.log("TEST1");
       this.marker = this.markerService.getMarkers(undefined, [parseInt(params["id"])])[0];
+      console.log("TEST2");
       this.imageSrc = this.imageService.getImageSrc(this.marker.id);
+      console.log("TEST3");
     });
   }
 

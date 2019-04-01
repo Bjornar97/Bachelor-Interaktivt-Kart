@@ -32,7 +32,7 @@ export class MapComponent implements OnInit {
         }
     ]
     
-    constructor(){
+    constructor(private markerService: MarkerService){
         this.locationClass = new LocationClass(1);
         this.settingsService = globals.settingsService;
     }
@@ -199,8 +199,6 @@ export class MapComponent implements OnInit {
         }
     }
 
-    private markerService: MarkerService;
-
   // Waits until the map is ready
   onMapReady(args): void {
     // Gets the map that is displayed
@@ -208,8 +206,6 @@ export class MapComponent implements OnInit {
     if (this.main == "true"){
     globals.setMap(this);
     }
-
-    this.markerService = new MarkerService(this.settingsService);
 
     // Getting map position from settingsService
     var mapSetting = this.settingsService.getSetting(undefined, 31);
