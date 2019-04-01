@@ -387,24 +387,24 @@ export class TripService {
             timestamp: walk.startTime,
             type: "walk",
             value: {
-              distanceMeters: distance,
-              startTime: walk.startTime,
-              stopTime: walk.stopTime,
+              distanceMeters: (Math.round(distance)/1000).toFixed(2),
+              startTime: globals.timeMaker(new Date(walk.startTime)),
+              stopTime: globals.timeMaker(new Date(walk.stopTime)),
               avgSpeed: duration / (distance / 1000)
             }
           }
 
           let pauseEvent = {
-            timestamp: walk.stopTime,
+            timestamp: globals.timeMaker(new Date(walk.stopTime)),
             type: "pause",
             value: {
-              from: walk.stopTime,
+              from:globals.timeMaker(new Date(walk.stopTime)),
               to: undefined
             }
           }
 
           if (lastPauseEvent != null){
-            lastPauseEvent.value.to = walk.startTime;
+            lastPauseEvent.value.to = globals.timeMaker(new Date(walk.startTime));
           }
 
           lastPauseEvent = pauseEvent;
@@ -416,7 +416,7 @@ export class TripService {
           trip.images.forEach((image) => {
             if (image != null && image != undefined){
               let imageEvent = {
-                timestamp: image.timestamp,
+                timestamp: globals.timeMaker(new Date(image.timestamp)),
                 type: "image",
                 value: {
                   markerId: image.markerId,
