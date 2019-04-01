@@ -87,6 +87,10 @@ export class MapComponent implements OnInit {
         this.map.addMarkers(markers);
     }
 
+    public removeMarkers(ids: number[]){
+        this.map.removeMarkers(ids);
+    }
+
     /**
      * 
      * @param points An array of points the line should go between. The points need to be in type LatLng with latitude and longitude.

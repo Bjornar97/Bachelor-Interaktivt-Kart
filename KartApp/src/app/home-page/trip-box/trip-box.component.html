@@ -3,11 +3,11 @@
         <CheckBox col="0" rowSpan="2" class="checkBox" fillColor="#008000" [checked]="checked" (checkedChange)="toggleCheck()"></CheckBox>
         <Label col="1" row="0" class="boxLabel" [text]="startTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
         <Label col="1" row="1" class="boxLabel" [text]="totalTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
-        <StackLayout col="2" row="0" rowSpan="2">
+        <StackLayout col="2" row="1">
             <Label text="" textWrap="true" class="boxLabel">
                 <FormattedString>
                     <Span text="Distanse: "></Span>
-                    <Span [text]="trip.distanceMeters/1000"></Span>
+                    <Span [text]="distanceString"></Span>
                     <Span text=" km"></Span>
                 </FormattedString>
             </Label>

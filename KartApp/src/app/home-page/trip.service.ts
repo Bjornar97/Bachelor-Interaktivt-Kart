@@ -4,19 +4,22 @@ import { Trip, Tracker } from '../tracker';
 import * as fs from 'tns-core-modules/file-system';
 import { HomeModule } from "./home-page.module";
 import { AppModule } from '../app.module';
-import { LocationClass } from '../location';
+import { LocationClass, LocationObject } from '../location';
 import { Image } from 'tns-core-modules/ui/image/image';
 import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
 import { ImageService } from './image.service';
 import { MarkerService } from '../map/marker.service';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { MapboxMarker } from 'nativescript-mapbox';
+import { start } from 'tns-core-modules/application/application';
+import { SettingsService } from '../settings-page/settings.service';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
+  constructor(private imageService: ImageService, private settingsService: SettingsService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
@@ -310,6 +313,72 @@ export class TripService {
     trip.walks.forEach((walk) => {
       globals.MainMap.drawLine(walk.points, walk.startTime);
     });
+    if (trip.distanceMeters > 50){
+      let markerIds = [];
+      let start = trip.startPoint;
+      let markers: MapboxMarker[] = [];
+      markers.push({
+        id: start.timestamp,
+        lat: start.lat,
+        lng: start.lng,
+        title: "Start",
+        subtitle: globals.timeMaker(new Date(start.timestamp)),
+        icon: "res://start_trip_marker"
+      });
+      markerIds.push(start.timestamp);
+      let stop = trip.stopPoint;
+  
+      markers.push({
+        id: stop.timestamp,
+        lat: stop.lat,
+        lng: stop.lng,
+        title: "Stopp",
+        subtitle: globals.timeMaker(new Date(stop.timestamp)),
+        icon: "res://stop_trip_marker"
+      });
+      markerIds.push(stop.timestamp);
+      
+      if (trip.distanceMeters > 200){
+        let lastWalk;
+        trip.walks.forEach((walk) => {
+          let currentWalk = walk;
+          if (lastWalk != undefined){
+            let currentPoint = walk.points.pop();
+            markers.push({
+              id: currentWalk.startTime,
+              lat: currentPoint.lat,
+              lng: currentPoint.lng,
+              title: "Pause slutter",
+              subtitle: globals.timeMaker(new Date(currentPoint.timestamp)),
+              icon: "res://pause_marker"
+            });
+            markerIds.push(currentPoint.timestamp);
+            markers.push({
+              id: lastWalk.stopTime,
+              lat: lastWalk.points.pop().lat,
+              lng: lastWalk.points.pop().lng,
+              title: "Pause begynner",
+              subtitle: globals.timeMaker(new Date(lastWalk.points.pop().timestamp)),
+              icon: "res://pause_continue_marker",
+            });
+            markerIds.push(lastWalk.stopTime);
+            let markerIdSetting = this.settingsService.getSetting(undefined, 32);
+            if (markerIdSetting == undefined){
+              markerIdSetting = {
+                id: 32,
+                name: "TripMarkerIds",
+                type: "markers",
+                value: []
+              }
+            }
+            markerIdSetting.value[trip.id] = markerIds;
+            this.settingsService.setSetting(markerIdSetting);
+          } else {
+            lastWalk = currentWalk;
+          }
+        });
+      }
+    }
   }
 
   unDrawTrip(id: number){
@@ -319,6 +388,19 @@ export class TripService {
       ids.push(walk.startTime);
     });
     globals.MainMap.removeLine(ids);
+
+    let markerIdsSetting = this.settingsService.getSetting(undefined, 32);
+    if (markerIdsSetting == undefined){
+      markerIdsSetting = {
+        id: 32,
+        name: "TripMarkerIds",
+        type: "markers",
+        value: []
+      }
+      this.settingsService.setSetting(markerIdsSetting);
+    } else {
+      globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
+    }
   }
 
   /**

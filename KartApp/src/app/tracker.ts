@@ -9,6 +9,8 @@ export type Trip = {
     id: number,
     startTime: number,
     stopTime: number,
+    startPoint?: LocationObject,
+    stopPoint?: LocationObject,
     walks: {
         points: LocationObject[],
         startTime: number,
@@ -82,7 +84,7 @@ export class Tracker {
         this.Trip.images.push(imageObject);
     }
 
-    private logPoint(point: geolocation.Location, force: boolean = false){
+    private logPoint(point: geolocation.Location, force: boolean = false, first = false){
         console.log("Logging point " + point.timestamp.valueOf());
         var location: LocationObject = {
           id: point.timestamp.valueOf(),
@@ -94,6 +96,10 @@ export class Tracker {
           speed: point.speed,
           timestamp: point.timestamp,
           verticalAccuracy: point.verticalAccuracy
+        }
+
+        if (first){
+            this.Trip.startPoint = location;
         }
         if (location.horizontalAccuracy > 50){
             this.gpsSignalStrength = 0;
@@ -130,6 +136,8 @@ export class Tracker {
         console.dir(error.stack);
     }
 
+    private first: boolean;
+
     /**
      * startTrip - Start the tracking
      */
@@ -146,11 +154,13 @@ export class Tracker {
             walks: [],
             duration: 0
         }
+        this.first = true;
 
         console.log("Logging location");
         var watchID = geolocation.watchLocation((point) => {
             console.log("New movement with accuracy " + this.accuracy);
-            this.logPoint(point);
+            this.logPoint(point, undefined, this.first);
+            this.first = false;
             }, (error) => {
             this.logError(error);
             }, 
@@ -266,6 +276,7 @@ export class Tracker {
             }
             this.Trip.stopTime = this.subTrip.stopTime;
             this.status = false;
+            this.Trip.stopPoint = this.subTrip.points[this.subTrip.points.length - 1];
             console.log("Finished ending of trip");
         } catch (error) {
             console.log("ERROR in endTrip: " + error);

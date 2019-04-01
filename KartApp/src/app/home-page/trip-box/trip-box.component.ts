@@ -34,6 +34,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
   private totalTimeString: string;
   private startTimeString: string;
   private durationString: string;
+  private distanceString: string;
 
   deleteTrip(box: View){
     let options = {
@@ -92,6 +93,9 @@ export class TripBoxComponent implements OnInit, OnChanges {
       var time = new Date(this.trip.startTime);
       this.startTimeString = globals.timeMaker(time);
     }
+
+    this.distanceString = Math.round(this.trip.distanceMeters / 1000).toFixed(2);
+    console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
   }
 
 }
