@@ -97,9 +97,11 @@ export class MarkerService {
    * @param type The type of the marker. Supported types: "image"
    * @param iconPath If you want to show an image or icon, provide the url to it. Optional
    */
-  makeMarker(lat: number, lng: number, url: string, type: string, iconPath?: string){
+  makeMarker(lat: number, lng: number, url: string, type: string, iconPath?: string, id?){
     let info = this.getInfo();
-    let id = info.lastID + 1;
+    if (id == undefined){
+      id = info.lastID + 1;
+    }
     var marker = <MapboxMarker>{
       id: id,
       lat: lat,

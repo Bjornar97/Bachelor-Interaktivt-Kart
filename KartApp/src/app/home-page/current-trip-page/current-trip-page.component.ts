@@ -1,28 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Trip, Tracker } from '~/app/tracker';
 import { TripService } from '../trip.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as camera from "nativescript-camera";
-import { Image } from "tns-core-modules/ui/image";
 import * as dialogs from "tns-core-modules/ui/dialogs";
 import { MarkerService } from '~/app/map/marker.service';
 import { LocationClass } from '~/app/location';
 import * as globals from "~/app/globals";
 import { DrawerClass } from '~/app/drawer';
-import { on as applicationOn, launchEvent, suspendEvent, resumeEvent, exitEvent, lowMemoryEvent, uncaughtErrorEvent, ApplicationEventData } from "tns-core-modules/application";
+import { on as applicationOn, exitEvent, ApplicationEventData } from "tns-core-modules/application";
 import { Setting, SettingsService } from '~/app/settings-page/settings.service';
+import { trigger, transition, style, animate, state } from "@angular/animations";
+
 
 @Component({
   selector: 'ns-current-trip-page',
+  animations: [
+    trigger('imagesFadeInOut', [
+      state("visible", style({
+        opacity: 1
+      })),
+      state("notVisible", style({
+        opacity: 0
+      })),
+      transition("visible => notVisible", [
+        animate("1s")
+      ]),
+      transition("notVisible => visible", [
+        animate("1s"),
+      ]),
+    ]),
+  ],
   templateUrl: './current-trip-page.component.html',
   styleUrls: ['./current-trip-page.component.css'],
   providers: [TripService, MarkerService],
   moduleId: module.id,
 })
-export class CurrentTripPageComponent implements OnInit {
+export class CurrentTripPageComponent implements OnInit, AfterViewInit {
 
-  constructor(page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
+  constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
     this.locationClass = new LocationClass();
     this.tracker = globals.MainTracker;
   }
@@ -32,21 +49,63 @@ export class CurrentTripPageComponent implements OnInit {
 
   private locationClass: LocationClass;
 
-  private startTime;
   private paused: boolean = false;
 
-  private imageSrc;
+  color = "";
+
+  gree(){
+    this.color = "gree";
+  }
+
+  yell(){
+    this.color = "yell";
+  }
+
+  changecol(){
+    console.log("Chagning color from " + this.color);
+    this.color == "gree" ? this.yell(): this.gree();
+  }
+
+  private imageSrcs: any[] = [];
 
   private btnActiveText = "Pause";
   private btnActiveClass = " btn btn-pause";
 
-  private height = 200; // Want to get the drawer height into this
   private isLoading = false;
 
   private drawer: DrawerClass;
 
   private goBack(){
-    this.routerExtensions.backToPreviousPage();
+    let height = this.drawer.drawer.heightInt;
+    let setting = this.settingsService.getSetting(undefined, 52);
+    if (setting == undefined) {
+      setting = {
+        id: 52,
+        name: "currentTripPageHeight",
+        type: "height",
+        value: height
+      }
+    }
+    if (height <= 350){
+      setting.value = 160;
+    } else {
+      setting.value = height;
+    }
+    this.settingsService.setSetting(setting);
+    this.routerExtensions.navigate(["home"], {animated: true, transition: {name: "slideRight"}});
+  }
+
+  private timeMaker(timestamp: number) {
+    return globals.timeMaker(new Date(timestamp));
+  }
+
+  @ViewChild("scrollView") scrollView: ElementRef;
+
+  private scrollLoaded(){
+    console.log("Scrolling right");
+    setTimeout(() => {
+      this.scrollView.nativeElement.scrollToHorizontalOffset(100000);
+    }, 5000);
   }
 
   /**
@@ -54,14 +113,27 @@ export class CurrentTripPageComponent implements OnInit {
    */
   OpenCamera(){
     console.log("Taking picture");
+    let saveImageSetting = this.settingsService.getSetting(undefined, 4);
+    if (saveImageSetting == undefined || saveImageSetting == null){
+      saveImageSetting = {
+        id: 4,
+        name: "saveImage",
+        type: "switch",
+        value: false
+      }
+      this.settingsService.setSetting(saveImageSetting);
+    }
     camera.requestPermissions().then(
       () => {
-        camera.takePicture({saveToGallery: false}).then((imageAsset) => {
-          var image = new Image();
-          image.src = imageAsset;
-          this.imageSrc = image.src;
+        camera.takePicture({saveToGallery: saveImageSetting.value}).then((imageAsset) => {
           this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
-            this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker_96");
+            this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker").then(() => {
+              this.trip = this.tripService.getCurrentTrip();
+              console.dir(this.trip);
+              this.trip.images.forEach((image) => {
+                this.imageSrcs.push(image);
+              });
+            });
           }).catch((error) => {
             console.log("ERROR in OpenCamera in currentTripPage: Error while getting location: " + error);
           });
@@ -127,8 +199,7 @@ export class CurrentTripPageComponent implements OnInit {
         } catch (error) {
           console.log("ERROR while stopping trip in current-trip.component.ts: " + error);
           console.dir(tripBefore);
-
-
+          this.routerExtensions.navigate(["home"], {animated: true, transition: {name: "slideRight"}});
         }
       } else if (pause){
         this.togglePause();
@@ -137,6 +208,37 @@ export class CurrentTripPageComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  goToMarker(id: number){
+    console.log(id);
+    if (id != undefined){
+      this.routerExtensions.navigate(["marker", "image", id], {
+        animated: true,
+        clearHistory: false,
+        transition: {
+          name: "fade"
+        }
+      });
+    }
+  }
+
+  ngAfterViewInit(){
+    let mountSetting = this.settingsService.getSetting(undefined, 3);
+    if (mountSetting != null && mountSetting != undefined){
+      if (mountSetting.value){
+        let heightSetting = this.settingsService.getSetting(undefined, 52);
+        if (heightSetting == undefined){
+          heightSetting = {
+            id: 52,
+            name: "currentTripPageHeight",
+            type: "height",
+            value: 160
+          }
+        }
+        this.drawer.setDrawerHeight(heightSetting.value);
+      }
+    }
   }
 
   ngOnInit() {
@@ -158,7 +260,6 @@ export class CurrentTripPageComponent implements OnInit {
     }
 
     this.drawer = globals.getDrawer();
-    this.drawer.setDrawerHeight(220);
 
     applicationOn(exitEvent, (args: ApplicationEventData) => {
       let tripActive: Setting = {
@@ -173,5 +274,6 @@ export class CurrentTripPageComponent implements OnInit {
       }
       this.settingsService.setSetting(tripActive);
     });
+
   }
 }

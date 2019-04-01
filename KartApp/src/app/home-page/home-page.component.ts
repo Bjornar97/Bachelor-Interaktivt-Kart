@@ -17,7 +17,7 @@ import { DrawerClass } from "~/app/drawer";
 export class HomePageComponent implements OnInit {
     private drawer: DrawerClass;
 
-    constructor(page: Page, private routerext: RouterExtensions, private router: Router, private tripService: TripService) {
+    constructor(private page: Page, private routerext: RouterExtensions, private router: Router, private tripService: TripService) {
         // Use the component constructor to inject providers.
         if (globals.MainTracker == undefined){
             console.log("Main tracker does not exist,  making a new one");
@@ -56,7 +56,8 @@ export class HomePageComponent implements OnInit {
     }
 
     delete(trip: Trip){
-        delete this.trips[this.trips.indexOf(trip)];
+        let index = this.trips.indexOf(trip);
+        delete this.trips[index];
     }
 
     /**

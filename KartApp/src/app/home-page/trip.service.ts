@@ -4,18 +4,22 @@ import { Trip, Tracker } from '../tracker';
 import * as fs from 'tns-core-modules/file-system';
 import { HomeModule } from "./home-page.module";
 import { AppModule } from '../app.module';
-import { LocationClass } from '../location';
+import { LocationClass, LocationObject } from '../location';
 import { Image } from 'tns-core-modules/ui/image/image';
 import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
 import { ImageService } from './image.service';
 import { MarkerService } from '../map/marker.service';
+import { RouterExtensions } from 'nativescript-angular/router';
+import { MapboxMarker } from 'nativescript-mapbox';
+import { start } from 'tns-core-modules/application/application';
+import { SettingsService } from '../settings-page/settings.service';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor(private imageService: ImageService, private markerService: MarkerService) {
+  constructor(private imageService: ImageService, private settingsService: SettingsService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
@@ -228,23 +232,35 @@ export class TripService {
    * @returns the id of the trip, or the error if one occures
    */
   startTrip(): number | Error{
-    if (this.tracker.getStatus()){
-      console.log("ERROR: Trip is already started");
-      return new Error("En tur pågår allerede");
-    } else {
-      let id = this.getLastTripId() + 1;
-      this.tracker.startTrip(id);
-      var file = this.getTripFolder().getFile("Info.json");
-      var info;
-      try {
-        var value = file.readTextSync();
-        info = JSON.parse(value);
-        info.lastTripID = id;
-        file.writeTextSync(JSON.stringify(info));
-        return id;
-      } catch (error) {
-        console.log("ERROR in tripService(startTrip): " + error);
+    try {
+      if (this.tracker.getStatus()){
+        console.log("ERROR: Trip is already started");
+        return new Error("En tur pågår allerede");
+      } else {
+        let id = this.getLastTripId() + 1;
+        this.tracker.startTrip(id);
+        var file = this.getTripFolder().getFile("Info.json");
+        var info;
+        try {
+          var value = file.readTextSync();
+          info = JSON.parse(value);
+          info.lastTripID = id;
+          file.writeTextSync(JSON.stringify(info));
+          return id;
+        } catch (error) {
+          console.log("ERROR in tripService(startTrip): " + error);
+        }
       }
+    } catch (error) {
+      this.tracker.reset();
+      this.routerExtensions.navigate(["home"], {
+        animated: true,
+        clearHistory: true,
+        transition: {
+          name: "slideRight"
+        }
+      })
+      console.log("ERROR in startTrip in tripService: " + error);
     }
   }
 
@@ -297,6 +313,72 @@ export class TripService {
     trip.walks.forEach((walk) => {
       globals.MainMap.drawLine(walk.points, walk.startTime);
     });
+    if (trip.distanceMeters > 50){
+      let markerIds = [];
+      let start = trip.startPoint;
+      let markers: MapboxMarker[] = [];
+      markers.push({
+        id: start.timestamp,
+        lat: start.lat,
+        lng: start.lng,
+        title: "Start",
+        subtitle: globals.timeMaker(new Date(start.timestamp)),
+        icon: "res://start_trip_marker"
+      });
+      markerIds.push(start.timestamp);
+      let stop = trip.stopPoint;
+  
+      markers.push({
+        id: stop.timestamp,
+        lat: stop.lat,
+        lng: stop.lng,
+        title: "Stopp",
+        subtitle: globals.timeMaker(new Date(stop.timestamp)),
+        icon: "res://stop_trip_marker"
+      });
+      markerIds.push(stop.timestamp);
+      
+      if (trip.distanceMeters > 200){
+        let lastWalk;
+        trip.walks.forEach((walk) => {
+          let currentWalk = walk;
+          if (lastWalk != undefined){
+            let currentPoint = walk.points.pop();
+            markers.push({
+              id: currentWalk.startTime,
+              lat: currentPoint.lat,
+              lng: currentPoint.lng,
+              title: "Pause slutter",
+              subtitle: globals.timeMaker(new Date(currentPoint.timestamp)),
+              icon: "res://pause_marker"
+            });
+            markerIds.push(currentPoint.timestamp);
+            markers.push({
+              id: lastWalk.stopTime,
+              lat: lastWalk.points.pop().lat,
+              lng: lastWalk.points.pop().lng,
+              title: "Pause begynner",
+              subtitle: globals.timeMaker(new Date(lastWalk.points.pop().timestamp)),
+              icon: "res://pause_continue_marker",
+            });
+            markerIds.push(lastWalk.stopTime);
+            let markerIdSetting = this.settingsService.getSetting(undefined, 32);
+            if (markerIdSetting == undefined){
+              markerIdSetting = {
+                id: 32,
+                name: "TripMarkerIds",
+                type: "markers",
+                value: []
+              }
+            }
+            markerIdSetting.value[trip.id] = markerIds;
+            this.settingsService.setSetting(markerIdSetting);
+          } else {
+            lastWalk = currentWalk;
+          }
+        });
+      }
+    }
   }
 
   unDrawTrip(id: number){
@@ -306,6 +388,19 @@ export class TripService {
       ids.push(walk.startTime);
     });
     globals.MainMap.removeLine(ids);
+
+    let markerIdsSetting = this.settingsService.getSetting(undefined, 32);
+    if (markerIdsSetting == undefined){
+      markerIdsSetting = {
+        id: 32,
+        name: "TripMarkerIds",
+        type: "markers",
+        value: []
+      }
+      this.settingsService.setSetting(markerIdsSetting);
+    } else {
+      globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
+    }
   }
 
   /**
@@ -314,13 +409,22 @@ export class TripService {
    * @returns The finished trip.
    */
   endTrip(): Trip{
-    var trip = this.tracker.endTrip();
-    this.getCurrentTripFile().removeSync();
-    var file = this.makeTripFile(trip.id);
+    try {
+      this.getCurrentTripFile().removeSync();
+      var trip = this.tracker.endTrip();
+      if (trip.id == undefined){
+        throw new Error("Trip is undefined!");
+      }
+      var file = this.makeTripFile(trip.id);
+    } catch (error) {
+      console.log("ERROR in TripService: " + error);
+      this.tracker.reset();
+    }
     try {
       var jsonTrip = JSON.stringify(trip);
     } catch (error) {
       console.log("An error occured while stringifying trip. " + error);
+      
     }
     
     file.writeTextSync(jsonTrip, (error) => {
@@ -353,7 +457,7 @@ export class TripService {
    * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
    */
   getTripEvents(id): {
-      timestamp: Date,
+      timestamp: number,
       type: string,
       value: any,
     }[] 
@@ -424,12 +528,12 @@ export class TripService {
           if (eventA.timestamp > eventB.timestamp){
             return 1;
           } else if (eventB.timestamp > eventB.timestamp){
-            return 1;
+            return -1;
           } else {
             return 0;
           }
         });
-        
+        console.dir(events);
         return events;
       } else {
         console.log("There is no walks here!");
@@ -441,17 +545,21 @@ export class TripService {
 
 
   saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){
-    if (this.isTrip()){
+    return new Promise((resolve, reject) => {
+      if (this.isTrip()){
       try {
         let marker = this.markerService.makeMarker(lat, lng, url, "image", iconPath);
-        var imageUrl = this.imageService.saveImage(image, marker.id);
-        this.tracker.addImage(marker.id, imageUrl);
+        this.imageService.saveImage(image, marker.id).then((path) => {
+          this.tracker.addImage(marker.id, path);
+          resolve();
+        });
       } catch (error) {
         console.log("An error occured in saveImage in tripService: " + error);
       }
-    } else {
-      console.log("ERROR in saveImage in TripService: There is no trip going on");
-    }
+      } else {
+        console.log("ERROR in saveImage in TripService: There is no trip going on");
+      }
+    });
   }
 
   /**
