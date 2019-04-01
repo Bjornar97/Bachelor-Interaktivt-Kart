@@ -163,9 +163,17 @@ export class TripService {
     this.getCurrentTripFile().removeSync();
   }
 
-  sortTrips(_trips: Trip[]){
+  sortTrips(trips: Trip[]){
     // Sortere etter startTime. f. eks: trip[x].startTime
-
+    return trips.sort((n1,n2) => {
+    if (n1.startTime > n2.startTime) {
+      return -1;
+  }
+    if (n1.startTime < n2.startTime) {
+      return 1;
+  }
+      return 0;
+   });
   }
 
   /**
@@ -472,7 +480,7 @@ export class TripService {
           let lastPoint = null;
           let distance = 0;
           walk.points.forEach((point) => {
-            if (lastPoint != null){
+            if (lastPoint != null && lastPoint != undefined){
               distance += LocationClass.findDistance(lastPoint, point);
             }
             lastPoint = point;
@@ -483,24 +491,24 @@ export class TripService {
             timestamp: walk.startTime,
             type: "walk",
             value: {
-              distanceMeters: distance,
-              startTime: walk.startTime,
-              stopTime: walk.stopTime,
+              distanceMeters: (Math.round(distance)/1000).toFixed(2),
+              startTime: globals.timeMaker(new Date(walk.startTime)),
+              stopTime: globals.timeMaker(new Date(walk.stopTime)),
               avgSpeed: duration / (distance / 1000)
             }
           }
 
           let pauseEvent = {
-            timestamp: walk.stopTime,
+            timestamp: globals.timeMaker(new Date(walk.stopTime)),
             type: "pause",
             value: {
-              from: walk.stopTime,
+              from:globals.timeMaker(new Date(walk.stopTime)),
               to: undefined
             }
           }
 
           if (lastPauseEvent != null){
-            lastPauseEvent.value.to = walk.startTime;
+            lastPauseEvent.value.to = globals.timeMaker(new Date(walk.startTime));
           }
 
           lastPauseEvent = pauseEvent;
@@ -512,7 +520,7 @@ export class TripService {
           trip.images.forEach((image) => {
             if (image != null && image != undefined){
               let imageEvent = {
-                timestamp: image.timestamp,
+                timestamp: globals.timeMaker(new Date(image.timestamp)),
                 type: "image",
                 value: {
                   markerId: image.markerId,
@@ -523,7 +531,7 @@ export class TripService {
             }
           });
         }
-        
+        console.log("Sorting events");
         events.sort((eventA, eventB) => {
           if (eventA.timestamp > eventB.timestamp){
             return 1;
@@ -533,7 +541,9 @@ export class TripService {
             return 0;
           }
         });
-        console.dir(events);
+
+        console.log("Finished sorting events");
+        
         return events;
       } else {
         console.log("There is no walks here!");

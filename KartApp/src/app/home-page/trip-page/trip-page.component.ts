@@ -2,13 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as application from 'tns-core-modules/application';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { TripService } from '../trip.service';
-import { MainMap } from '~/app/globals';
+import  * as globals from '~/app/globals';
 import { Page, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { ActivatedRoute } from '@angular/router';
 import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
-import * as globals from "../../globals";
+import { ImageService } from '../image.service';
+
+let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
 @Component({
   selector: 'ns-trip-page',
@@ -20,13 +22,14 @@ import * as globals from "../../globals";
 export class TripPageComponent implements OnInit, OnDestroy {
   private drawer: DrawerClass;
 
-  constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute) { 
+  constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute, private imageService: ImageService) { 
     this.drawer = globals.getDrawer();
   }
 
   private sub;
   private backEvent;
   private trip: Trip;
+  private events;
 
   private goBack(){
     this.routerExtensions.navigate(["home"], {
@@ -37,6 +40,11 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  private totalTimeString: string;
+  private startTimeString: string;
+  private stopTimeString: string;
+  private distanceString: string;
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -61,13 +69,25 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
       // In a real app: dispatch action to load the details here.
     });
-    MainMap.removeLine();
-    this.trip.walks.forEach((walk) => {
-      MainMap.drawLine(walk.points);
-    });
+    // TODO: Tegne trip i kartet
+    this.tripService.drawTrip(this.trip.id);
+
+    console.log("Getting trip events: ");
+    this.events = this.tripService.getTripEvents(this.trip.id);
+    console.log("Got events: ");
+    console.dir(this.events);
+    console.log("Making strings");
+    if (this.trip != undefined){
+      this.totalTimeString = globals.timeConversion(this.trip.duration);
+      this.startTimeString = globals.timeMaker(new Date(this.trip.startTime));
+      this.stopTimeString = globals.timeMaker(new Date(this.trip.stopTime));
+      this.distanceString = (this.trip.distanceMeters / 1000).toFixed(2);
+    }
+    console.log("Finished making strings");
   }
 
   ngOnDestroy(){
+    this.tripService.unDrawTrip(this.trip.id);
     this.sub.unsubscribe();
     if (isAndroid) {
       application.android.removeEventListener(application.AndroidApplication.activityBackPressedEvent);
