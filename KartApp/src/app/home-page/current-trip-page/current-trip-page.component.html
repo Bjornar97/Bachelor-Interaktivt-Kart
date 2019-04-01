@@ -1,4 +1,4 @@
-<ActionBar title="Du er på tur" icon="" class="action-bar">
+<ActionBar title="Du er på tur" icon="" class="action-bar" (pan)="drawer.onPan($event)">
     <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
 </ActionBar>
 <DockLayout stretchLastChild="true">

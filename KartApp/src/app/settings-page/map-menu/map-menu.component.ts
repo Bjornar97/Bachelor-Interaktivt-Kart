@@ -59,7 +59,7 @@ export class MapMenuComponent implements OnInit {
     globals.MainMap.setAutoRotate(this.isAutoRotate);
   }
 
-  private onNavBtnTap() {
+  private goBack() {
     this.routerExtensions.backToPreviousPage();
   }
 
