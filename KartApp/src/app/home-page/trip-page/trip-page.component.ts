@@ -43,8 +43,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
   }
 
   private totalTimeString: string;
-  private startTimeString;
-  private stopTimeString;
+  private startTimeString: string;
+  private stopTimeString: string;
 
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
@@ -72,13 +72,17 @@ export class TripPageComponent implements OnInit, OnDestroy {
     globals.MainMap.removeLine();
     // TODO: Tegne trip i kartet
 
+    console.log("Getting trip events: ");
     this.events = this.tripService.getTripEvents(this.trip.id);
-    
+    console.log("Got events: ");
+    console.dir(this.events);
+    console.log("Making strings");
     if (this.trip != undefined){
       this.totalTimeString = globals.timeConversion(this.trip.duration);
       this.startTimeString = globals.timeMaker(new Date(this.trip.startTime));
       this.stopTimeString = globals.timeMaker(new Date(this.trip.stopTime));
     }
+    console.log("Finished making strings");
   }
 
   ngOnDestroy(){
