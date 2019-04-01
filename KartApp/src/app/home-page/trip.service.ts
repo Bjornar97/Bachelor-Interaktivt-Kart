@@ -480,7 +480,7 @@ export class TripService {
           let lastPoint = null;
           let distance = 0;
           walk.points.forEach((point) => {
-            if (lastPoint != null){
+            if (lastPoint != null && lastPoint != undefined){
               distance += LocationClass.findDistance(lastPoint, point);
             }
             lastPoint = point;
@@ -531,7 +531,7 @@ export class TripService {
             }
           });
         }
-        
+        console.log("Sorting events");
         events.sort((eventA, eventB) => {
           if (eventA.timestamp > eventB.timestamp){
             return 1;
@@ -541,7 +541,9 @@ export class TripService {
             return 0;
           }
         });
-        console.dir(events);
+
+        console.log("Finished sorting events");
+        
         return events;
       } else {
         console.log("There is no walks here!");

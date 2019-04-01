@@ -86,7 +86,7 @@ export class LocationClass {
         latitude: point.lat,
         longitude: point.lng,
         speed: point.speed,
-        timestamp: point.timestamp,
+        timestamp: new Date(point.timestamp),
         verticalAccuracy: point.verticalAccuracy
       })
     });
