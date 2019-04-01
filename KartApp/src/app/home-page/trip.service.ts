@@ -361,7 +361,7 @@ export class TripService {
    * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
    */
   getTripEvents(id): {
-      timestamp: Date,
+      timestamp: number,
       type: string,
       value: any,
     }[] 
