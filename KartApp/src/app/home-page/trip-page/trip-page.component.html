@@ -30,8 +30,15 @@
                 <Label col="0" text="event.timestamp"></Label>
                 <Image col="1" *ngIf="event.type == 'image'" src="event.value"></Image>
                 <StackLayout *ngIf="event.type == 'walk'">
-                        
+                        <Label text="walk.distanceMeters"></Label>
+                        <Label text="walk.startTime"></Label>
+                        <Label text="walk.stopTime"></Label>
+                        <Label text="walk.avgSpeed"></Label>
                 </StackLayout>
+                <StackLayout *ngIf="event.type == 'pause'">
+                        <Label text="pause.from"></Label>
+                        <Label text="pause.to"></Label>
+                 </StackLayout>
         </GridLayout>
 
     </StackLayout> 
