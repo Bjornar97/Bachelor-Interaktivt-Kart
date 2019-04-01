@@ -28,6 +28,10 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private backEvent;
   private trip: Trip;
 
+  private goBack(){
+    this.routerExtensions.backToPreviousPage();
+  }
+
   ngOnInit() {
     this.sub = this.route.params.subscribe(params => {
       this.trip = this.tripService.getTrip(parseInt(params['id']));
