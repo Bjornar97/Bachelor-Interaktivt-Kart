@@ -29,7 +29,13 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private trip: Trip;
 
   private goBack(){
-    this.routerExtensions.backToPreviousPage();
+    this.routerExtensions.navigate(["home"], {
+      animated: true,
+      clearHistory: true,
+      transition: {
+        name: "slideRight"
+      }
+    });
   }
 
   ngOnInit() {
