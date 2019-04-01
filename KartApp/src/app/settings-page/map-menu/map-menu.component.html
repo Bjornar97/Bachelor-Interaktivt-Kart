@@ -1,0 +1,28 @@
+<ActionBar title="Kartinnstillinger" class="action-bar" (pan)="drawer.onPan($event)">
+    <NavigationButton text="Tilbake" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
+</ActionBar>
+<StackLayout>
+    <ScrollView [height]="drawer.drawer.heightInt">
+        <StackLayout>
+            <ContentView class="container" shadow elevation="2">
+                <StackLayout class="container">
+                    <Label text="Karttype" textWrap="true" class="title"></Label>            
+                    <GridLayout rows="auto" columns="*,*,*" class="mapBtnContainer">
+                        <Label col="0" text="Friluftsliv" (tap)="mapStyleChanged('outdoors')" [ngClass]="{selected: mapStyle === 'outdoors'}" class="mapBtn first"></Label>
+                        <Label col="1" text="Satellitt" (tap)="mapStyleChanged('satellite')" [ngClass]="{selected: mapStyle === 'satellite'}" class="mapBtn"></Label>
+                        <Label col="2" text="Veikart" (tap)="mapStyleChanged('street')" [ngClass]="{selected: mapStyle === 'street'}" class="mapBtn last"></Label>
+                    </GridLayout>
+                </StackLayout>
+            </ContentView>
+            <ContentView class="container" shadow elevation="2">
+                <StackLayout>
+                    <Label text="Kartet" textWrap="true" class="title"></Label>
+                    <GridLayout rows="*" columns="*, auto" class="setting">
+                        <Label col="0" text="Roter kart automatisk mens du flytter deg" class="labelSwitch" (tap)="changeRotateSwitch()" textWrap="true"></Label>
+                        <Switch col="1" [checked]="isAutoRotate" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="onAutoRotateChecked($event)"></Switch>
+                    </GridLayout>
+                </StackLayout>
+            </ContentView>
+        </StackLayout>
+    </ScrollView>
+</StackLayout>

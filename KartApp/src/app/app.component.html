@@ -1,1 +1,43 @@
-<page-router-outlet></page-router-outlet>
+<AbsoluteLayout class="absoluteContainer">
+    <ContentView height="0" width="100%" class="topBarBackground"></ContentView>
+    <ContentView height="100%" width="100%" class="mapBox">
+        <ns-map main="true"></ns-map>
+    </ContentView>
+    <DockLayout width="100%" height="100%" stretchLastChild="false" class="overlayOuter" isPassThroughParentEnabled="true">
+        <AbsoluteLayout height="70dp" class="shadowBox" dock="bottom" isPassThroughParentEnabled="true">
+            <ContentView top="20dp" width="100%" shadow elevation="8" shadow shadowOffset="-5">
+                <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayBottomRow" width="100%" shadow elevation="8" shadow shadowOffset="-10">
+                    <GridLayout row="0" rows="*" colSpan="3" columns="*,*,*">
+                        <Button height="50dp" row="0" col="0" text="&#xf015;" fontSize="30" [nsRouterLink]="['/home']" pageTransition="fade" clearHistory="true" (tap)="drawer.onButtonPress('home')" [class]="drawer.buttons.home.buttonClass"></Button>
+                        <Button height="50dp" row="0" col="1" text="&#xf2bb;" fontSize="30" [nsRouterLink]="['/account']" pageTransition="fade" (tap)="drawer.onButtonPress('account')" clearHistory="true" [class]="drawer.buttons.account.buttonClass"></Button>
+                        <Button height="50dp" row="0" col="2" text="&#xf013;" fontSize="30" [nsRouterLink]="['/settings']" pageTransition="fade" (tap)="drawer.onButtonPress('settings')" clearHistory="true" [class]="drawer.buttons.settings.buttonClass"></Button>
+                    </GridLayout> 
+                </GridLayout>
+            </ContentView>
+        </AbsoluteLayout>
+        <StackLayout width="100%" [class]="drawer.drawer.drawerClass" [style]="drawer.drawer.visibility" dock="bottom">
+            <AbsoluteLayout width="100%" (pan)="drawer.onPan($event)">
+                <GridLayout rows="*" columns="*, auto, *" width="100%">
+                    <!--<Button col="0" text="< Tilbake" (pan)="onPan($event)" (tap)="backBtnPress()" class="backBtn"></Button>-->
+                    <Label col="1" text="&#xf2d1;" fontSize="15" class="far" textWrap="true" class="fal fa-window-minimize drag"></Label>
+                </GridLayout>
+            </AbsoluteLayout>
+            <ContentView width="100%" [height]="drawer.drawer.height" horizontalAlignment="center">
+                <page-router-outlet></page-router-outlet>
+            </ContentView>
+        </StackLayout>
+        <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayMapButtons" dock="bottom" width="100%" isPassThroughParentEnabled="true">
+            <Label row="0" col="2" text="" textWrap="true" class="roundThing"></Label>
+            <StackLayout row="0" col="2" class="fabButtonContainer">
+                <!-- Go to location button with icon -->
+                <FAB
+                    (tap)="goToLocation()" 
+                    icon="res://round_gps_fixed_black_24"
+                    rippleColor="#bbbbff" 
+                    class="locationButton"
+                >
+                </FAB>
+            </StackLayout>
+        </GridLayout>
+    </DockLayout>
+</AbsoluteLayout>

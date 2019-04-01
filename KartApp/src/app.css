@@ -15,6 +15,163 @@ refer to http://docs.nativescript.org/ui/theme.
 For example, the following CSS rule changes the font size of all UI
 components that have the btn class name.
 */
+*{
+    background-color: transparent;
+}
+
 .btn {
     font-size: 18;
+}
+
+.mapBox{
+    z-index: -1;
+}
+
+.bottomRow{
+    z-index: 22;
+}
+
+.absoluteContainer{
+    z-index: 0;
+}
+
+.overlayOuter{
+}
+
+.overlayBottomRow{
+}
+
+.shadowBox{
+    margin-top: -20dp;
+    z-index: 20;
+}
+
+.overlayMapButtons{
+    margin-top: 60dp;
+}
+
+.drawer{
+    background-color: rgba(255, 255, 255, 0.8);
+    border-top-left-radius: 20dp;
+    border-top-right-radius: 20dp;
+    z-index: 15;
+}
+
+.drawerMaximized{
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.drawer, .drawerMaximized{
+    text-align: center;
+    padding: 0 10dp;
+    font-family: 'FontAwesome', 'Font-Awesome';
+}
+
+.drag{
+    padding: 10dp;
+    width: 100dp;
+    
+}
+
+.scrollView{
+
+}
+
+.backBtn{
+    margin: 0;
+    padding: 0;
+    border-color: #fff;
+    color: blue;
+    border-radius: 1;
+    font-size: 14;
+}
+
+.button, .buttonSelected{
+    height: 100%;
+    font-family: 'FontAwesome', 'Font-Awesome';
+    font-size: 12;
+    vertical-align: middle;
+    width: 100%;
+    background-color: #fff;
+    border-color: #fff;
+    background-color: #fff;
+    border-width: 1px;
+}
+
+.button{
+    color: #888;
+}
+
+.buttonSelected{
+    color: #00f;
+}
+    
+.button:active {
+
+}
+
+.buttonSelected:active {
+
+}
+.locationButton{
+    height: 55dp;
+    width: 55dp;
+    margin-bottom: 50dp;
+    margin-top: 1dp;
+    margin-right: 10dp;
+    background-color: #fff;
+}
+
+.roundThing{
+    z-index: 0;
+    width: 57dp;
+    height: 57dp;
+    margin-bottom: 50dp;
+    margin-right: 10dp;
+    border-radius: 50%;
+    background-color: #ccc;
+}
+
+.overlayMapButtons{
+    margin-top: 60dp;
+}
+
+.fas {
+    font-family: Font Awesome 5 Free, fa-solid-900;
+    font-weight: 900; 
+}
+
+.topBarBackground {
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 100;
+}
+
+.container {
+    text-align: left;
+    background-color: #fff;
+    margin: 15dp 5dp 5dp 5dp;
+}
+
+.ActionbarUndeline {
+    border-bottom-color: #cccccc;
+    border-bottom-width: 0;
+    margin: 0 5dp;
+    height: 1dp;
+}
+
+.action-bar {
+    color: #000000;
+    border-bottom-color: transparent;
+    border-bottom-width: 1dp;
+}
+
+.iosActionBar {
+    background-color: transparent;
+    color: #ac1818;
+    border-bottom-color: transparent;
+    border-bottom-width: 1dp;
+}
+
+.androidActionBar {
+
 }

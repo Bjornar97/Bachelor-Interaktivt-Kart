@@ -1,0 +1,102 @@
+/* Add mobile styles for the component here.  */
+
+.labelIcon {
+    font-family: 'FontAwesome', 'Font-Awesome';
+    font-size: 12;
+    margin-right: 5dp;
+    margin-top: 0;
+    color: #888;
+}
+
+.infoText {
+    font-size: 12;
+    color: #888;
+}
+
+.outer {
+    padding-bottom: 20dp;
+}
+
+.containerShadowBox{
+    margin: 20dp 5dp 0 5dp;
+}
+
+.container{
+    text-align: left;
+    background-color: #fff;
+    margin: 15dp 5dp 5dp 5dp;
+}
+
+.title{
+    color: #008000;
+    font-size: 15;
+    font-weight: bold;
+    padding: 20dp 15dp 10dp 15dp;
+}
+
+.setting{
+    padding: 20dp 15dp;
+    font-size: 17;
+    text-align: left;
+    color: #000;
+}
+
+.switch[checked=false] {
+    text-align: right;
+}
+
+.switch[checked=true] {
+    text-align: right;
+}
+
+.iosSwitch[checked=true]{
+    background-color: #008000;
+}
+
+.androidSwitch {
+    color: #008000;
+}
+
+.androidSwitch[checked=false] {
+    color: #ddd;
+    background-color: #555;
+}
+
+.androidSwitch[checked=true] {
+    background-color: #008000;
+}
+
+.header{
+    margin-bottom: 10dp;
+    font-size: 20;
+    color: #000;
+}
+
+.mapBtn {
+    background-color: #fff;
+    border-color: #008000;
+    border-width: 2dp;
+    font-size: 16;
+    text-align: center;
+    padding: 15dp 10dp;
+    color: #000;
+}
+
+.mapBtn.first {
+    border-radius: 10dp 0 0 10dp;
+    border-width: 2dp 0 2dp 2dp;
+}
+
+.mapBtn.last {
+    border-radius: 0 10dp 10dp 0;
+    border-width: 2dp 2dp 2dp 0;
+}
+
+.mapBtn.selected {
+    background-color: #008000;
+    color: #fff;
+}
+
+.mapBtnContainer {
+    margin: 10dp;
+}

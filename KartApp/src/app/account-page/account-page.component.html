@@ -1,0 +1,35 @@
+<ActionBar title="Innlogging" class="action-bar" (pan)="drawer.onPan($event)">
+</ActionBar>
+<ScrollView class="scrollView">
+    <GridLayout android:fontFamily="cursive"
+    android:textStyle="bold">
+       
+        <StackLayout>
+            <StackLayout class="form" >
+                <StackLayout class="page m-20">
+                    <Label>
+                        <FormattedString>
+                        <Span text="Kart App" class="KartApp"></Span>
+                        </FormattedString>
+                    </Label>
+                </StackLayout>
+                    <Image src="res://fjellman" stretch="aspectFill" width="200dp" class="logo"></Image> 
+                <StackLayout class="input-field">
+                    <TextField hint="Email:" id="email-text" class="linje-under" fontSize="14"  > </TextField>   
+                </StackLayout>
+                <StackLayout class="input-field">
+                    <TextField hint="Password:" class="linje-under" fontSize="14" secure="true" > </TextField>   
+                </StackLayout>
+                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Log In"></Button>
+                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Hopp over"></Button>
+                <Label class="h3 p-15 m-15 text-left">
+                    <FormattedString>
+                        <Span text="Not a member? " color="gray"></Span>
+                        <Span text=" Sign Up" fontAttributes="Bold" fontSize="15"></Span>
+                    </FormattedString>
+                </Label>
+            </StackLayout>
+        </StackLayout> 
+        
+</GridLayout>
+</ScrollView>

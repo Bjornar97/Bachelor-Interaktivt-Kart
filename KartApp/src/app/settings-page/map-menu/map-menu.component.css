@@ -1,0 +1,30 @@
+/* Add mobile styles for the component here.  */
+
+.setting{
+    padding: 20dp;
+    font-size: 18;
+    text-align: left;
+    border-color: #aaa;
+    border-width: 0 0 4px 0;
+    color: #000;
+}
+
+.first{
+    border-width: 4px 0 4px 0;
+}
+
+.header{
+    font-size: 20;
+    color: #000;
+    margin-bottom: 10dp;
+}
+
+.text{
+    padding: 10dp;
+}
+
+.open{
+    border-width: 0 0 2px 0;
+    border-color: #aaa;
+    padding-bottom: 10dp;
+}
