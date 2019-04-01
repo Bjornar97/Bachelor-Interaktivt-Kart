@@ -1,19 +1,5 @@
 /* Add mobile styles for the component here.  */
 
-ActionBar {
-    background-color: transparent;
-    color: #000000;
-    border-bottom-color: transparent;
-    border-bottom-width: 1dp;
-}
-
-.ActionbarUndeline {
-    border-bottom-color: #cccccc;
-    border-bottom-width: 0;
-    margin: 0 5dp;
-    height: 1dp;
-}
-
 .labelIcon {
     font-family: 'FontAwesome', 'Font-Awesome';
     font-size: 12;
