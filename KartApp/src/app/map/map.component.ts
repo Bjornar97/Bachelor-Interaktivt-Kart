@@ -32,7 +32,7 @@ export class MapComponent implements OnInit {
         }
     ]
     
-    constructor(){
+    constructor() {
         this.locationClass = new LocationClass(1);
         this.settingsService = globals.settingsService;
     }
@@ -87,6 +87,10 @@ export class MapComponent implements OnInit {
         this.map.addMarkers(markers);
     }
 
+    public removeMarkers(ids: number[]){
+        this.map.removeMarkers(ids);
+    }
+
     /**
      * 
      * @param points An array of points the line should go between. The points need to be in type LatLng with latitude and longitude.
@@ -116,7 +120,13 @@ export class MapComponent implements OnInit {
     }
 
     public trackUser(){
-        var bearing = this.settingsService.getSetting(undefined, 1).value;
+        var bearingSetting = this.settingsService.getSetting(undefined, 1);
+        let bearing;
+        if (bearingSetting == null){
+            bearing = true;
+        } else {
+            bearing = bearingSetting.value;
+        }
         if (bearing){
             this.map.trackUser({mode: "FOLLOW_WITH_HEADING", animated: true});
         } else {
@@ -231,8 +241,6 @@ export class MapComponent implements OnInit {
         if (imageMarkerSetting.value){
             console.log("imageMarkerSetting is true");
             let markers = this.markerService.getMarkers("image");
-            console.log("Got markers: ");
-            console.dir(markers);
             this.map.addMarkers(markers);
         } else {
             console.log("imageMarkerSetting is false");
@@ -246,9 +254,7 @@ export class MapComponent implements OnInit {
             value: true
         }
         let markers = this.markerService.getMarkers("image");
-        console.dir(markers);
         this.map.addMarkers(markers);
-
         this.settingsService.setSetting(imageMarkerSetting);
     }
 

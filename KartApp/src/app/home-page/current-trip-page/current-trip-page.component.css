@@ -1,90 +1,60 @@
 /* Add mobile styles for the component here.  */
-.pictureBtn{
-    height: 50dp;
-    border-radius: 50%;
-    color: #fff;
-    background-color: #0077ee;
-}
 
-.pictureBtn.small{
-    height: 50dp;
-    width: 50dp;
-    font-size: 10;
-}
-
-.pictureBtnContainer{
-    vertical-align: middle;
-    max-height: 40dp;
-    min-height: 50dp;
-    margin: 10dp;
-}
-
-.timeContainer{
-    vertical-align: middle;
-    text-align: center;
+.timeText {
+    font-size: 40;
     color: #000;
+    padding: 10dp;
 }
 
-.timeContainer.small .time{
-    font-size: 20;
-}
-
-.time{
-    font-size: 28;
-}
-
-
-.controlBtnContainer{
-}
-
-.btn{
-    height: 60dp;
-    width: 60dp;
-    margin: 10dp;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 10;
-}
-
-.small .btn{
-    width: 50dp;
-    height: 50dp;
-}
-
-.small{
-    margin: 0 10dp 0 10dp;
-}
-
-.btn-pause{
-    background-color: #eeee33;
-}
-
-.btn-play{
-    background-color: green;
-}
-
-.btn-stop{
-    background-color: red;
-}
-.leftTopContainer{
-    vertical-align: middle;
-    text-align: center;
-    color: #000;
-}
-
-.activity-indicator{
-    width: 60dp;
-    height: 60dp;
+.iconFont {
+    padding: 0 10dp 10dp 10dp;
+    font-size: 32;
     color: #008000;
 }
 
-.pausedText{
-    font-size: 16;
-    vertical-align: middle;
-    text-align: center;
+.activity-indicator{
+    width: 40dp;
+    height: 40dp;
+    color: #008000;
+    z-index: 99;
 }
 
-.grid{
-    height: 150dp;
-    min-height: 50dp;
+.invisible {
+    opacity: 0;
+}
+
+.controlButton {
+    border-radius: 50%;
+    font-size: 32;
+    border-width: 1;
+    border-color: #fff;
+    height: 70dp;
+    width: 70dp;
+    color: #fff;
+    margin: 20dp;
+}
+
+.play {
+    background-color: #008000;
+}
+
+.pause {
+    background-color: #f1bc0d;
+}
+
+.stop {
+    background-color: #dd1e1e;
+}
+
+.loadingCircle {
+    width: 50dp;
+    height: 50dp;
+    background-color: #fff;
+}
+
+.absCont {
+    z-index: 23;
+}
+
+.outerAbsoluteLayout {
 }

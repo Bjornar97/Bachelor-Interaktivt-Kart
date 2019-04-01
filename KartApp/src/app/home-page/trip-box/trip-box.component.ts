@@ -33,6 +33,8 @@ export class TripBoxComponent implements OnInit, OnChanges {
   private trip: Trip;
   private totalTimeString: string;
   private startTimeString: string;
+  private durationString: string;
+  private distanceString: string;
 
   deleteTrip(box: View){
     let options = {
@@ -46,7 +48,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
       var screenWidth = screen.mainScreen.widthDIPs;
       if (result){
         box.animate({
-          translate: {x: -(screenWidth) - 100, y: 0},
+          scale: {x: 0, y: 0},
           duration: 700,
           delay: 200
          }).then(() => {
@@ -91,6 +93,9 @@ export class TripBoxComponent implements OnInit, OnChanges {
       var time = new Date(this.trip.startTime);
       this.startTimeString = globals.timeMaker(time);
     }
+
+    this.distanceString = Math.round(this.trip.distanceMeters / 1000).toFixed(2);
+    console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
   }
 
 }

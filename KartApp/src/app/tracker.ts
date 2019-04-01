@@ -9,6 +9,8 @@ export type Trip = {
     id: number,
     startTime: number,
     stopTime: number,
+    startPoint?: LocationObject,
+    stopPoint?: LocationObject,
     walks: {
         points: LocationObject[],
         startTime: number,
@@ -82,7 +84,7 @@ export class Tracker {
         this.Trip.images.push(imageObject);
     }
 
-    private logPoint(point: geolocation.Location, force: boolean = false){
+    private logPoint(point: geolocation.Location, force: boolean = false, first = false){
         console.log("Logging point " + point.timestamp.valueOf());
         var location: LocationObject = {
           id: point.timestamp.valueOf(),
@@ -94,6 +96,10 @@ export class Tracker {
           speed: point.speed,
           timestamp: point.timestamp,
           verticalAccuracy: point.verticalAccuracy
+        }
+
+        if (first){
+            this.Trip.startPoint = location;
         }
         if (location.horizontalAccuracy > 50){
             this.gpsSignalStrength = 0;
@@ -130,14 +136,16 @@ export class Tracker {
         console.dir(error.stack);
     }
 
+    private first: boolean;
+
     /**
      * startTrip - Start the tracking
      */
     public startTrip(id: number) {
         if (this.getStatus() == true){
             console.log("There is already a trip ongoing!");
+            return;
         }
-        
         this.Trip = {
             id: id,
             distanceMeters: 0,
@@ -146,11 +154,13 @@ export class Tracker {
             walks: [],
             duration: 0
         }
+        this.first = true;
 
         console.log("Logging location");
         var watchID = geolocation.watchLocation((point) => {
             console.log("New movement with accuracy " + this.accuracy);
-            this.logPoint(point);
+            this.logPoint(point, undefined, this.first);
+            this.first = false;
             }, (error) => {
             this.logError(error);
             }, 
@@ -169,6 +179,7 @@ export class Tracker {
             points: [],
             startTime: new Date().getTime(),
         }
+        
         this.startInterval();
         console.log("Started logging of " + watchID);
         this.tripID =  id;
@@ -187,8 +198,8 @@ export class Tracker {
             console.log("Trying to pause while pauing");
             return;
         }
-        this.pausing = true;
         this.pauseInterval();
+        this.pausing = true;
         this.subTrip.stopTime = new Date().getTime();
         this.Trip.duration += this.subTrip.stopTime - this.subTrip.startTime;
         let prevPoint = null;
@@ -223,6 +234,7 @@ export class Tracker {
     }
 
     public unpauseTrip(){
+        this.startInterval();
         this.paused = false;
         console.log("Unpausing trip in tracker");
         var watchID = geolocation.watchLocation((point) => {
@@ -248,7 +260,6 @@ export class Tracker {
         }
         this.subTrip = newSubTrip;
 
-        this.startInterval();
         return this.Trip.duration;
     }
 
@@ -256,14 +267,38 @@ export class Tracker {
      * endTrip - Stops the trip and returns the finished trip.
      */
     public endTrip(): Trip{
-        console.log("Stopping Trip " + this.tripID);
-        this.pauseTrip();
-        this.pauseInterval();
-        this.subTrip.stopTime = new Date().getTime();
-        this.Trip.stopTime = this.subTrip.stopTime;
-        this.status = false;
-        console.log("Finished ending of trip");
+        try {
+            console.log("Stopping Trip " + this.tripID);
+            this.pauseTrip();
+            this.pauseInterval();
+            if (this.Trip == undefined){
+                throw new Error("Trip is undefined");
+            }
+            this.Trip.stopTime = this.subTrip.stopTime;
+            this.status = false;
+            this.Trip.stopPoint = this.subTrip.points[this.subTrip.points.length - 1];
+            console.log("Finished ending of trip");
+        } catch (error) {
+            console.log("ERROR in endTrip: " + error);
+            return {
+                id: undefined,
+                distanceMeters: 0,
+                duration: 0,
+                startTime: undefined,
+                stopTime: undefined,
+                walks: undefined
+            }
+        }
         return this.Trip;
+    }
+
+    public reset(){
+        this.status = false;
+        this.Trip = undefined;
+        this.pauseInterval();
+        this.lastPoint = undefined;
+        this.subTrip = undefined;
+        this.tripID = undefined;
     }
 
     private interval;
@@ -301,7 +336,6 @@ export class Tracker {
         } else {
           time = globals.timeConversion(this.Trip.duration + (new Date().getTime() - this.subTrip.startTime));
         }
-        console.log(time);
         return time;
       }
 

@@ -68,8 +68,8 @@ export class SettingsService implements OnInit{
       duration = 100000;
     }
     if (duration >= 5*1000){ // If the time since last save is above 10 seconds
-      this.saveSettings();
       this.lastSave = time;
+      this.saveSettings();
       console.log("Successfully saved settings");
     } else if (this.saving === false){
       this.saving = true;
@@ -95,9 +95,13 @@ export class SettingsService implements OnInit{
    * 
    * SettingID list(if you make a new setting and save it somewhere, add it to this list):
    * 
-   * 1: Auto Rotate Setting.
+   * 1: Auto Rotate Setting - Should the map rotate with you
    * 
-   * 2: Image Marker Setting. Should image markers appear on the map.
+   * 2: Image Marker Setting - Should image markers appear on the map.
+   * 
+   * 3: SnapSetting - Should the drawer snap into place
+   *
+   * 4: ImageSave - Should images taken in the app be saved to the gallery
    * 
    * 11: Map menu setting.
    * 
@@ -106,6 +110,10 @@ export class SettingsService implements OnInit{
    * 31: Map position setting.
    * 
    * 41: tripActive
+   * 
+   * 51: HomePageHeight - The height of the drawer in home-page
+   * 
+   * 52: currentTripPageHeight - The height of the drawer in currentTripPage
    * 
    * @returns The setting you asked for. If it does not exist, it doesnt return anything
    */
@@ -123,7 +131,7 @@ export class SettingsService implements OnInit{
   }
 
   ngOnInit(){
-    
+    console.log("SettingsService has been initted");
   }
   
 }
