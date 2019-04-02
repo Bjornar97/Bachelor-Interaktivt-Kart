@@ -103,8 +103,6 @@ export class SettingsService implements OnInit{
    *
    * 4: ImageSave - Should images taken in the app be saved to the gallery
    * 
-   * 4: ImageSave - Should images get saved to the gallery
-   * 
    * 11: Map menu setting.
    * 
    * 21: Drawer setting.
