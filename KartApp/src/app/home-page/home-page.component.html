@@ -1,44 +1,48 @@
-<ActionBar title="Hjem" class="action-bar" (pan)="drawer.onPan($event)">
-</ActionBar>
-<GridLayout rows="auto, *">
-    <StackLayout row="1">
-        <ScrollView id="homeScrollView" class="scrollView" height="1000">
-            <StackLayout class="page" style="background-color: transparent;">
-                <ContentView *ngIf="isTrip" shadow elevation="2" class="container">
-                    <GridLayout rows="*" columns="auto, *, auto" [ngClass]="{TripPaused: isPaused, TripPlaying: !isPaused}" class="currentTripBox">
-                        <Label col="0" [text]="isPaused ? '&#xf144;': '&#xf28b;'" textWrap="true" class="fontIcon far" (tap)="togglePause()"></Label>
-                        
-                        <StackLayout col="1" class="currentTripTextBox" verticalAlignment="center">
-                            <Label col="1" row="0" [text]="isPaused ? 'Turen er satt på pause': 'Du er på tur'" textWrap="false" class="currentTripTitle" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft"></Label>
-                            <Label col="1" row="1" [text]="tracker.totalTimeString" textWrap="true" class="currentTripText" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft"></Label>
-                        </StackLayout>
-                        
-                        <Image col="2" height="40" width="40" src="res://baseline_chevron_right_black_24" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft"></Image>
+<StackLayout>
+    <GridLayout rows="*" columns="*, *, *" class="actionBar" height="22dp" (pan)="drawer.onPan($event)">
+        <label col="0" class="actionBarBackButton" text="< Tilbake"></label>
+        <label col="1" class="actionBarTitle" text="Hjem"></label>
+    </GridLayout>
+    <GridLayout rows="auto, *">
+        <StackLayout row="1">
+            <ScrollView id="homeScrollView" class="scrollView" height="1000">
+                <StackLayout class="page" style="background-color: transparent;">
+                    <ContentView *ngIf="isTrip" shadow elevation="2" class="container">
+                        <GridLayout rows="*" columns="auto, *, auto" [ngClass]="{TripPaused: isPaused, TripPlaying: !isPaused}" class="currentTripBox">
+                            <Label col="0" [text]="isPaused ? '&#xf144;': '&#xf28b;'" textWrap="true" class="fontIcon far" (tap)="togglePause()"></Label>
+                            
+                            <StackLayout col="1" class="currentTripTextBox" verticalAlignment="center">
+                                <Label col="1" row="0" [text]="isPaused ? 'Turen er satt på pause': 'Du er på tur'" textWrap="false" class="currentTripTitle" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft"></Label>
+                                <Label col="1" row="1" [text]="tracker.totalTimeString" textWrap="true" class="currentTripText" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft"></Label>
+                            </StackLayout>
+                            
+                            <Image col="2" height="40" width="40" src="res://baseline_chevron_right_black_24" [nsRouterLink]="['./currentTrip']" pageTransition="slideLeft"></Image>
+                        </GridLayout>
+                    </ContentView>
+                    <GridLayout rows="*" columns="*, auto" class="tripsHeader">
+                        <Label col="0" text="Turer" class="headerText" textWrap="true"></Label>
+                        <Label col="1" verticalAlignment="bottom" [nsRouterLink]="['./allTrips']" pageTransition="slideLeft">
+                            <FormattedString class="seeAllText">
+                                <Span text="Vis alle   "></Span>
+                                <Span text="&#xf054;"></Span>
+                            </FormattedString>
+                        </Label>
                     </GridLayout>
-                </ContentView>
-                <GridLayout rows="*" columns="*, auto" class="tripsHeader">
-                    <Label col="0" text="Turer" class="headerText" textWrap="true"></Label>
-                    <Label col="1" verticalAlignment="bottom" [nsRouterLink]="['./allTrips']" pageTransition="slideLeft">
-                        <FormattedString class="seeAllText">
-                            <Span text="Vis alle   "></Span>
-                            <Span text="&#xf054;"></Span>
-                        </FormattedString>
-                    </Label>
-                </GridLayout>
-                <ng-templage *ngFor="let trip of trips" class="bottomElement">
-                    <ns-trip-box #tripBox *ngIf="trip != undefined" id="{{trip.id}}" (delete)="delete(trip, tripBox)"></ns-trip-box>
-                </ng-templage>
-            </StackLayout>
-        </ScrollView>
-    </StackLayout>
-    <!-- FloatActionButton - The round button bottom right that makes a new trip -->
-    <FAB 
-        row="1" 
-        [nsRouterLink]="['./currentTrip']" 
-        pageTransition="slideLeft"
-        [ngClass]="{onTripFAB: isTrip, offTripFAB: !isTrip, pausedTripFAB: isPaused}"
-        icon="res://round_directions_walk_white_36"
-        [rippleColor]="btnRippleColor" 
-        class="tripBtn">
-    </FAB>
-</GridLayout>
+                    <ng-templage *ngFor="let trip of trips" class="bottomElement">
+                        <ns-trip-box #tripBox *ngIf="trip != undefined" id="{{trip.id}}" (delete)="delete(trip, tripBox)"></ns-trip-box>
+                    </ng-templage>
+                </StackLayout>
+            </ScrollView>
+        </StackLayout>
+        <!-- FloatActionButton - The round button bottom right that makes a new trip -->
+        <FAB 
+            row="1" 
+            [nsRouterLink]="['./currentTrip']" 
+            pageTransition="slideLeft"
+            [ngClass]="{onTripFAB: isTrip, offTripFAB: !isTrip, pausedTripFAB: isPaused}"
+            icon="res://round_directions_walk_white_36"
+            [rippleColor]="btnRippleColor" 
+            class="tripBtn">
+        </FAB>
+    </GridLayout>
+</StackLayout>

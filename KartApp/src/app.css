@@ -159,10 +159,19 @@ components that have the btn class name.
     height: 1dp;
 }
 
-.action-bar {
+.actionBar {
+    background-color: transparent;
+    padding: 0 5dp;
+}
+
+.actionBarBackButton {
     color: #000000;
-    border-bottom-color: transparent;
-    border-bottom-width: 1dp;
+    text-align: left;
+}
+
+.actionBarTitle {
+    font-size: 20dp;
+    font-weight: bold;
 }
 
 .iosActionBar {
