@@ -32,12 +32,9 @@ export class MapComponent implements OnInit {
         }
     ]
     
-    constructor() {
+    constructor(private settingsService: SettingsService) {
         this.locationClass = new LocationClass(1);
-        this.settingsService = globals.settingsService;
     }
-    
-    private settingsService: SettingsService;
 
     @Input() main: string;
     private locationClass: LocationClass;
@@ -49,12 +46,6 @@ export class MapComponent implements OnInit {
         zoomLevel: 3,
         showUser: true,
         disableMovement: false
-    }
-
-    setAutoRotate(value: boolean){
-        let setting = this.settingsService.getSetting(undefined, 1);
-        setting.value = value;
-        this.settingsService.setSetting(setting);
     }
 
     /**
@@ -223,7 +214,6 @@ export class MapComponent implements OnInit {
 
     // Getting map position from settingsService
     var mapSetting = this.settingsService.getSetting(undefined, 31);
-    console.dir(mapSetting);
     if (mapSetting != undefined){
         this.mapSetting = mapSetting;
     } else {
@@ -292,7 +282,6 @@ export class MapComponent implements OnInit {
             }
             
             this.settingsService.setSetting(this.mapSetting);
-            this.settingsService.saveSettings();
         }, function (err) {
             console.log("ERROR: ");
             console.dir(err);
@@ -312,7 +301,7 @@ export class MapComponent implements OnInit {
        
     });
 
-    var styleSetting = globals.settingsService.getSetting(undefined, 11);
+    var styleSetting = this.settingsService.getSetting(undefined, 11);
     if (styleSetting != undefined){
         this.setMapStyle(styleSetting.value);
     }

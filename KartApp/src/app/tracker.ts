@@ -276,7 +276,15 @@ export class Tracker {
             }
             this.Trip.stopTime = this.subTrip.stopTime;
             this.status = false;
-            this.Trip.stopPoint = this.subTrip.points[this.subTrip.points.length - 1];
+            let i = 1;
+            while (this.Trip.stopPoint == undefined){
+                this.Trip.stopPoint = this.subTrip.points[this.subTrip.points.length - i];
+                i++;
+                if (i > 20){
+                    break;
+                }
+            }
+            
             console.log("Finished ending of trip");
         } catch (error) {
             console.log("ERROR in endTrip: " + error);

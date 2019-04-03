@@ -318,40 +318,48 @@ export class TripService {
 
   drawTrip(id: number){
     let trip = this.getTrip(id);
+    console.dir(trip);
     trip.walks.forEach((walk) => {
+      console.log("Drawing line: " + walk.startTime);
       globals.MainMap.drawLine(walk.points, walk.startTime);
     });
     if (trip.distanceMeters > 50){
       let markerIds = [];
       let start = trip.startPoint;
+      let startTime = new Date(start.timestamp).getTime();
       let markers: MapboxMarker[] = [];
+      console.log("Making marker: " + startTime);
       markers.push({
-        id: start.timestamp,
+        id: startTime,
         lat: start.lat,
         lng: start.lng,
         title: "Start",
-        subtitle: globals.timeMaker(new Date(start.timestamp)),
+        subtitle: globals.timeMaker(start.timestamp),
         icon: "res://start_trip_marker"
       });
-      markerIds.push(start.timestamp);
+      markerIds.push(startTime);
       let stop = trip.stopPoint;
-  
+      let stopTime = new Date(stop.timestamp).getTime();
+      console.log("Making marker: " + stopTime);
       markers.push({
-        id: stop.timestamp,
+        id: stopTime,
         lat: stop.lat,
         lng: stop.lng,
         title: "Stopp",
         subtitle: globals.timeMaker(new Date(stop.timestamp)),
         icon: "res://stop_trip_marker"
       });
-      markerIds.push(stop.timestamp);
+      markerIds.push(stopTime);
       
-      if (trip.distanceMeters > 200){
+      console.log("Distance: " + trip.distanceMeters);
+      if (trip.distanceMeters > 200 || true){
+        console.log("Distance is above 200: " + trip.distanceMeters);
         let lastWalk;
         trip.walks.forEach((walk) => {
           let currentWalk = walk;
           if (lastWalk != undefined){
             let currentPoint = walk.points.pop();
+            console.log("Making marker: " + currentWalk.startTime);
             markers.push({
               id: currentWalk.startTime,
               lat: currentPoint.lat,
@@ -361,6 +369,7 @@ export class TripService {
               icon: "res://pause_marker"
             });
             markerIds.push(currentPoint.timestamp);
+            console.log("Making marker: " + lastWalk.stopTime);
             markers.push({
               id: lastWalk.stopTime,
               lat: lastWalk.points.pop().lat,
@@ -369,6 +378,8 @@ export class TripService {
               subtitle: globals.timeMaker(new Date(lastWalk.points.pop().timestamp)),
               icon: "res://pause_continue_marker",
             });
+
+            console.log("Making marker: " + lastWalk.stopTime);
             markerIds.push(lastWalk.stopTime);
             let markerIdSetting = this.settingsService.getSetting(undefined, 32);
             if (markerIdSetting == undefined){
@@ -385,6 +396,7 @@ export class TripService {
             lastWalk = currentWalk;
           }
         });
+        globals.MainMap.addMarkers(markers);
       }
     }
   }
@@ -395,6 +407,7 @@ export class TripService {
     trip.walks.forEach((walk) => {
       ids.push(walk.startTime);
     });
+
     globals.MainMap.removeLine(ids);
 
     let markerIdsSetting = this.settingsService.getSetting(undefined, 32);
