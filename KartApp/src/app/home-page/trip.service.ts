@@ -325,7 +325,8 @@ export class TripService {
     let trip = this.getTrip(id);
     trip.walks.forEach((walk) => {
       console.log("Drawing line: " + walk.startTime);
-      globals.MainMap.drawLine(walk.points, walk.startTime);
+      globals.MainMap.drawLine(walk.points, walk.startTime + 1, "#fff", 4);
+      globals.MainMap.drawLine(walk.points, walk.startTime, "#006000", 2);
     });
     let markerIds = [];
     let start = trip.startPoint;
@@ -364,7 +365,7 @@ export class TripService {
         let currentWalk = walk;
 
         if (lastWalk != undefined){
-          let currentPoint = walk.points[walk.points.length - 1];
+          let currentPoint = walk.points[0];
           console.log("Making marker: " + currentWalk.startTime);
           let pauseContinueMarker = {
             id: currentWalk.startTime,
@@ -385,12 +386,18 @@ export class TripService {
             icon: "res://pause_marker",
           }
 
-          if (LocationClass.findDistance(lastWalk.points[lastWalk.points.length - 1], currentPoint) > 5){
-            if (pauseContinueMarker.id - pauseMarker.id > 5000){
-              markers.push(pauseMarker, pauseContinueMarker);
-              markerIds.push(currentPoint.timestamp);
-              markerIds.push(lastWalk.stopTime);
-            }
+          // Sjekker om distansen er over 5 meter, hvis ja, tegnes både pause og pause slutter markerene
+          let pauseDistance = LocationClass.findDistance(lastWalk.points[lastWalk.points.length - 1], currentPoint);
+          if (pauseDistance > 3){
+            markers.push(pauseMarker, pauseContinueMarker);
+            markerIds.push(currentWalk.startTime);
+            markerIds.push(lastWalk.stopTime);
+            // Hvis ikke distansen er over 5 meter, men pausen er over 5 sekunder, tegnes en enkelt pause-marker med lengden på pausen
+          } else if (pauseContinueMarker.id - pauseMarker.id > 5000) {
+            pauseMarker.title = "Pause";
+            pauseMarker.subtitle = globals.timeConversion(pauseMarker.id - trip.startTime) +  "\nLengde på pausen: " + globals.timeConversion(pauseContinueMarker.id - pauseMarker.id);
+            markers.push(pauseMarker);
+            markerIds.push(lastWalk.stopTime);
           }
 
           console.log("Making marker: " + lastWalk.stopTime);
@@ -425,6 +432,7 @@ export class TripService {
     let ids = [];
     trip.walks.forEach((walk) => {
       ids.push(walk.startTime);
+      ids.push(walk.startTime + 1);
     });
 
     globals.MainMap.removeLine(ids);
@@ -441,6 +449,7 @@ export class TripService {
       globals.MainMap.removeMarkers();
     } else {
       globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
+      markerIdsSetting.value[id] = undefined;
     }
   }
 

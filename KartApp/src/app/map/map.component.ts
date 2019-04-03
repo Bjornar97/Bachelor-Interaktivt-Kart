@@ -93,14 +93,7 @@ export class MapComponent implements OnInit {
      * @param width The width of the line. default: 1.
      * @param opacity The opacity of the line. Default: 0.7.
      */
-    public drawLine(points: LatLng[], id?: number, color = "#ff0000", width = 1, opacity = 0.7){
-        // var LatLngPoints: LatLng[] = [];
-        // points.forEach(function(point){
-        //     LatLngPoints.push({
-        //         lat: point.lat,
-        //         lng: point.lng
-        //     });
-        // });
+    public drawLine(points: LatLng[], id?: number, color = "#ff0000", width = 4, opacity = 0.7){
         var promise = this.map.addPolyline({id: id, color: color, points: points, width: width, opacity: opacity});
         console.log("Drew line");
         return promise;
