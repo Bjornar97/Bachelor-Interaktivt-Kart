@@ -161,12 +161,8 @@ components that have the btn class name.
 
 .actionBar {
     background-color: transparent;
-    padding: 0 5dp;
-}
-
-.actionBarBackButton {
-    color: #000000;
-    text-align: left;
+    padding: 0 5dp 15dp;
+    height: 37dp;
 }
 
 .actionBarTitle {
@@ -174,13 +170,16 @@ components that have the btn class name.
     font-weight: bold;
 }
 
-.iosActionBar {
-    background-color: transparent;
-    color: #ac1818;
-    border-bottom-color: transparent;
-    border-bottom-width: 1dp;
+.actionBarBackButton {
+    color: #00f;
+    text-align: left;
 }
 
-.androidActionBar {
+.actionBarBackButtonArrow {
+    font-size: 22dp;
+    padding-right: 2dp;
+}
 
+.actionBarBackButtonText {
+    font-size: 18dp;
 }

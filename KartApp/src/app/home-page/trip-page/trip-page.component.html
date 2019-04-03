@@ -1,6 +1,11 @@
-<ActionBar title="Tur" class="action-bar" (pan)="drawer.onPan($event)">
-    <NavigationButton text="Tilbake" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
-</ActionBar>
+<StackLayout>
+<GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+    <GridLayout col="0" rows="*" columns="auto, *" class="actionBarBackButton" (tap)="goBack()">
+        <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
+        <label col="1" text="Tilbake" class="actionBarBackButtonText"></label>
+    </GridLayout>
+    <label col="1" class="actionBarTitle" [text]="pageTitle"></label>
+</GridLayout>
 <ScrollView>
     <StackLayout>
         <StackLayout>
@@ -50,3 +55,5 @@
     
     </StackLayout>
 </ScrollView>
+
+</StackLayout>
