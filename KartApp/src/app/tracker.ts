@@ -94,7 +94,7 @@ export class Tracker {
           lat: point.latitude,
           lng: point.longitude,
           speed: point.speed,
-          timestamp: point.timestamp,
+          timestamp: point.timestamp.getTime(),
           verticalAccuracy: point.verticalAccuracy
         }
 
@@ -219,7 +219,7 @@ export class Tracker {
                 latitude: loc.lat,
                 longitude: loc.lng,
                 speed: loc.speed,
-                timestamp: loc.timestamp,
+                timestamp: new Date(loc.timestamp),
                 verticalAccuracy: loc.verticalAccuracy
             }, true);
 
