@@ -3,7 +3,7 @@ import { Location } from 'nativescript-geolocation';
 
 export type LocationObject = {
   id: number;
-  timestamp: Date;
+  timestamp: number;
   lat: number;
   lng: number;
 
@@ -60,7 +60,7 @@ export class LocationClass {
     let location: LocationObject;
     location = {
       id: timestamp.valueOf(),
-      timestamp: timestamp,
+      timestamp: timestamp.getTime(),
       lng: lng,
       lat: lat,
       horizontalAccuracy: horizontalAccuracy,
@@ -86,7 +86,7 @@ export class LocationClass {
         latitude: point.lat,
         longitude: point.lng,
         speed: point.speed,
-        timestamp: point.timestamp,
+        timestamp: new Date(point.timestamp),
         verticalAccuracy: point.verticalAccuracy
       })
     });
