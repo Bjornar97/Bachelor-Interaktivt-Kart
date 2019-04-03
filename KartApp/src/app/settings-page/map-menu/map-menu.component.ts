@@ -26,8 +26,8 @@ export class MapMenuComponent implements OnInit {
   private isAutoRotate = true;
   private mapStyle = 'outdoors';
 
-  constructor(page: Page, private routerExtensions: RouterExtensions) { 
-    page.actionBarHidden = false;
+  constructor(page: Page, private routerExtensions: RouterExtensions) {
+    page.actionBarHidden = true;
     this.settingsService = globals.settingsService;
     var setting = this.settingsService.getSetting(undefined, 11);
     if (setting != undefined){ 

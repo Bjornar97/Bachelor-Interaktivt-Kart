@@ -1,5 +1,7 @@
-<ActionBar title="Hjem" class="action-bar" (pan)="drawer.onPan($event)">
-</ActionBar>
+<StackLayout>
+<GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+    <label col="1" class="actionBarTitle" text="Hjem"></label>
+</GridLayout>
 <GridLayout rows="auto, *">
     <StackLayout row="1">
         <ScrollView id="homeScrollView" class="scrollView" height="1000">
@@ -42,3 +44,4 @@
         class="tripBtn">
     </FAB>
 </GridLayout>
+</StackLayout>

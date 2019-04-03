@@ -24,6 +24,8 @@ export class HomePageComponent implements OnInit {
             globals.setTracker(new Tracker(1));
         }
         
+        page.actionBarHidden = true;
+        
         this.drawer = globals.getDrawer();
         this.tracker = globals.MainTracker;
 
