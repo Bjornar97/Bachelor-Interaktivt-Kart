@@ -30,6 +30,7 @@
                 <ng-templage *ngFor="let trip of trips" class="bottomElement">
                     <ns-trip-box #tripBox *ngIf="trip != undefined" id="{{trip.id}}" (delete)="delete(trip, tripBox)"></ns-trip-box>
                 </ng-templage>
+                <Label *ngIf="trips.length == 0" text="Du har ingen turer enda" textWrap="true" class="noTripsText"></Label>
             </StackLayout>
         </ScrollView>
     </StackLayout>
