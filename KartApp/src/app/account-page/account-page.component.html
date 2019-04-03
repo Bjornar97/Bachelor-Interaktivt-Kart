@@ -1,5 +1,7 @@
-<ActionBar title="Innlogging" class="action-bar" (pan)="drawer.onPan($event)">
-</ActionBar>
+<StackLayout>
+<GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+    <label col="1" class="actionBarTitle" text="Innlogging"></label>
+</GridLayout>
 <ScrollView class="scrollView">
     <GridLayout android:fontFamily="cursive"
     android:textStyle="bold">
@@ -33,3 +35,4 @@
         
 </GridLayout>
 </ScrollView>
+</StackLayout>

@@ -22,9 +22,9 @@ export class SettingsPageComponent implements OnInit {
   private isDrawerSnap = true;
 
   constructor(page: Page, private routerExtensions: RouterExtensions) {
-    page.actionBarHidden = false;
     this.settingsService = globals.settingsService;
     this.drawer = globals.getDrawer();
+    page.actionBarHidden = true;
   }
 
   drawerSnapChange(args){

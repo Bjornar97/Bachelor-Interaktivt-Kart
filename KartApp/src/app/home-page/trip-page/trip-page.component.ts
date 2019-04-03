@@ -33,6 +33,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private events;
   
   private pageTitle = "Trip";
+  private backButtonText = "Tilbake";
 
   private goBack(){
     this.routerExtensions.navigate(["home"], {

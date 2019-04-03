@@ -17,6 +17,7 @@ export class AccountPageComponent implements OnInit {
   constructor(private page: Page) {
     // Use the component constructor to inject providers.
     this.drawer = globals.getDrawer();
+    page.actionBarHidden = true;
 }
 
   ngOnInit() {
