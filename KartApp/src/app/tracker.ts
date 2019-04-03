@@ -110,8 +110,9 @@ export class Tracker {
         } else {
             this.gpsSignalStrength = 3;
         }
+
         if (this.lastPoint != undefined){
-            if (LocationClass.findDistance(this.lastPoint, location) < this.lastAccuracy && !force) {
+            if (LocationClass.findDistance(this.lastPoint, location) < this.lastAccuracy && !force && this.lastPoint.id != this.Trip.startPoint.id) {
                 if (location.horizontalAccuracy < this.lastAccuracy) {
                     this.subTrip.points.pop();
                     this.subTrip.points.push(location);
@@ -284,6 +285,8 @@ export class Tracker {
                     break;
                 }
             }
+            console.log("StopPoint: ");
+            console.dir(this.Trip.stopPoint);
             
             console.log("Finished ending of trip");
         } catch (error) {

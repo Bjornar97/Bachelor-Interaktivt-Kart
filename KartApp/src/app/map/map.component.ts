@@ -78,8 +78,12 @@ export class MapComponent implements OnInit {
         this.map.addMarkers(markers);
     }
 
-    public removeMarkers(ids: number[]){
-        this.map.removeMarkers(ids);
+    public removeMarkers(ids?: number[]){
+        if (ids != undefined){
+            this.map.removeMarkers(ids);
+        } else {
+            this.map.removeMarkers();
+        }
     }
 
     /**
