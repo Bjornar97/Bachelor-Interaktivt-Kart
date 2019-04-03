@@ -10,12 +10,7 @@ export class DrawerClass {
     private drawerSetting: Setting;
 
     constructor() {
-        if (globals.settingsService == undefined){
-            console.log("Need to make new settings-service");
-            globals.setSettingsService(new SettingsService());
-        }
         this.settingsService = globals.settingsService;
-
         // Getting the drawer from settings
         var drawersetting: Setting = this.settingsService.getSetting(undefined, 48);
         console.dir(this.drawerSetting);

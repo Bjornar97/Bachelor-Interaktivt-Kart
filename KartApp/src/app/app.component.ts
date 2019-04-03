@@ -17,19 +17,12 @@ import { DrawerClass } from "~/app/drawer";
     providers: [TripService]
 })
 export class AppComponent { 
-    private settingsService: SettingsService;
     private drawer: DrawerClass;
 
-    constructor(private routerExtensions: RouterExtensions, private tripService: TripService){
+    constructor(private routerExtensions: RouterExtensions, private tripService: TripService, private settingsService: SettingsService){
         console.log("Creating app component!");
+        globals.setSettingsService(this.settingsService);
         this.locationService = new LocationClass(1);
-        if (globals.settingsService != undefined){
-            this.settingsService = globals.settingsService;
-        } else {
-            console.log("Need to make new settings-service");
-            this.settingsService = new SettingsService();
-            globals.setSettingsService(this.settingsService);
-        }
         this.drawer = globals.getDrawer();
         globals.setRouterExtensions(this.routerExtensions);
     }
