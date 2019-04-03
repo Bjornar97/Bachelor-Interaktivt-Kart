@@ -29,6 +29,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private trip: Trip;
 
   private goBack(){
+    this.tripService.unDrawTrip(this.trip.id);
     this.routerExtensions.navigate(["home"], {
       animated: true,
       clearHistory: true,
@@ -61,10 +62,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
       // In a real app: dispatch action to load the details here.
     });
-    MainMap.removeLine();
-    this.trip.walks.forEach((walk) => {
-      MainMap.drawLine(walk.points);
-    });
+    this.tripService.drawTrip(this.trip.id);
   }
 
   ngOnDestroy(){
