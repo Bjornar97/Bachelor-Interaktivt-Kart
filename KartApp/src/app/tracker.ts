@@ -167,10 +167,10 @@ export class Tracker {
             }, 
             {
                 desiredAccuracy: this.accuracy, 
-                timeout: 10000, 
-                maximumAge: 5000, 
-                updateDistance: 10,
-                updateTime: 5000,
+                timeout: 5000,
+                maximumAge: 1000,
+                updateTime: 1000,
+                minimumUpdateTime: 500,
                 iosAllowsBackgroundLocationUpdates: true,
                 iosPausesLocationUpdatesAutomatically: false
         });
@@ -245,10 +245,10 @@ export class Tracker {
             }, 
             {
                 desiredAccuracy: this.accuracy, 
-                timeout: 10000, 
-                maximumAge: 5000, 
-                updateDistance: 10, 
-                updateTime: 5000,
+                timeout: 5000,
+                maximumAge: 1000,
+                updateTime: 1000,
+                minimumUpdateTime: 500,
                 iosAllowsBackgroundLocationUpdates: true,
                 iosPausesLocationUpdatesAutomatically: false
         });
