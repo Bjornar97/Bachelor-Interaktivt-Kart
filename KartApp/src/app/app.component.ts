@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LocationClass } from "./location";
 import * as globals from "./globals";
-import { SettingsService, Setting } from "./settings-page/settings.service";
+import { Setting, SettingsClass } from "./settings-page/settings";
 import { RouterExtensions } from "nativescript-angular/router";
 import * as fs from 'tns-core-modules/file-system';
 import * as application from "tns-core-modules/application";
@@ -25,9 +25,11 @@ export class AppComponent {
         this.locationService = new LocationClass(1);
         this.drawer = globals.getDrawer();
         globals.setRouterExtensions(this.routerExtensions);
+        this.settingsClass = globals.getSettingsClass();
     }
 
     private locationService: LocationClass;
+    private settingsClass: SettingsClass;
 
     goToLocation(){
         console.log("Going to location");
@@ -118,11 +120,10 @@ export class AppComponent {
                 console.log("Trip exists already: ");
             }
             
-            let tripActive = this.settingsService.getSetting(undefined, 41);
-            if (tripActive != undefined) {
-                if (tripActive.value) {
-                    this.tripService.unpauseTrip();
-                }
+            let tripActive = this.settingsClass.getSetting(undefined, 41);
+            console.log("TripActive: " + tripActive.value);
+            if (tripActive.value) {
+                this.tripService.unpauseTrip();
             }
         } catch (error) {
             console.log("There was an error while resuming previous trip");

@@ -12,18 +12,21 @@ import { MarkerService } from '../map/marker.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { MapboxMarker } from 'nativescript-mapbox';
 import { start } from 'tns-core-modules/application/application';
-import { SettingsService } from '../settings-page/settings.service';
+import { SettingsClass } from '../settings-page/settings';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor(private imageService: ImageService, private settingsService: SettingsService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
+  private settingsClass: SettingsClass;
+
+  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
     this.tracker = globals.MainTracker;
+    this.settingsClass = globals.getSettingsClass();
   }
 
   private tracker: Tracker;
@@ -392,24 +395,11 @@ export class TripService {
             markers.push(pauseMarker, pauseContinueMarker);
             markerIds.push(currentWalk.startTime);
             markerIds.push(lastWalk.stopTime);
-            // Hvis ikke distansen er over 5 meter, men pausen er over 5 sekunder, tegnes en enkelt pause-marker med lengden på pausen
-          } else if (pauseContinueMarker.id - pauseMarker.id > 5000) {
-            pauseMarker.title = "Pause";
-            pauseMarker.subtitle = globals.timeConversion(pauseMarker.id - trip.startTime) +  "\nLengde på pausen: " + globals.timeConversion(pauseContinueMarker.id - pauseMarker.id);
-            markers.push(pauseMarker);
-            markerIds.push(lastWalk.stopTime);
-          }
-
-          console.log("Making marker: " + lastWalk.stopTime);
-          markerIds.push(lastWalk.stopTime);
-          let markerIdSetting = this.settingsService.getSetting(undefined, 32);
-          if (markerIdSetting == undefined){
-            markerIdSetting = {
-              id: 32,
-              name: "TripMarkerIds",
-              type: "markers",
-              value: []
-            }
+            let markerIdSetting = this.settingsClass.getSetting(undefined, 32);
+            markerIdSetting.value[trip.id] = markerIds;
+            this.settingsClass.setSetting(markerIdSetting);
+          } else {
+            lastWalk = currentWalk;
           }
           markerIdSetting.value[trip.id] = markerIds;
           this.settingsService.setSetting(markerIdSetting);
@@ -436,20 +426,8 @@ export class TripService {
 
     globals.MainMap.removeLine(ids);
 
-    let markerIdsSetting = this.settingsService.getSetting(undefined, 32);
-    if (markerIdsSetting == undefined){
-      markerIdsSetting = {
-        id: 32,
-        name: "TripMarkerIds",
-        type: "markers",
-        value: []
-      }
-      this.settingsService.setSetting(markerIdsSetting);
-      globals.MainMap.removeMarkers();
-    } else {
-      globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
-      markerIdsSetting.value[id] = undefined;
-    }
+    let markerIdsSetting = this.settingsClass.getSetting(undefined, 32);
+    globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
   }
 
   /**

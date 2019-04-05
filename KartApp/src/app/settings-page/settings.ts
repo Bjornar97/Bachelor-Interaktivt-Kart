@@ -1,7 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
-import * as fs from "tns-core-modules/file-system";
-import { knownFolders, File, Folder } from "tns-core-modules/file-system";
-import * as globals from '../globals';
+import { knownFolders } from "tns-core-modules/file-system";
 
 export type Setting = {
   id: number,
@@ -10,12 +7,9 @@ export type Setting = {
   value: any,
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class SettingsService implements OnInit{
+export class SettingsClass {
 
-  constructor() { 
+  constructor() {
     var settingsFile = this.getFile();
     this.settingsList = [];
     
@@ -23,10 +17,10 @@ export class SettingsService implements OnInit{
       var text = settingsFile.readTextSync((error) => {
         console.log("Could not load settings from the file: " + error);
         settingsFile.removeSync();
-        this.settingsListSuccess = false;
       });
       var settings = text; 
       this.settingsList = JSON.parse(settings);
+      this.settingsListSuccess = true;
     } catch (error) {
       console.log("Could not load settings from the file: " + error);
       settingsFile.removeSync();
@@ -34,7 +28,129 @@ export class SettingsService implements OnInit{
     }
 
     console.log("The loading of settings succeded");
-    this.settingsListSuccess = true;
+
+    console.log("Inittializing settings");
+    
+    // Auto Rotate Setting
+    if (this.getSetting(undefined, 1) == undefined){
+      console.log("Setting 1 was undefined: AutoRotate");
+      this.setSetting({
+        id: 1,
+        name: "AutoRotate",
+        type: "switch",
+        value: true
+      });
+    }
+    
+    // Image marker setting Setting
+    if (this.getSetting(undefined, 2) == undefined){
+      console.log("Setting 2 was undefined: ImageMarker");
+      this.setSetting({
+        id: 2,
+        name: "ImageMarker",
+        type: "switch",
+        value: true
+      });
+    }
+
+    // Snap Setting
+    if (this.getSetting(undefined, 3) == undefined){
+      console.log("Setting 3 was undefined: Snap");
+      this.setSetting({
+        id: 3,
+        name: "Snap",
+        type: "switch",
+        value: true
+      });
+    }
+    
+    // Image Save Setting
+    if (this.getSetting(undefined, 4) == undefined){
+      console.log("Setting 4 was undefined: ImageSave");
+      this.setSetting({
+        id: 4,
+        name: "ImageSave",
+        type: "switch",
+        value: false
+      });
+    }
+
+    // Map Menu Setting
+    if (this.getSetting(undefined, 11) == undefined){
+      console.log("Setting 11 was undefined: mapStyle");
+      this.setSetting({
+        id: 11,
+        name: "mapStyle",
+        type: "buttonRow",
+        value: "outdoors"
+      });
+    }
+
+    // Drawer Setting
+    if (this.getSetting(undefined, 21) == undefined){
+      console.log("Setting 21 was undefined: Drawer");
+      this.setSetting({
+        id: 21,
+        name: "Drawer",
+        type: "Object",
+        value: undefined
+      });
+    }
+
+    // Map Position Setting
+    if (this.getSetting(undefined, 31) == undefined){
+      console.log("Setting 31 was undefined: MapPosition");
+      this.setSetting({
+        id: 31,
+        name: "MapPosition",
+        type: "Object",
+        value: undefined
+      });
+    }
+
+    // Trip Marker Ids Setting
+    if (this.getSetting(undefined, 32) == undefined){
+      console.log("Setting 32 was undefined: TripMarkerIds");
+      this.setSetting({
+        id: 32,
+        name: "TripMarkerIds",
+        type: "markers",
+        value: []
+      });
+    }
+
+    // tripActive Setting
+    if (this.getSetting(undefined, 41) == undefined){
+      console.log("Setting 41 was undefined: tripActive");
+      this.setSetting({
+        id: 41,
+        name: "tripActive",
+        type: "Object",
+        value: false
+      });
+    }
+
+    // Home Page Height Setting
+    if (this.getSetting(undefined, 51) == undefined){
+      console.log("Setting 51 was undefined: HomePageHeight");
+      this.setSetting({
+        id: 51,
+        name: "homePageHeight",
+        type: "height",
+        value: undefined
+      });
+    }
+
+    // Current Trip Page Height Setting
+    if (this.getSetting(undefined, 52) == undefined){
+      console.log("Setting 52 was undefined: currentTripHeight");
+      this.setSetting({
+        id: 52,
+        name: "currentTripHeight",
+        type: "height",
+        value: undefined
+      });
+    }
   }
 
   private settingsMap: Map<number, string>;
@@ -113,7 +229,7 @@ export class SettingsService implements OnInit{
    * 
    * 31: Map position setting.
    * 
-   * 32: MarkerIds - A list with markerIds of every trip. Used to remove markers like start and stop from a trip that is drawn on a map.
+   * 32: Trip Marker Ids - Ids for the markers from trips that is drawn on the map.
    * 
    * 41: tripActive
    * 
@@ -133,11 +249,8 @@ export class SettingsService implements OnInit{
       }
     } else {
       console.log("ERROR(settingsService): The settingsList did not succeed");
+      return null;
     }
-  }
-
-  ngOnInit(){
-    console.log("SettingsService has been initted");
   }
   
 }
