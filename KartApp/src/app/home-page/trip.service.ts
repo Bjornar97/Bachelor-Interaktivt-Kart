@@ -488,7 +488,7 @@ export class TripService {
 
           let duration = (walk.stopTime - walk.startTime) / 60000;
           let walkEvent = {
-            timestamp: walk.startTime,
+            timestamp: globals.timeMaker(new Date(walk.startTime)),
             type: "walk",
             value: {
               distanceMeters: (Math.round(distance)/1000).toFixed(2),
@@ -509,11 +509,11 @@ export class TripService {
 
           if (lastPauseEvent != null){
             lastPauseEvent.value.to = globals.timeMaker(new Date(walk.startTime));
+            events.push(lastPauseEvent);
           }
 
-          lastPauseEvent = pauseEvent;
-          events.push(lastPauseEvent);
           events.push(walkEvent);
+          lastPauseEvent = pauseEvent;
         });
 
         if (trip.images != undefined){
