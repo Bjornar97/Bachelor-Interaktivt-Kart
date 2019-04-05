@@ -45,6 +45,8 @@ export class MapMenuComponent implements OnInit {
     this.drawer = globals.getDrawer();
   }
 
+  private settingsService: SettingsService;
+
   private goBack() {
     this.routerExtensions.backToPreviousPage();
   }

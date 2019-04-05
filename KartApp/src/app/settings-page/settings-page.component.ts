@@ -23,7 +23,7 @@ export class SettingsPageComponent implements OnInit {
   private isImageSave = false;
   private imageSaveSetting: Setting;
 
-  constructor(private routerExtensions: RouterExtensions, private settingsService: SettingsService) {
+  constructor(page: Page, private routerExtensions: RouterExtensions, private settingsService: SettingsService) {
     this.drawer = globals.getDrawer();
     page.actionBarHidden = true;
   }
