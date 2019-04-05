@@ -111,24 +111,26 @@ export class Tracker {
             this.gpsSignalStrength = 3;
         }
 
-        if (this.lastPoint != undefined){
-            if (LocationClass.findDistance(this.lastPoint, location) < this.lastAccuracy && !force && this.lastPoint.id != this.Trip.startPoint.id) {
-                if (location.horizontalAccuracy < this.lastAccuracy) {
-                    this.subTrip.points.pop();
-                    this.subTrip.points.push(location);
-                    this.lastAccuracy = location.horizontalAccuracy;
-                    this.lastPoint = location;
-                }
-            } else if (this.gpsSignalStrength > 0){
-                this.subTrip.points.push(location);
-                this.lastPoint = location;
-                this.lastAccuracy = location.horizontalAccuracy;
-            }
-        } else if (this.gpsSignalStrength > 0){
-            this.subTrip.points.push(location);
-            this.lastPoint = location;
-            this.lastAccuracy = location.horizontalAccuracy;
-        }
+        // if (this.lastPoint != undefined){
+        //     if (LocationClass.findDistance(this.lastPoint, location) < this.lastAccuracy && !force && this.lastPoint.id != this.Trip.startPoint.id) {
+        //         if (location.horizontalAccuracy < this.lastAccuracy) {
+        //             this.subTrip.points.pop();
+        //             this.subTrip.points.push(location);
+        //             this.lastAccuracy = location.horizontalAccuracy;
+        //             this.lastPoint = location;
+        //         }
+        //     } else if (this.gpsSignalStrength > 0){
+        //         this.subTrip.points.push(location);
+        //         this.lastPoint = location;
+        //         this.lastAccuracy = location.horizontalAccuracy;
+        //     }
+        // } else if (this.gpsSignalStrength > 0){
+        //     this.subTrip.points.push(location);
+        //     this.lastPoint = location;
+        //     this.lastAccuracy = location.horizontalAccuracy;
+        // }
+
+        this.subTrip.points.push(location);
         console.log("Added point");
     }
 
