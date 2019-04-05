@@ -22,6 +22,10 @@ export class BackendService {
                     
   }
 
+  getInfo(){
+    // TODO: Kalle createRequestHeader og legge den med i requesten
+  }
+
   login(loginName, password){
     let options = this.createRequestOptions();
     let data = {
