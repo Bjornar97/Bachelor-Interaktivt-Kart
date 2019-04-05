@@ -12,7 +12,7 @@ import { SettingsService } from '../settings-page/settings.service';
   styleUrls: ['./account-page.component.css'],
   moduleId: module.id,
   providers: [BackendService]
-}) 
+})
 export class AccountPageComponent implements OnInit {
   
   private drawer: DrawerClass;
