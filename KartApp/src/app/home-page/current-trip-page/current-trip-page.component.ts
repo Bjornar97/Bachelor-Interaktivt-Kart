@@ -130,7 +130,6 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
           this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
             this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker").then(() => {
               this.trip = this.tripService.getCurrentTrip();
-              console.dir(this.trip);
               this.trip.images.forEach((image) => {
                 this.imageSrcs.push(image);
               });

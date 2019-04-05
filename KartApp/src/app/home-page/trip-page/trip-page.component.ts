@@ -36,6 +36,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private backButtonText = "Tilbake";
 
   private goBack(){
+    this.tripService.unDrawTrip(this.trip.id);
     this.routerExtensions.navigate(["home"], {
       animated: true,
       clearHistory: true,

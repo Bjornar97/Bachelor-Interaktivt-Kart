@@ -15,25 +15,69 @@ import { DrawerClass } from '~/app/drawer';
   moduleId: module.id,
 })
 export class SettingsPageComponent implements OnInit {
-
-  private settingsService: SettingsService;
   private drawer: DrawerClass;
 
   private isDrawerSnap = true;
+  private DrawerSnapSetting: Setting;
 
-  constructor(page: Page, private routerExtensions: RouterExtensions) {
-    this.settingsService = globals.settingsService;
+  private isImageSave = false;
+  private imageSaveSetting: Setting;
+
+  constructor(page: Page, private routerExtensions: RouterExtensions, private settingsService: SettingsService) {
     this.drawer = globals.getDrawer();
     page.actionBarHidden = true;
   }
 
-  drawerSnapChange(args){
-    console.log("Changed");
+  toggleDrawerSnap(){
+    this.isDrawerSnap = !this.isDrawerSnap;
+    this.DrawerSnapSetting.value = this.isDrawerSnap;
+    this.settingsService.setSetting(this.DrawerSnapSetting);
+  }
+
+  drawerSnapChange(args) {
+    let Switch = <Switch>args.object;
+    this.isDrawerSnap = Switch.checked;
+    this.DrawerSnapSetting.value = this.isDrawerSnap;
+    this.settingsService.setSetting(this.DrawerSnapSetting);
+  }
+
+  toggleImageSave(){
+    this.isImageSave = !this.isImageSave;
+    this.imageSaveSetting.value = this.isImageSave;
+    this.settingsService.setSetting(this.imageSaveSetting);
+  }
+
+  imageSaveChanged(args){
+    let Switch = <Switch>args.object;
+    this.isImageSave = Switch.checked;
+    this.imageSaveSetting.value = this.isImageSave;
+    this.settingsService.setSetting(this.imageSaveSetting);
   }
 
 
   ngOnInit() {
-
+    let imageSetting = this.settingsService.getSetting(undefined, 4);
+    if (imageSetting == undefined || imageSetting == null){
+      imageSetting = {
+        id: 4,
+        name: "imageSave",
+        type: "switch",
+        value: this.isImageSave
+      }
+      this.settingsService.setSetting(imageSetting);
+    }
+    this.imageSaveSetting = imageSetting;
+    let drawerSnapSetting = this.settingsService.getSetting(undefined, 3);
+    if (drawerSnapSetting == undefined || drawerSnapSetting == null){
+      drawerSnapSetting = {
+        id: 3,
+        name: "drawerSnap",
+        type: "switch",
+        value: this.isDrawerSnap
+      }
+      this.settingsService.setSetting(drawerSnapSetting);
+    }
+    this.DrawerSnapSetting = drawerSnapSetting;
   }
 
 }

@@ -17,7 +17,6 @@ let mapStylesStrings = ["Satellitt", "Friluftsliv", "Veikart"]
   moduleId: module.id,
 })
 export class MapMenuComponent implements OnInit {
-  private settingsService: SettingsService;
   private drawer: DrawerClass;
 
   private mapStyleSetting: Setting;
@@ -44,20 +43,9 @@ export class MapMenuComponent implements OnInit {
     this.autoRotateSetting = this.settingsService.getSetting(undefined, 1);
 
     this.drawer = globals.getDrawer();
-
-    if (this.autoRotateSetting == undefined || null){ 
-      this.autoRotateSetting = {
-        id: 1,
-        name: "autoRotate",
-        type: "switch",
-        value: this.isAutoRotate
-      }
-      this.settingsService.setSetting(this.autoRotateSetting);
-    } else {
-      this.isAutoRotate = this.autoRotateSetting.value;
-    }
-    globals.MainMap.setAutoRotate(this.isAutoRotate);
   }
+
+  private settingsService: SettingsService;
 
   private goBack() {
     this.routerExtensions.backToPreviousPage();
@@ -75,23 +63,38 @@ export class MapMenuComponent implements OnInit {
     this.isAutoRotate = Switch.checked;
     this.autoRotateSetting.value = Switch.checked;
     this.settingsService.setSetting(this.autoRotateSetting);
-    globals.MainMap.setAutoRotate(Switch.checked);
   }
 
   changeRotateSwitch(){
-    var autorotate = this.isAutoRotate;
-    if (autorotate){
-      autorotate = false;
-    } else { 
-      autorotate = true;
-    }
-    this.autoRotateSetting.value = autorotate;
-    this.isAutoRotate = autorotate;
+    this.isAutoRotate = !this.isAutoRotate;
+    this.autoRotateSetting.value = this.isAutoRotate;
     this.settingsService.setSetting(this.autoRotateSetting);
-    globals.MainMap.setAutoRotate(autorotate);
   }
 
   ngOnInit() {
+    let autoRotateSetting = this.settingsService.getSetting(undefined, 1);
+    if (autoRotateSetting == undefined || autoRotateSetting == null){
+      autoRotateSetting = {
+        id: 1,
+        name: "autoRotate",
+        type: "switch",
+        value: this.isAutoRotate
+      }
+      this.settingsService.setSetting(autoRotateSetting);
+    }
+    this.autoRotateSetting = autoRotateSetting;
+
+    let mapStyleSetting = this.settingsService.getSetting(undefined, 11);
+    if (mapStyleSetting == undefined || mapStyleSetting == null){
+      mapStyleSetting = {
+        id: 11,
+        name: "mapStyle",
+        type: "buttonRow",
+        value: this.mapStyle
+      }
+      this.settingsService.setSetting(mapStyleSetting);
+    }
+    this.mapStyleSetting = mapStyleSetting;
   }
 
 }

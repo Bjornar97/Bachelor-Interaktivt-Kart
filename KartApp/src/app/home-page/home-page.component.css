@@ -18,6 +18,11 @@
     color: #666666;
 }
 
+.noTripsText {
+    font-size: 18;
+    margin: 15dp;
+}
+
 .checkAllBox {
     margin-left: 5dp;
 }

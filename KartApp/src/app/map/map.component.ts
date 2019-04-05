@@ -32,12 +32,9 @@ export class MapComponent implements OnInit {
         }
     ]
     
-    constructor() {
+    constructor(private settingsService: SettingsService) {
         this.locationClass = new LocationClass(1);
-        this.settingsService = globals.settingsService;
     }
-    
-    private settingsService: SettingsService;
 
     @Input() main: string;
     private locationClass: LocationClass;
@@ -49,12 +46,6 @@ export class MapComponent implements OnInit {
         zoomLevel: 3,
         showUser: true,
         disableMovement: false
-    }
-
-    setAutoRotate(value: boolean){
-        let setting = this.settingsService.getSetting(undefined, 1);
-        setting.value = value;
-        this.settingsService.setSetting(setting);
     }
 
     /**
@@ -87,8 +78,12 @@ export class MapComponent implements OnInit {
         this.map.addMarkers(markers);
     }
 
-    public removeMarkers(ids: number[]){
-        this.map.removeMarkers(ids);
+    public removeMarkers(ids?: number[]){
+        if (ids != undefined){
+            this.map.removeMarkers(ids);
+        } else {
+            this.map.removeMarkers();
+        }
     }
 
     /**
@@ -98,14 +93,7 @@ export class MapComponent implements OnInit {
      * @param width The width of the line. default: 1.
      * @param opacity The opacity of the line. Default: 0.7.
      */
-    public drawLine(points: LatLng[], id?: number, color = "#ff0000", width = 1, opacity = 0.7){
-        // var LatLngPoints: LatLng[] = [];
-        // points.forEach(function(point){
-        //     LatLngPoints.push({
-        //         lat: point.lat,
-        //         lng: point.lng
-        //     });
-        // });
+    public drawLine(points: LatLng[], id?: number, color = "#ff0000", width = 4, opacity = 0.7){
         var promise = this.map.addPolyline({id: id, color: color, points: points, width: width, opacity: opacity});
         console.log("Drew line");
         return promise;
@@ -223,7 +211,6 @@ export class MapComponent implements OnInit {
 
     // Getting map position from settingsService
     var mapSetting = this.settingsService.getSetting(undefined, 31);
-    console.dir(mapSetting);
     if (mapSetting != undefined){
         this.mapSetting = mapSetting;
     } else {
@@ -292,7 +279,6 @@ export class MapComponent implements OnInit {
             }
             
             this.settingsService.setSetting(this.mapSetting);
-            this.settingsService.saveSettings();
         }, function (err) {
             console.log("ERROR: ");
             console.dir(err);
@@ -312,7 +298,7 @@ export class MapComponent implements OnInit {
        
     });
 
-    var styleSetting = globals.settingsService.getSetting(undefined, 11);
+    var styleSetting = this.settingsService.getSetting(undefined, 11);
     if (styleSetting != undefined){
         this.setMapStyle(styleSetting.value);
     }
