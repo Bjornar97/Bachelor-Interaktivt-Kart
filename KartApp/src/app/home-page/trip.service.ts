@@ -12,18 +12,21 @@ import { MarkerService } from '../map/marker.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { MapboxMarker } from 'nativescript-mapbox';
 import { start } from 'tns-core-modules/application/application';
-import { SettingsService } from '../settings-page/settings.service';
+import { SettingsClass } from '../settings-page/settings';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor(private imageService: ImageService, private settingsService: SettingsService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
+  private settingsClass: SettingsClass;
+
+  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
     this.tracker = globals.MainTracker;
+    this.settingsClass = globals.getSettingsClass();
   }
 
   private tracker: Tracker;
@@ -370,17 +373,9 @@ export class TripService {
               icon: "res://pause_continue_marker",
             });
             markerIds.push(lastWalk.stopTime);
-            let markerIdSetting = this.settingsService.getSetting(undefined, 32);
-            if (markerIdSetting == undefined){
-              markerIdSetting = {
-                id: 32,
-                name: "TripMarkerIds",
-                type: "markers",
-                value: []
-              }
-            }
+            let markerIdSetting = this.settingsClass.getSetting(undefined, 32);
             markerIdSetting.value[trip.id] = markerIds;
-            this.settingsService.setSetting(markerIdSetting);
+            this.settingsClass.setSetting(markerIdSetting);
           } else {
             lastWalk = currentWalk;
           }
@@ -397,18 +392,8 @@ export class TripService {
     });
     globals.MainMap.removeLine(ids);
 
-    let markerIdsSetting = this.settingsService.getSetting(undefined, 32);
-    if (markerIdsSetting == undefined){
-      markerIdsSetting = {
-        id: 32,
-        name: "TripMarkerIds",
-        type: "markers",
-        value: []
-      }
-      this.settingsService.setSetting(markerIdsSetting);
-    } else {
-      globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
-    }
+    let markerIdsSetting = this.settingsClass.getSetting(undefined, 32);
+    globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
   }
 
   /**

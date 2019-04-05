@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { RouterExtensions } from "nativescript-angular/router";
-import { SettingsService, Setting } from "./settings.service";
+import { SettingsClass, Setting } from "./settings";
 import { Switch } from "tns-core-modules/ui/switch";
 import * as globals from '../globals';
 import { DrawerClass } from '~/app/drawer';
@@ -12,21 +12,23 @@ import { Color } from "tns-core-modules/color";
   templateUrl: './settings-page.component.html',
   styleUrls: ['./settings-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [SettingsService],
   moduleId: module.id,
 })
 export class SettingsPageComponent implements OnInit {
 
-  private settingsService: SettingsService;
+  private settingsClass: SettingsClass;
   private drawer: DrawerClass;
 
-  private isDrawerSnap = true;
-  private isImageSave = false;
+  private isDrawerSnap;
+  private isImageSave;
 
   constructor(page: Page, private routerExtensions: RouterExtensions) {
     page.actionBarHidden = false;
-    this.settingsService = globals.settingsService;
+    this.settingsClass = globals.getSettingsClass();
     this.drawer = globals.getDrawer();
+
+    this.isDrawerSnap = this.settingsClass.getSetting(undefined, 3).value;
+    this.isImageSave = this.settingsClass.getSetting(undefined, 3).value;
   }
 
   toggleDrawerSnap(){
@@ -34,19 +36,9 @@ export class SettingsPageComponent implements OnInit {
   }
 
   setDrawerSnapSetting(value: boolean){
-    let setting = this.settingsService.getSetting(undefined, 3);
-    if (setting == undefined){
-      setting = {
-        id: 3,
-        name: "drawerSnap",
-        type: "switch",
-        value: value
-      }
-    } else {
-      setting.value = value;
-    }
-
-    this.settingsService.setSetting(setting);
+    let setting = this.settingsClass.getSetting(undefined, 3);
+    setting.value = value;
+    this.settingsClass.setSetting(setting);
   }
 
   drawerSnapChange(args) {
@@ -62,18 +54,9 @@ export class SettingsPageComponent implements OnInit {
   imageSaveChanged(args){
     let Switch = <Switch>args.object;
     this.isImageSave = Switch.checked;
-    let setting = this.settingsService.getSetting(undefined, 4);
-    if (setting == undefined){
-      setting = {
-        id: 4,
-        name: "imageSave",
-        type: "switch",
-        value: this.isImageSave
-      }
-    } else {
-      setting.value = this.isImageSave;
-    }
-    this.settingsService.setSetting(setting);
+    let setting = this.settingsClass.getSetting(undefined, 4);
+    setting.value = this.isImageSave;
+    this.settingsClass.setSetting(setting);
   }
 
 

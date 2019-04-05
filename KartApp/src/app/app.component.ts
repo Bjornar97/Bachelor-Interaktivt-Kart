@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LocationClass } from "./location";
 import * as globals from "./globals";
-import { SettingsService, Setting } from "./settings-page/settings.service";
+import { Setting, SettingsClass } from "./settings-page/settings";
 import { RouterExtensions } from "nativescript-angular/router";
 import * as fs from 'tns-core-modules/file-system';
 import * as application from "tns-core-modules/application";
@@ -17,24 +17,18 @@ import { DrawerClass } from "~/app/drawer";
     providers: [TripService]
 })
 export class AppComponent { 
-    private settingsService: SettingsService;
     private drawer: DrawerClass;
 
     constructor(private routerExtensions: RouterExtensions, private tripService: TripService){
         console.log("Creating app component!");
         this.locationService = new LocationClass(1);
-        if (globals.settingsService != undefined){
-            this.settingsService = globals.settingsService;
-        } else {
-            console.log("Need to make new settings-service");
-            this.settingsService = new SettingsService();
-            globals.setSettingsService(this.settingsService);
-        }
         this.drawer = globals.getDrawer();
         globals.setRouterExtensions(this.routerExtensions);
+        this.settingsClass = globals.getSettingsClass();
     }
 
     private locationService: LocationClass;
+    private settingsClass: SettingsClass;
 
     goToLocation(){
         console.log("Going to location");
@@ -125,11 +119,10 @@ export class AppComponent {
                 console.log("Trip exists already: ");
             }
             
-            let tripActive = this.settingsService.getSetting(undefined, 41);
-            if (tripActive != undefined) {
-                if (tripActive.value) {
-                    this.tripService.unpauseTrip();
-                }
+            let tripActive = this.settingsClass.getSetting(undefined, 41);
+            console.log("TripActive: " + tripActive.value);
+            if (tripActive.value) {
+                this.tripService.unpauseTrip();
             }
         } catch (error) {
             console.log("There was an error while resuming previous trip");
