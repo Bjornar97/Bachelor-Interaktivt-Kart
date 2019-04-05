@@ -21,8 +21,8 @@
         
         <StackLayout *ngFor="let event of events" class="container">
             <GridLayout rows="*" columns="auto, *">
-                    <StackLayout col="0">
-                        <Label [text]="event.timestamp" verticalAlignment="center"></Label>
+                    <StackLayout col="0" verticalAlignment="center">
+                        <Label [text]="event.timestamp"></Label>
                         <Label *ngIf="event.type == 'pause'" text="Pause"></Label>
                         <Label *ngIf="event.type == 'walk'" text="Deltur"></Label>
                     </StackLayout>
