@@ -21,22 +21,26 @@
         
         <StackLayout *ngFor="let event of events" class="container">
             <GridLayout rows="*" columns="auto, *">
-                    <Label col="0" [text]="event.timestamp" verticalAlignment="center"></Label>
+                    <StackLayout col="0">
+                        <Label [text]="event.timestamp" verticalAlignment="center"></Label>
+                        <Label *ngIf="event.type == 'pause'" text="Pause"></Label>
+                        <Label *ngIf="event.type == 'walk'" text="Deltur"></Label>
+                    </StackLayout>
                     <Image col="1" *ngIf="event.type == 'image'" [src]="event.value.imageSrc" height="90" width="90" horizontalAlignment="right"></Image>
                     <StackLayout col="1" *ngIf="event.type == 'walk'" id="eventInnhold" class="event">
-                            <Label [text]="event.value.startTime"></Label>
-                            <Label [text]="event.value.stopTime"></Label>
-                            <Label [text]="event.value.distanceMeters"></Label>
-                            <Label [text]="event.value.avgSpeed" ></Label>
+                            <Label [text]="'Start: ' + event.value.startTime"></Label>
+                            <Label [text]="'Stopp: ' + event.value.stopTime"></Label>
+                            <Label [text]="'Distanse: ' + event.value.distanceMeters + ' km'"></Label>
+                            <Label [text]="'Hastighet: ' + event.value.avgSpeed + ' min/km'" ></Label>
                     </StackLayout>
                     <StackLayout col="1" *ngIf="event.type == 'pause'" class="event">
-                            <Label [text]="event.value.from"></Label>
-                            <Label [text]="event.value.to"></Label>
+                            <Label [text]="'Fra: ' + event.value.from"></Label>
+                            <Label [text]="'Til: ' + event.value.to"></Label>
                     </StackLayout>
             </GridLayout>
     
         </StackLayout> 
-
+         <!--Tur knappen fungere ikke enda-->
         <Button text="Gå til tur" class="btn btn-primary btn-rounded-sm" id="button"></Button>
     </StackLayout>
 </ScrollView>
