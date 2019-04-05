@@ -14,6 +14,10 @@ export class BackendService {
 
   private serverURL = "kartapp.pythonanywhere.com";
 
+  getInfo(){
+    // TODO: Kalle createRequestHeader og legge den med i requesten
+  }
+
   login(loginName, password){
     let options = this.createRequestOptions();
     let data = {
@@ -28,5 +32,16 @@ export class BackendService {
         "Content-Type": "application/json"
     });
     return headers;
-}
+  }
+
+  private createRequestHeader() {
+    // set headers here e.g.
+    let token = this.settings.getSetting(undefined, 61).value;
+    let headers = new HttpHeaders({
+        "Bearer": token,
+        "Content-Type": "application/json",
+     });
+
+    return headers;
+  }
 }
