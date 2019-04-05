@@ -326,7 +326,7 @@ export class TripService {
     trip.walks.forEach((walk) => {
       console.log("Drawing line: " + walk.startTime);
       globals.MainMap.drawLine(walk.points, walk.startTime + 1, "#fff", 4);
-      globals.MainMap.drawLine(walk.points, walk.startTime, "#006000", 2);
+      globals.MainMap.drawLine(walk.points, walk.startTime, "#00f", 2);
     });
     let markerIds = [];
     let start = trip.startPoint;
@@ -413,9 +413,8 @@ export class TripService {
           }
           markerIdSetting.value[trip.id] = markerIds;
           this.settingsService.setSetting(markerIdSetting);
-        } else {
-          lastWalk = currentWalk;
         }
+        lastWalk = currentWalk;
       });
 
       globals.MainMap.addMarkers(markers);
