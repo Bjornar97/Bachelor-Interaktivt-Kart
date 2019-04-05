@@ -39,7 +39,6 @@ export class BackendService {
   }
 
   private createRequestHeader() {
-    // set headers here e.g.
     let token = this.settings.getSetting(undefined, 61).value;
     let headers = new HttpHeaders({
         "Bearer": token,
