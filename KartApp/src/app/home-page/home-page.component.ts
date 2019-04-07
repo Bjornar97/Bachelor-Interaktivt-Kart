@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild } from "@angular/core";
+import { Component, OnInit, Input, ElementRef, ViewChild, OnDestroy } from "@angular/core";
 import { Page } from "tns-core-modules/ui/page/page";
 import { TripService } from "./trip.service";
 import { Trip, Tracker } from "../tracker";
@@ -7,6 +7,7 @@ import {Router, Event, NavigationEnd} from '@angular/router';
 import * as fs from 'tns-core-modules/file-system';
 import * as globals from "../globals";
 import { DrawerClass } from "~/app/drawer";
+import { GC } from "tns-core-modules/utils/utils";
 
 @Component({
     selector: "Home",
@@ -14,7 +15,7 @@ import { DrawerClass } from "~/app/drawer";
     templateUrl: "./home-page.component.html",
     styleUrls: ["./home-page.component.css"]
 })
-export class HomePageComponent implements OnInit {
+export class HomePageComponent implements OnInit, OnDestroy {
     private drawer: DrawerClass;
 
     constructor(private page: Page, private routerext: RouterExtensions, private router: Router, private tripService: TripService) {
@@ -23,7 +24,6 @@ export class HomePageComponent implements OnInit {
             console.log("Main tracker does not exist,  making a new one");
             globals.setTracker(new Tracker(1));
         }
-        
         page.actionBarHidden = true;
         
         this.drawer = globals.getDrawer();
@@ -74,7 +74,6 @@ export class HomePageComponent implements OnInit {
                 console.log("Trip is not paused");
                 this.isPaused = false;
             }
-
             this.isTrip = true;
         } else {
             this.isTrip = false;
@@ -90,9 +89,14 @@ export class HomePageComponent implements OnInit {
         this.checkTrip();
     }
 
+    ngOnDestroy(){
+        GC();
+    }
+
     ngOnInit(): void {
         // Init your component properties here.
         var tripsUnsorted=this.tripService.getTrips();
         this.trips=this.tripService.sortTrips(tripsUnsorted);
+        GC();
     }
 }

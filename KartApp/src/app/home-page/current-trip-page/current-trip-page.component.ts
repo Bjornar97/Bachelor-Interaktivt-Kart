@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Trip, Tracker } from '~/app/tracker';
 import { TripService } from '../trip.service';
@@ -12,6 +12,9 @@ import { DrawerClass } from '~/app/drawer';
 import { on as applicationOn, exitEvent, ApplicationEventData } from "tns-core-modules/application";
 import { Setting, SettingsService } from '~/app/settings-page/settings.service';
 import { trigger, transition, style, animate, state } from "@angular/animations";
+import { ImageService } from '../image.service';
+import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
+import { GC } from 'tns-core-modules/utils/utils';
 
 
 @Component({
@@ -37,9 +40,9 @@ import { trigger, transition, style, animate, state } from "@angular/animations"
   providers: [TripService, MarkerService],
   moduleId: module.id,
 })
-export class CurrentTripPageComponent implements OnInit, AfterViewInit {
+export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
+  constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private imageService: ImageService, private tripService: TripService, private settingsService: SettingsService) { 
     this.locationClass = new LocationClass();
     this.tracker = globals.MainTracker;
     page.actionBarHidden = true;
@@ -54,17 +57,17 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
 
   color = "";
 
-  gree(){
+  green(){
     this.color = "gree";
   }
 
-  yell(){
+  yellow(){
     this.color = "yell";
   }
 
   changecol(){
     console.log("Chagning color from " + this.color);
-    this.color == "gree" ? this.yell(): this.gree();
+    this.color == "gree" ? this.yellow(): this.green();
   }
 
   private imageSrcs: any[] = [];
@@ -126,13 +129,12 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
     }
     camera.requestPermissions().then(
       () => {
-        camera.takePicture({saveToGallery: saveImageSetting.value}).then((imageAsset) => {
-          this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
-            this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker").then(() => {
-              this.trip = this.tripService.getCurrentTrip();
-              this.trip.images.forEach((image) => {
-                this.imageSrcs.push(image);
-              });
+        camera.takePicture({saveToGallery: saveImageSetting.value}).then((imageAsset: ImageAsset) => {
+          this.locationClass.getLocation(1000, 5000, 1).then((loc) => {
+            this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker").then((imageObject) => {
+              this.trip.images.push(imageObject);
+              this.imageSrcs.push(imageObject.imageSrc);
+              GC();
             });
           }).catch((error) => {
             console.log("ERROR in OpenCamera in currentTripPage: Error while getting location: " + error);
@@ -239,6 +241,12 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
         this.drawer.setDrawerHeight(heightSetting.value);
       }
     }
+    GC();
+  }
+
+  ngOnDestroy(){
+    this.trip = undefined;
+    GC();
   }
 
   ngOnInit() {
