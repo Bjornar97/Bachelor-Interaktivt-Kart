@@ -23,12 +23,13 @@ export class ImageService {
   }
 
   saveImage(image: ImageAsset, id: number): Promise<string>{
-    var path = this.getPath(id);
-    const source = new ImageSource();
+    let path = this.getPath(id);
+    let source = new ImageSource();
     return new Promise(function(resolve, reject){
       source.fromAsset(image).then((imageSource: ImageSource) => {
-        const saved: boolean = imageSource.saveToFile(path, "png");
+        let saved: boolean = imageSource.saveToFile(path, "png");
         if (saved){
+          source = undefined;
           resolve(path);
         } else {
           reject(new Error("The image was not saved"));

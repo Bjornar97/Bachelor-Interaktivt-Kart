@@ -82,6 +82,11 @@ export class Tracker {
             this.Trip.images = [];
         }
         this.Trip.images.push(imageObject);
+        return imageObject;
+    }
+
+    public getImages(){
+        return this.Trip.images;
     }
 
     private logPoint(point: geolocation.Location, force: boolean = false, first = false){
