@@ -5,6 +5,7 @@ import * as globals from "../globals";
 import { SettingsClass, Setting } from '../settings-page/settings';
 import * as application from "tns-core-modules/application";
 import { MarkerService } from './marker.service';
+import { GC } from 'tns-core-modules/utils/utils';
 
 @Component({
   selector: 'ns-map',
@@ -292,7 +293,7 @@ export class MapComponent implements OnInit {
     if (styleSetting != undefined){
         this.setMapStyle(styleSetting.value);
     }
-
+    GC();
   }
 
   public saveMapPosition(point: {lat: number, lng: number}){
