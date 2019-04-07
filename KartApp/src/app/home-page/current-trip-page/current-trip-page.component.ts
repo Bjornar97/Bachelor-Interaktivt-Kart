@@ -33,7 +33,6 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestro
     this.tracker = globals.MainTracker;
     this.settingsClass = globals.getSettingsClass();
     page.actionBarHidden = true;
-    this.settingsClass = globals.getSettingsClass();
   }
 
   private tracker: Tracker;
