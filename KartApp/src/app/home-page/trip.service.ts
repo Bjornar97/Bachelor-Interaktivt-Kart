@@ -645,6 +645,17 @@ export class TripService {
   }
 
   /**
+   * GetTripIds - Gets the ids of all trips
+   */
+  getIds(){
+    let folder = this.getTripFolder();
+    var infoFile = folder.getFile("Info.json");
+    let info = JSON.parse(infoFile.readTextSync());
+    return info.ids;
+  }
+
+
+  /**
    * isTrip() - Checks if there is a trip currently in progress
    * 
    * @returns true if a trip is in progress, false if not. A paused trip will return true.
