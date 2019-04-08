@@ -16,14 +16,13 @@
                     </Label>
                 </StackLayout>
                     <Image src="res://fjellman" stretch="aspectFill" width="200dp" class="logo"></Image> 
-                    <Label [text]="username"></Label>
                 <StackLayout class="input-field">
-                    <TextField #email hint="Email:" id="email-text" class="linje-under" fontSize="14"> </TextField>   
+                    <TextField hint="Email:" id="email-text" class="linje-under" fontSize="14"  > </TextField>   
                 </StackLayout>
                 <StackLayout class="input-field">
-                    <TextField #password hint="Password:" class="linje-under" fontSize="14" secure="true" > </TextField>   
+                    <TextField hint="Password:" class="linje-under" fontSize="14" secure="true" > </TextField>   
                 </StackLayout>
-                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Log In" (tap)="login(email.text,password.text)"></Button>
+                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Log In"></Button>
                 <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Hopp over"></Button>
                 <Label class="h3 p-15 m-15 text-left">
                     <FormattedString>
