@@ -21,25 +21,9 @@ import { GC } from 'tns-core-modules/utils/utils';
 
 @Component({
   selector: 'ns-current-trip-page',
-  animations: [
-    trigger('imagesFadeInOut', [
-      state("visible", style({
-        opacity: 1
-      })),
-      state("notVisible", style({
-        opacity: 0
-      })),
-      transition("visible => notVisible", [
-        animate("1s")
-      ]),
-      transition("notVisible => visible", [
-        animate("1s"),
-      ]),
-    ]),
-  ],
   templateUrl: './current-trip-page.component.html',
   styleUrls: ['./current-trip-page.component.css'],
-  providers: [TripService, MarkerService],
+  providers: [TripService, MarkerService, ImageService],
   moduleId: module.id,
 })
 export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestroy {

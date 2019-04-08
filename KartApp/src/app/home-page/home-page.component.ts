@@ -13,7 +13,8 @@ import { GC } from "tns-core-modules/utils/utils";
     selector: "Home",
     moduleId: module.id,
     templateUrl: "./home-page.component.html",
-    styleUrls: ["./home-page.component.css"]
+    styleUrls: ["./home-page.component.css"],
+    providers: [TripService]
 })
 export class HomePageComponent implements OnInit, OnDestroy {
     private drawer: DrawerClass;
@@ -34,8 +35,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.router.events.subscribe((val) => {
             if(val instanceof NavigationEnd){
                 if(this.router.url == "/home"){
-                    this.trips = this.tripService.getTrips();
-                    this.isTrip = this.tripService.isTrip();
+                    let tripsUnsorted=this.tripService.getTrips();
+                    let trips = this.tripService.sortTrips(tripsUnsorted);
+                    this.tripIds = [];
+                    trips.forEach(trip => {
+                        if (trip != undefined){
+                            this.tripIds[trip.id] = trip.id;
+                        }
+                    });
                     this.checkTrip();
                 };
             } 
@@ -43,7 +50,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }
     private tracker: Tracker;
 
-    private trips: Trip[];
+    private tripIds: number[];
     private isTrip: boolean;
     private isPaused: boolean;
 
@@ -58,8 +65,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }
 
     delete(trip: Trip){
-        let index = this.trips.indexOf(trip);
-        delete this.trips[index];
+        
+        
     }
 
     /**
@@ -95,8 +102,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         // Init your component properties here.
-        var tripsUnsorted=this.tripService.getTrips();
-        this.trips=this.tripService.sortTrips(tripsUnsorted);
+        let tripsUnsorted=this.tripService.getTrips();
+        let trips = this.tripService.sortTrips(tripsUnsorted);
+        this.tripIds = [];
+        trips.forEach(trip => {
+            if (trip != undefined){
+                this.tripIds[trip.id] = trip.id;
+            }
+        });
+        trips = undefined;
         globals.setCurrentHomePage("home");
         GC();
     }
