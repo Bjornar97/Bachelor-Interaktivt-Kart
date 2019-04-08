@@ -97,5 +97,4 @@ export class TripBoxComponent implements OnInit, OnChanges {
     this.distanceString = (Math.round(this.trip.distanceMeters)/1000).toFixed(2);
     console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
   }
-
 }
