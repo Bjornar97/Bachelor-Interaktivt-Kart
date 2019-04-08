@@ -12,10 +12,11 @@ import { SettingsService } from '../settings-page/settings.service';
   styleUrls: ['./account-page.component.css'],
   moduleId: module.id,
   providers: [BackendService]
-})
+}) 
 export class AccountPageComponent implements OnInit {
   
   private drawer: DrawerClass;
+  private username: string;
 
   constructor(private page: Page, private backendService: BackendService, private settingsService: SettingsService) {
     // Use the component constructor to inject providers.
@@ -24,10 +25,21 @@ export class AccountPageComponent implements OnInit {
   }
 
   login(loginName, password){
+    console.log("email: " + loginName + " passord: " + password);
     this.backendService.login(loginName, password)
     .subscribe((result) => {
       let tokenSetting = this.settingsService.getSetting(undefined, 61);
-      tokenSetting.value = (<any>result).json.data.access_token;
+      if (tokenSetting == undefined){
+        tokenSetting = {
+          id: 61,
+          name: "tokenSetting",
+          type: "token",
+          value: undefined
+        }
+      }
+      console.dir(result);
+      tokenSetting.value = (<any>result).body.access_token;
+      this.username = (<any>result).body.message;
       this.settingsService.setSetting(tokenSetting);
     });
   }
