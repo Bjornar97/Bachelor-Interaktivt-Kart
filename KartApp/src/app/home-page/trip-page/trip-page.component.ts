@@ -9,7 +9,6 @@ import { isAndroid } from "tns-core-modules/platform";
 import { Trip } from '~/app/tracker';
 import { DrawerClass } from '~/app/drawer';
 import { ImageService } from '../image.service';
-import { GC } from 'tns-core-modules/utils/utils';
 
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
@@ -94,7 +93,6 @@ export class TripPageComponent implements OnInit, OnDestroy {
     if (isAndroid) {
       application.android.removeEventListener(application.AndroidApplication.activityBackPressedEvent);
     }
-    GC();
   }
 
 }
