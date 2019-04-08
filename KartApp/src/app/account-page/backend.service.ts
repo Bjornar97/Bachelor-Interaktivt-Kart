@@ -12,19 +12,23 @@ export class BackendService {
 
   }
 
-  private serverURL = "kartapp.pythonanywhere.com";
+  private serverURL = "https://kartapp.pythonanywhere.com";
 
   getInfo(){
     // TODO: Kalle createRequestHeader og legge den med i requesten
+   
+      let headers = this.createRequestHeader();
+      return this.http.get(this.serverURL + "/v1/user/all", { headers: headers });
+                    
   }
 
   login(loginName, password){
     let options = this.createRequestOptions();
     let data = {
-      login_name: loginName,
+      email: loginName,
       password: password
     }
-    return this.http.post(this.serverURL + "/v1/login", data, {headers: options});
+    return this.http.post(this.serverURL + "/v1/login", data, {headers: options, observe: "response"});
   }
 
   private createRequestOptions() {
