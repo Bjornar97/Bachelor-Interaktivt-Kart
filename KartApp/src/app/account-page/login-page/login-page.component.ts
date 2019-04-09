@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { DrawerClass } from '~/app/drawer';
-import * as globals from "../globals";
+import * as globals from "../../globals";
 import { Color } from "tns-core-modules/color"; 
-import { BackendService } from './backend.service';
-import { SettingsService } from '../settings-page/settings.service';
+import { BackendService } from '../backend.service';
+import { SettingsService } from '../../settings-page/settings.service';
 
 @Component({
   selector: 'ns-account-page',
@@ -13,7 +13,7 @@ import { SettingsService } from '../settings-page/settings.service';
   moduleId: module.id,
   providers: [BackendService]
 }) 
-export class AccountPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit {
   
   private drawer: DrawerClass;
   private username: string;
