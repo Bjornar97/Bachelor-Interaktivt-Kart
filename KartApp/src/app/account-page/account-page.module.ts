@@ -2,12 +2,14 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptHttpClientModule } from "nativescript-angular/http-client";
 
-import { AccountPageComponent } from "./account-page.component";
+import { LoginPageComponent } from "./login-page/login-page.component";
 import { AccountPageRoutingModule } from "./account-page-routing.module";
+import { RegisterPageComponent } from "./register-page/register-page.component"
 
 @NgModule({
   declarations: [
-    AccountPageComponent
+    LoginPageComponent,
+    RegisterPageComponent 
   ],
   imports: [
     NativeScriptCommonModule,
