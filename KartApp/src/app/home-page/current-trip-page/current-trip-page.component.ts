@@ -109,8 +109,6 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestro
         camera.takePicture({saveToGallery: saveImageSetting.value}).then((imageAsset: ImageAsset) => {
           this.locationClass.getLocation(1000, 5000, 1).then((loc) => {
             this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker").then((imageObject) => {
-              this.trip.images.push(imageObject);
-              this.imageSrcs.push(imageObject.imageSrc);
               GC();
             });
           }).catch((error) => {
