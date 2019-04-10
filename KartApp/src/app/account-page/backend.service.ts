@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { SettingsService } from '../settings-page/settings.service';
+import { SettingsClass } from '../settings-page/settings';
+import * as globals from "../globals";
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
 
-  constructor(private http: HttpClient, private settings: SettingsService) { 
-
+  constructor(private http: HttpClient) { 
+    this.settingsClass = globals.getSettingsClass();
   }
 
+  private settingsClass: SettingsClass;
+  
   private serverURL = "https://kartapp.pythonanywhere.com";
 
   getInfo(){
@@ -57,7 +60,7 @@ export class BackendService {
   }
 
   private createRequestHeader() {
-    let token = this.settings.getSetting(undefined, 61).value;
+    let token = this.settingsClass.getSetting(undefined, 61).value;
     let headers = new HttpHeaders({
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",
