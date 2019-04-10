@@ -1,13 +1,20 @@
 /* Add mobile styles for the component here.  */
-.info{
+#info{
    font-weight: bold; 
-   text-align:left;
-   font-size:17;
+   font-size:15;   
 }
-.deliminator{
-   border-width: 0 0 1px 0;
+
+#button{
+    background-color:#00b300;
+    color:white;
+} 
+.innholdContainer{
+    height: 125dp;
+    margin:10dp 0dp -10dp 10dp;
 }
-.turNavn{
-   font-size: 25;
-   margin-bottom: 30;
+.container{
+    margin:15dp 10dp 15dp 10dp;
+}
+.event{
+    text-align:right;
 }

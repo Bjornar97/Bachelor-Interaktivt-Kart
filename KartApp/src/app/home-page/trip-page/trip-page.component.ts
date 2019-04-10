@@ -24,14 +24,19 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   constructor(private routerExtensions: RouterExtensions, private tripService: TripService, page: Page, private route: ActivatedRoute, private imageService: ImageService) { 
     this.drawer = globals.getDrawer();
+    page.actionBarHidden = true;
   }
 
   private sub;
   private backEvent;
   private trip: Trip;
   private events;
+  
+  private pageTitle = "Trip";
+  private backButtonText = "Tilbake";
 
   private goBack(){
+    this.tripService.unDrawTrip(this.trip.id);
     this.routerExtensions.navigate(["home"], {
       animated: true,
       clearHistory: true,

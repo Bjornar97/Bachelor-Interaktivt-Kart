@@ -1,5 +1,7 @@
-<ActionBar title="Hjem" class="action-bar" (pan)="drawer.onPan($event)">
-</ActionBar>
+<StackLayout>
+<GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+    <label col="1" class="actionBarTitle" text="Hjem"></label>
+</GridLayout>
 <GridLayout rows="auto, *">
     <StackLayout row="1">
         <ScrollView id="homeScrollView" class="scrollView" height="1000">
@@ -28,6 +30,7 @@
                 <ng-templage *ngFor="let trip of trips" class="bottomElement">
                     <ns-trip-box #tripBox *ngIf="trip != undefined" id="{{trip.id}}" (delete)="delete(trip, tripBox)"></ns-trip-box>
                 </ng-templage>
+                <Label *ngIf="trips.length == 0" text="Du har ingen turer enda" textWrap="true" class="noTripsText"></Label>
             </StackLayout>
         </ScrollView>
     </StackLayout>
@@ -42,3 +45,4 @@
         class="tripBtn">
     </FAB>
 </GridLayout>
+</StackLayout>

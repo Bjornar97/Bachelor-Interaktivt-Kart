@@ -15,6 +15,7 @@
 
 .outer {
     padding-bottom: 20dp;
+    padding-top: -15dp;
 }
 
 .containerShadowBox{

@@ -219,6 +219,8 @@ export class SettingsClass {
    *
    * 4: ImageSave - Should images taken in the app be saved to the gallery
    * 
+   * 5: All ImageMarkers Setting - Should all imagemarkers be shown on the map. If false, it only shows the markers on the trips that is drawn on the map.
+   * 
    * 11: Map menu setting.
    * 
    * 21: Drawer setting.
