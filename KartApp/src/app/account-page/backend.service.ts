@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { SettingsService } from '../settings-page/settings.service';
+import * as Toast from 'nativescript-toast';
 
 
 @Injectable({
@@ -58,7 +59,7 @@ export class BackendService {
   private createRequestHeader() {
     // set headers here e.g.
     // let token = this.settings.getSetting(undefined, 61).value;
-    let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTQ4MzM3NDgsIm5iZiI6MTU1NDgzMzc0OCwianRpIjoiMGY2NTI3YTMtZTUyNC00ZTgyLTllNDItNzAwMTA2Y2Y5NDI1IiwiaWRlbnRpdHkiOjYxMjMyNDc5LCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.TdL1M1hIZ7O9bV9DPMuiwwDOzXYBtC2VXCvOTiKd-wY";
+    let token = "";
     let headers = new HttpHeaders({
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",
@@ -67,8 +68,12 @@ export class BackendService {
   }
 
   getFriendList() {
-    let headers = this.createRequestHeader();
-    return this.http.get(this.serverURL + "/v1/friend", {headers: headers, observe: "response"});
+    try {
+      let headers = this.createRequestHeader();
+      return this.http.get(this.serverURL + "/v1/friend", {headers: headers, observe: "response"});
+    } catch (error) {
+      console.log("ERROR while getting friendList in backendService: " + error);
+    }
   }
 
   /**
@@ -76,18 +81,14 @@ export class BackendService {
    * @param name The username of the user to send the request to
    * @param status The status, send to send a new request, accept to accept a request
    */
-  sendFriendRequest(name: string, status: string, decline = false){
+  sendFriendRequest(name: string, status: string){
     let headers = this.createRequestHeader();
-    if (decline) {
-      let params = new HttpParams().set("friend_name", JSON.stringify(name));
-      return this.http.delete(this.serverURL + "/v1/friend", {headers: headers, observe: "response", params: params});
-    } else {
-      let data = {
-        friend_name: name,
-        status: status
-      }
-      return this.http.post(this.serverURL + "/v1/friend", data, {headers: headers, observe: "response"})
+    let data = {
+      friend_name: name,
+      status: status
     }
+    
+    return this.http.post(this.serverURL + "/v1/friend", data, {headers: headers, observe: "response"})
   }
 
   userNameExist(name: string) {

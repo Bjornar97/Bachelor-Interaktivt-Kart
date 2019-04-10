@@ -155,17 +155,26 @@ export class FriendsPageComponent implements OnInit{
         }
     }
 
-    getFriendIndex(name: string) {
-        return this.friendRequests.findIndex((request) => {
-            if (request.name == name){
-                console.log(request.name);
-                return true;
-            }
-        });
+    getFriendIndex(name: string, type = "request") {
+        if (type == "request"){
+            return this.friendRequests.findIndex((request) => {
+                if (request.name == name){
+                    console.log(request.name);
+                    return true;
+                }
+            });
+        } else {
+            return this.friendList.findIndex((friend) => {
+                if (friend.name == name){
+                    console.log(friend.name);
+                    return true;
+                }
+            });
+        }
     }
 
     declineRequest(name: string) {
-        this.backendService.sendFriendRequest(name, "", true);
+        this.backendService.sendFriendRequest(name, "delete");
     }
 
     animate(content: StackLayout) {
@@ -177,6 +186,7 @@ export class FriendsPageComponent implements OnInit{
     }
 
     removeFriend(name: string){
+        let friendIndex = this.getFriendIndex(name, "friend");
         let options = {
             title: "Fjerne venn",
             message: "Er du sikker på at du vil fjerne " + name + " fra din venneliste?",
@@ -187,10 +197,13 @@ export class FriendsPageComponent implements OnInit{
             if (result) {
                 console.log("Removing friend");
                 try {
-                    this.backendService.sendFriendRequest(name, "", true).subscribe((result) => {
-                        console.dir((<any>result));
+                    this.backendService.sendFriendRequest(name, "delete").subscribe((result) => {
+                        if (<any>result == 201) {
+                            this.friendList = this.friendList.filter((value, i, array) => {
+                                return i != friendIndex;
+                            });
+                        }
                     });
-                    delete this.friendList[this.getFriendIndex(name)];
                 } catch (error) {
                     console.log("ERROR while removing friend: " + error);
                 }
