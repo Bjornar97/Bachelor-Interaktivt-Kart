@@ -4,28 +4,35 @@
     font-weight:bold;
     margin-top:2dt;
     margin-bottom:10dt;
-    font-size:20;
+    font-size: 18;
 }
 #my-button{
     background-color:#00b300;
     color:#0c7023;
     font-weight:bold;
-    margin-top:8dp;
+    margin-top: 8dp;
 }
-.container{
-    margin:6dp 10dp 6dp 10dp;
-    border-width:1 1 1 1;
-    border-radius: 25px;
-    background-color: rgba(255, 255, 255, 0.023);
+
+.userIcon {
+    font-size: 66;
+    color: #008000;
 }
+
 .innholdContainer{
-    height: 80dp;
-    margin:4dp 5dp 4dp 5dp;
+    padding: 10dp;
+    color: #000;
 }
 .KontoInn{
-    margin-left:12dp;
-    font-size:20;
+    font-size:18;
+    margin-left: 5dp;
 }
 .MinLabel{
-    font-size:20;
+    font-size:18;
+    padding: 10dp 5dp;
+}
+
+.icon {
+    margin-left: 10dp;
+    color: #008000;
+    font-size: 40;
 }
