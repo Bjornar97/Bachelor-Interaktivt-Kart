@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { BackendService } from '../backend.service';
-import * as Toast from 'nativescript-toast';
 import { Page, View } from 'tns-core-modules/ui/page/page';
 import { confirm } from "tns-core-modules/ui/dialogs";
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -224,19 +223,16 @@ export class FriendsPageComponent implements OnInit{
                             return i != friendIndex;
                         });
                     } else {
-                        Toast.makeText("ERROR: " + (<any>result).body.message).show();
                         this.friendRequests[friendIndex].loading = false;
                     }
                 }, (error) => {
                     console.log("ERROR while accepting friend request: ");
                     console.dir(error);
-                    Toast.makeText("Noe gikk galt, prøv igjen senere").show();
                     this.friendRequests[friendIndex].loading = false;
                 });
         } catch (error) {
             console.log("ERROR while accepting friend request: ");
             console.dir(error);
-            Toast.makeText("Noe gikk galt, prøv igjen senere").show();
             this.friendRequests[friendIndex].loading = false;
         }
     }
@@ -263,7 +259,6 @@ export class FriendsPageComponent implements OnInit{
                     });
                     this.loading = false;
                 } else {
-                    Toast.makeText("ERROR: " + (<any>result).body.message).show();
                     this.goBack();
                 }
             });
@@ -275,8 +270,6 @@ export class FriendsPageComponent implements OnInit{
 
     ngOnInit(){
         this.loadFriends();
-
-        Toast.makeText("Hallo").show();
     }
 
 }

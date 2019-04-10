@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { SettingsService } from '../settings-page/settings.service';
-import * as Toast from 'nativescript-toast';
-
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +45,6 @@ export class BackendService {
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",
      });
-
     return headers;
   }
 
