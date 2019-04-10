@@ -42,13 +42,16 @@
     color: #000;
 }
 
-.switch {
+.switch[checked=false] {
     text-align: right;
 }
 
-.iosSwitch{
+.switch[checked=true] {
+    text-align: right;
+}
+
+.iosSwitch[checked=true]{
     background-color: #008000;
-    color: #eee;
 }
 
 .androidSwitch {
