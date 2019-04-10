@@ -44,8 +44,8 @@
                             <GridLayout *ngIf="request != undefined" rows="*" columns="*, *">
                                 <Label col="0" [text]="request.name" textWrap="true" verticalAlignment="center"></Label>
                                 <StackLayout col="1" *ngIf="request.status == 'received'" orientation="horizontal" col="1" verticalAlignment="center" horizontalAlignment="right">
-                                    <Label text="&#xf00c;" class="acceptRequest" textWrap="true" (tap)="acceptRequest(request.name)"></Label>
-                                    <Label text="&#xf00d;" class="declineRequest" textWrap="true" (tap)="declineRequest(request.name)"></Label>
+                                    <Label text="&#xf00c;" *ngIf="!request.loading" class="acceptRequest" textWrap="true" (tap)="acceptRequest(request.name)"></Label>
+                                    <Label text="&#xf00d;" *ngIf="!request.loading" class="declineRequest" textWrap="true" (tap)="declineRequest(request.name)"></Label>
                                     <ActivityIndicator *ngIf="request.loading" width="30" height="30" [busy]="request.loading" class="activity-indicator"></ActivityIndicator>
                                 </StackLayout>
                             </GridLayout>
