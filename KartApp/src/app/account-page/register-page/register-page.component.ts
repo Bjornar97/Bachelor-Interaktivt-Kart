@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BackendService } from '../backend.service';
-import { SettingsService } from '../../settings-page/settings.service';
+import { SettingsClass } from '../../settings-page/settings';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { DrawerClass } from '~/app/drawer';
 import * as globals from "../../globals";
@@ -15,20 +15,22 @@ import { RouterExtensions } from 'nativescript-angular/router';
 })
 export class RegisterPageComponent {
     private drawer: DrawerClass;
+    private settingsClass: SettingsClass;
     private username: string;
 
 
-    constructor(private routerExtensions: RouterExtensions,private page: Page, private backendService: BackendService, private settingsService: SettingsService) {
+    constructor(private routerExtensions: RouterExtensions,private page: Page, private backendService: BackendService) {
         // Use the component constructor to inject providers.
         this.drawer = globals.getDrawer();
         page.actionBarHidden = true; 
+        this.settingsClass = globals.getSettingsClass();
     }
 
     register(username,phoneNumber,loginName, password){
         console.log("email: " + loginName + " passord: " + password + "telNummer" +phoneNumber + "username" + username);
         this.backendService.register(username,phoneNumber,loginName, password)
         .subscribe((result) => {
-          let tokenSetting = this.settingsService.getSetting(undefined, 61);
+          let tokenSetting = this.settingsClass.getSetting(undefined, 61);
           if (tokenSetting == undefined){
             tokenSetting = {
               id: 61,
@@ -40,7 +42,7 @@ export class RegisterPageComponent {
           console.dir(result);
           tokenSetting.value = (<any>result).body.access_token;
           this.username = (<any>result).body.message;
-          this.settingsService.setSetting(tokenSetting);
+          this.settingsClass.setSetting(tokenSetting);
         });
     }
 
