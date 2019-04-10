@@ -1,0 +1,34 @@
+<StackLayout>
+<GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+    <label col="1" class="actionBarTitle" text="Innlogging"></label>
+</GridLayout>
+<ScrollView class="scrollView"> 
+    <GridLayout android:fontFamily="cursive"
+    android:textStyle="bold">
+       
+        <StackLayout>
+            <StackLayout class="form" >
+                    <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
+                    <Label [text]="message"></Label>
+                <StackLayout class="input-field">
+                    <TextField #email hint="E-post:" keyboardType="email" class="linje-under"> </TextField>   
+                </StackLayout>
+                <StackLayout class="input-field">
+                    <TextField #password hint="Passord:" class="linje-under" secure="true"> </TextField>   
+                </StackLayout>
+                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Inn" (tap)="login(email.text,password.text)"></Button>
+                
+                <StackLayout>
+                        <Label text="Ikke medlem?" class="medlemText" [nsRouterLink]="['/account/register']"></Label>
+                <GridLayout rows="*,*" columns="auto,*" class="container" shadow elevation="2">
+                        <Label col="0" row="1" text="Registrer deg her!" fontWeight="Bold" class="SignUp" [nsRouterLink]="['/account/register']"></Label> 
+                        <Image col="1" row="1" src="res://icon_sign_up" class="BildeSignUp" stretch="aspectFill"  [nsRouterLink]="['/account/register']"></Image>  
+                </GridLayout>
+                
+                </StackLayout>
+
+            </StackLayout>
+        </StackLayout>          
+</GridLayout>
+</ScrollView>
+</StackLayout>
