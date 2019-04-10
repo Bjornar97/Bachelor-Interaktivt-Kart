@@ -19,9 +19,8 @@ import { DrawerClass } from "~/app/drawer";
 export class AppComponent { 
     private drawer: DrawerClass;
 
-    constructor(private routerExtensions: RouterExtensions, private tripService: TripService, private settingsService: SettingsService){
+    constructor(private routerExtensions: RouterExtensions, private tripService: TripService){
         console.log("Creating app component!");
-        globals.setSettingsService(this.settingsService);
         this.locationService = new LocationClass(1);
         this.drawer = globals.getDrawer();
         globals.setRouterExtensions(this.routerExtensions);

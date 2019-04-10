@@ -355,7 +355,7 @@ export class TripService {
       lat: stop.lat,
       lng: stop.lng,
       title: "Stopp",
-      subtitle: globals.timeConversion(stop.timestamp - trip.startTime),
+      subtitle: globals.timeConversion(stop.timestamp.getTime() - trip.startTime),
       icon: "res://stop_trip_marker"
     });
     markerIds.push(stopTime);
@@ -375,7 +375,7 @@ export class TripService {
             lat: currentPoint.lat,
             lng: currentPoint.lng,
             title: "Pause slutter",
-            subtitle: globals.timeConversion(currentPoint.timestamp - trip.startTime),
+            subtitle: globals.timeConversion(currentPoint.timestamp.getTime() - trip.startTime),
             icon: "res://pause_continue_marker"
           }
 
@@ -402,7 +402,7 @@ export class TripService {
             lastWalk = currentWalk;
           }
           markerIdSetting.value[trip.id] = markerIds;
-          this.settingsService.setSetting(markerIdSetting);
+          this.settingsClass.setSetting(markerIdSetting);
         }
         lastWalk = currentWalk;
       });

@@ -29,7 +29,7 @@ export class MapMenuComponent implements OnInit {
   private mapStyle;
 
   constructor(page: Page, private routerExtensions: RouterExtensions) { 
-    page.actionBarHidden = false;
+    page.actionBarHidden = true;
     this.settingsClass = globals.getSettingsClass();
     this.mapStyle = this.settingsClass.getSetting(undefined, 11).value;
 
