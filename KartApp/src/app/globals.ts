@@ -57,6 +57,17 @@ export function getDrawer(){
     return Drawer;
 }
 
+// Remembering home page
+var CurrentHomePage: string = "home";
+
+export function getCurrentHomePage(){
+    return CurrentHomePage;
+}
+
+export function setCurrentHomePage(currentHomePage: string) {
+    CurrentHomePage = currentHomePage;
+}
+
 // Time 
 /**
    * timeConversion - Converts time in milliseconds to a readable string in this format: hh:mm:ss. If less than one hour: mm:ss

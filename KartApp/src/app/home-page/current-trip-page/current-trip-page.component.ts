@@ -191,6 +191,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
       if (result){
         try {
           this.trip = this.tripService.endTrip();
+          globals.setCurrentHomePage("home");
           this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
             animated: true,
             clearHistory: true,
@@ -275,5 +276,6 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
       this.settingsService.setSetting(tripActive);
     });
 
+    globals.setCurrentHomePage("home/currentTrip");
   }
 }

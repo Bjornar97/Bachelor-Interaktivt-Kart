@@ -72,6 +72,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
           });
         });
       }
+      
+      globals.setCurrentHomePage("home/trip/" + this.trip.id);
       // In a real app: dispatch action to load the details here.
     });
     // TODO: Tegne trip i kartet
