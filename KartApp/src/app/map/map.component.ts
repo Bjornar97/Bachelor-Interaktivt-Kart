@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitudeProperty } from "nativescript-mapbox";
 import { LocationClass, LocationObject } from "../location";
 import * as globals from "../globals";
-import { SettingsService, Setting } from '../settings-page/settings.service';
+import { SettingsClass, Setting } from '../settings-page/settings';
 import * as application from "tns-core-modules/application";
 import { MarkerService } from './marker.service';
 
@@ -32,8 +32,11 @@ export class MapComponent implements OnInit {
         }
     ]
     
-    constructor(private settingsService: SettingsService) {
+    private settingsClass: SettingsClass;
+
+    constructor() {
         this.locationClass = new LocationClass(1);
+        this.settingsClass = globals.getSettingsClass();
     }
 
     @Input() main: string;
@@ -46,6 +49,12 @@ export class MapComponent implements OnInit {
         zoomLevel: 3,
         showUser: true,
         disableMovement: false
+    }
+
+    setAutoRotate(value: boolean){
+        let setting = this.settingsClass.getSetting(undefined, 1);
+        setting.value = value;
+        this.settingsClass.setSetting(setting);
     }
 
     /**
@@ -108,7 +117,7 @@ export class MapComponent implements OnInit {
     }
 
     public trackUser(){
-        var bearingSetting = this.settingsService.getSetting(undefined, 1);
+        var bearingSetting = this.settingsClass.getSetting(undefined, 1);
         let bearing;
         if (bearingSetting == null){
             bearing = true;
@@ -204,52 +213,34 @@ export class MapComponent implements OnInit {
     // Gets the map that is displayed
     this.map = args.map;
     if (this.main == "true"){
-    globals.setMap(this);
+        globals.setMap(this);
     }
 
-    this.markerService = new MarkerService(this.settingsService);
+    this.markerService = new MarkerService();
 
-    // Getting map position from settingsService
-    var mapSetting = this.settingsService.getSetting(undefined, 31);
-    if (mapSetting != undefined){
-        this.mapSetting = mapSetting;
-    } else {
-        this.mapSetting = {
-            id: 31,
-            name: "MapPositionSetting",
-            type: "Object",
-            value: undefined
-        }
-    }
+    let imageMarkerSetting = this.settingsClass.getSetting(undefined, 2);
 
-    let imageMarkerSetting = this.settingsService.getSetting(undefined, 2);
-    if (imageMarkerSetting != undefined){
-        console.log("imageMarkerSetting is defined");
-        if (imageMarkerSetting.value){
-            console.log("imageMarkerSetting is true");
-            let markers = this.markerService.getMarkers("image");
-            this.map.addMarkers(markers);
-        } else {
-            console.log("imageMarkerSetting is false");
-        }
-    } else {
-        console.log("imageMarkerSetting is not defined");
-        imageMarkerSetting = {
-            id: 2,
-            name: "showImageMarkers",
-            type: "switch",
-            value: true
-        }
+    console.log("Checking imageMarkerSetting");
+    if (imageMarkerSetting != null && imageMarkerSetting.value){
+        console.log("imageMarkerSetting is true");
         let markers = this.markerService.getMarkers("image");
         this.map.addMarkers(markers);
-        this.settingsService.setSetting(imageMarkerSetting);
     }
+    console.log("Checked imageMarkersetting");
+
+    let markers = this.markerService.getMarkers("image");
+    this.map.addMarkers(markers);
+    this.settingsClass.setSetting(imageMarkerSetting);
 
     let map = this.map;
 
+    // Getting map position from settingsClass
+    this.mapSetting = this.settingsClass.getSetting(undefined, 31);
+    console.dir(this.mapSetting);
     // If the setting exists, it uses that to set the center and zoom level of the map
     if (this.mapSetting.value != undefined){
-        console.log("Center is being set from setting");
+        console.log("Center is being set from setting: ");
+        console.dir(typeof this.mapSetting.value);
         map.setCenter({
             animated: false,
             lat: this.mapSetting.value.lat,
@@ -267,18 +258,15 @@ export class MapComponent implements OnInit {
             map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
             map.setZoomLevel({level: 16, animated: false});
 
-            this.mapSetting = {
-                id: 31,
-                name: "mapSetting",
-                type: "Object",
-                value: {
-                    lat: loc.lat,
-                    lng: loc.lng,
-                    zoomLevel: 16
-                }
+            console.log("Setting mapPosSetting");
+            let mapPosSetting = this.settingsClass.getSetting(undefined, 31);
+            mapPosSetting.value = {
+                lat: loc.lat,
+                lng: loc.lng,
+                zoomLevel: 16
             }
             
-            this.settingsService.setSetting(this.mapSetting);
+            this.settingsClass.setSetting(this.mapSetting);
         }, function (err) {
             console.log("ERROR: ");
             console.dir(err);
@@ -298,7 +286,7 @@ export class MapComponent implements OnInit {
        
     });
 
-    var styleSetting = this.settingsService.getSetting(undefined, 11);
+    var styleSetting = globals.settingsClass.getSetting(undefined, 11);
     if (styleSetting != undefined){
         this.setMapStyle(styleSetting.value);
     }
@@ -324,7 +312,7 @@ export class MapComponent implements OnInit {
                             zoomLevel: zoom
                         }
                     }
-                    this.settingsService.setSetting(this.mapSetting);
+                    this.settingsClass.setSetting(this.mapSetting);
                     this.saved = false;
                 }
             });
