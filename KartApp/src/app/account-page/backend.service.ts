@@ -81,14 +81,18 @@ export class BackendService {
    * @param name The username of the user to send the request to
    * @param status The status, send to send a new request, accept to accept a request
    */
-  sendFriendRequest(name: string, status: string){
+  sendFriendRequest(name: string, status: string, decline = false){
     let headers = this.createRequestHeader();
-    let data = {
-      friend_name: name,
-      status: status
+    if (decline) {
+      let params = new HttpParams().set("friend_name", JSON.stringify(name));
+      return this.http.delete(this.serverURL + "/v1/friend", {headers: headers, observe: "response", params: params});
+    } else {
+      let data = {
+        friend_name: name,
+        status: status
+      }
+      return this.http.post(this.serverURL + "/v1/friend", data, {headers: headers, observe: "response"})
     }
-    
-    return this.http.post(this.serverURL + "/v1/friend", data, {headers: headers, observe: "response"})
   }
 
   userNameExist(name: string) {
