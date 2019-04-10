@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as fs from "tns-core-modules/file-system";
 import { MapboxMarker } from 'nativescript-mapbox';
-import { SettingsService } from '../settings-page/settings.service';
+import { SettingsClass } from '../settings-page/settings';
 import * as globals from "../globals";
 import { RouterExtensions } from 'nativescript-angular/router';
 
@@ -10,8 +10,11 @@ import { RouterExtensions } from 'nativescript-angular/router';
 })
 export class MarkerService {
 
-  constructor(private settingsService: SettingsService) { 
+  constructor() { 
+    this.settingsClass = globals.getSettingsClass();
   }
+
+  private settingsClass: SettingsClass;
 
   getFolder(){
     return fs.knownFolders.documents().getFolder("Markers");
@@ -120,19 +123,12 @@ export class MarkerService {
     });
     info.lastID = id;
     this.writeInfo(info);
-    if (this.settingsService.getSetting(undefined, 2) != undefined && type == "image"){
-      if (this.settingsService.getSetting(undefined, 2).value){
+    if (type == "image"){
+      if (this.settingsClass.getSetting(undefined, 2).value){
         globals.MainMap.addMarkers([marker]);
       }
-    } else {
-      this.settingsService.setSetting({
-        id: 2,
-        name: "showImageMarkers",
-        type: "switch",
-        value: true
-      });
-      globals.MainMap.addMarkers([marker]);
     }
+    
     return marker;
   }
 
