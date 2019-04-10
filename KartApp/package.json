@@ -5,7 +5,7 @@
       "version": "5.4.0-rc-2019-04-02-110853-01"
     },
     "tns-ios": {
-      "version": "5.4.0-2019-04-05-131911-02"
+      "version": "5.2.0"
     }
   },
   "description": "NativeScript Application",

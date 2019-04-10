@@ -10,7 +10,7 @@
     <ActivityIndicator *ngIf="loading" width="50" height="50" [busy]="loading" class="activity-indicator"></ActivityIndicator>
     <Label *ngIf="!success" text="Noe gikk galt ved innlasting av dine venner" textWrap="true" class="errorMessage"></Label>
     <Button *ngIf="!success" text="Prøv igjen" (tap)="loadFriends()" class="tryAgainBtn"></Button>
-    <StackLayout #content *ngIf="!loading && success" (loaded)="animate(content)">
+    <ContentView #content *ngIf="!loading && success" (loaded)="animate(content)">
         <ScrollView height="1000">
             <StackLayout>
                 <ContentView shadow elevation="2" class="newFriendContent">
@@ -63,5 +63,5 @@
                 </ContentView>
             </StackLayout>
         </ScrollView>
-    </StackLayout>            
+    </ContentView>            
 </StackLayout>
