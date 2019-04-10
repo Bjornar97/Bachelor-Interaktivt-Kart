@@ -1,6 +1,6 @@
 import { MapComponent } from "./map/map.component";
 import { Tracker } from "./tracker";
-import { Setting, SettingsClass } from "./settings-page/settings";
+import { SettingsService, Setting } from "./settings-page/settings.service";
 import { RouterExtensions } from "nativescript-angular/router";
 import { DrawerClass } from "~/app/drawer";
 
@@ -26,13 +26,10 @@ export function setRouterExtensions(routerExt: RouterExtensions){
 export var buttons: Object;
 
 // Settings Service
-export var settingsClass: SettingsClass;
+export var settingsService: SettingsService;
 
-export function getSettingsClass(){
-    if (settingsClass == undefined){
-        settingsClass = new SettingsClass();
-    }
-    return settingsClass;
+export function setSettingsService(service: SettingsService){
+    settingsService = service;
 }
 
 // Tracker
