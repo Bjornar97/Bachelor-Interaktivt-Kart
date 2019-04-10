@@ -4,18 +4,24 @@ import { NativeScriptHttpClientModule } from "nativescript-angular/http-client";
 import { AccountPageComponent} from "~/app/account-page/account-page.component";
 import { LoginPageComponent } from "./login-page/login-page.component";
 import { AccountPageRoutingModule } from "./account-page-routing.module";
-import { RegisterPageComponent } from "./register-page/register-page.component"
+import { RegisterPageComponent } from "./register-page/register-page.component";
+import { FriendsPageComponent } from "./friends-page/friends-page.component";
+
+import { NgShadowModule } from 'nativescript-ng-shadow';
+
 
 @NgModule({
   declarations: [
     LoginPageComponent,
     RegisterPageComponent,
-    AccountPageComponent
+    AccountPageComponent,
+    FriendsPageComponent
   ],
   imports: [
     NativeScriptCommonModule,
     AccountPageRoutingModule,
-    NativeScriptHttpClientModule
+    NativeScriptHttpClientModule,
+    NgShadowModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

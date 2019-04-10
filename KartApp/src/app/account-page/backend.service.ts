@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { SettingsService } from '../settings-page/settings.service';
 
 
@@ -57,11 +57,42 @@ export class BackendService {
 
   private createRequestHeader() {
     // set headers here e.g.
-    let token = this.settings.getSetting(undefined, 61).value;
+    // let token = this.settings.getSetting(undefined, 61).value;
+    let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTQ4MzM3NDgsIm5iZiI6MTU1NDgzMzc0OCwianRpIjoiMGY2NTI3YTMtZTUyNC00ZTgyLTllNDItNzAwMTA2Y2Y5NDI1IiwiaWRlbnRpdHkiOjYxMjMyNDc5LCJmcmVzaCI6ZmFsc2UsInR5cGUiOiJhY2Nlc3MifQ.TdL1M1hIZ7O9bV9DPMuiwwDOzXYBtC2VXCvOTiKd-wY";
     let headers = new HttpHeaders({
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",
     });
     return headers;
+  }
+
+  getFriendList() {
+    let headers = this.createRequestHeader();
+    return this.http.get(this.serverURL + "/v1/friend", {headers: headers, observe: "response"});
+  }
+
+  /**
+   * 
+   * @param name The username of the user to send the request to
+   * @param status The status, send to send a new request, accept to accept a request
+   */
+  sendFriendRequest(name: string, status: string, decline = false){
+    let headers = this.createRequestHeader();
+    if (decline) {
+      let params = new HttpParams().set("friend_name", JSON.stringify(name));
+      return this.http.delete(this.serverURL + "/v1/friend", {headers: headers, observe: "response", params: params});
+    } else {
+      let data = {
+        friend_name: name,
+        status: status
+      }
+      return this.http.post(this.serverURL + "/v1/friend", data, {headers: headers, observe: "response"})
+    }
+  }
+
+  userNameExist(name: string) {
+    let headers = this.createRequestHeader();
+    let params = new HttpParams().set("user_name", name);
+    return this.http.get(this.serverURL + "/v1/user/exists", {headers: headers, observe: "response", params: params});
   }
 }
