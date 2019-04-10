@@ -68,6 +68,21 @@ export function setCurrentHomePage(currentHomePage: string) {
     CurrentHomePage = currentHomePage;
 }
 
+// Error list
+var errorList: string[] = [];
+
+export function getErrorList(){
+    return errorList;
+}
+
+export function showError(errorString: string) {
+    errorList.push(errorString);
+    setTimeout(() => {
+        this.counter--;
+        errorList.splice(0, 1);
+    }, 5000);
+}
+
 // Time 
 /**
    * timeConversion - Converts time in milliseconds to a readable string in this format: hh:mm:ss. If less than one hour: mm:ss

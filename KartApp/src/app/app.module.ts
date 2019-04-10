@@ -11,6 +11,7 @@ registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
 
 import { SettingsService } from "./settings-page/settings.service";
 import { NgShadowModule } from 'nativescript-ng-shadow';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
     bootstrap: [
@@ -23,7 +24,8 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     ],
     declarations: [
         AppComponent,
-        MapComponent
+        MapComponent,
+        ErrorMessageComponent
     ],
     providers: [SettingsService],
     schemas: [
