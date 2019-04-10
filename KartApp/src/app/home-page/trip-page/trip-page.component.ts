@@ -60,16 +60,10 @@ export class TripPageComponent implements OnInit, OnDestroy {
       } catch (error) {
         cangoback = false;
       }
-      if (!cangoback && isAndroid){
+      if (isAndroid){
         application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
           args.cancel = true;
-          this.routerExtensions.navigate(['home'], {
-            animated: true,
-            clearHistory: true,
-            transition: {
-              name: "slideRight"
-            }
-          });
+          this.goBack();
         });
       }
       
