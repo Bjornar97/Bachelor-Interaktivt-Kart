@@ -7,9 +7,9 @@ import { BackendService } from '../backend.service';
 import { SettingsService } from '../../settings-page/settings.service';
 
 @Component({
-  selector: 'ns-account-page',
-  templateUrl: './account-page.component.html',
-  styleUrls: ['./account-page.component.css'],
+  selector: 'ns-login-page',
+  templateUrl: './login-page.component.html',
+  styleUrls: ['./login-page.component.css'],
   moduleId: module.id,
   providers: [BackendService]
 }) 

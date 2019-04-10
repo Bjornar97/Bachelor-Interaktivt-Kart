@@ -10,6 +10,7 @@ import { AccountEditPageComponent } from "./accountEdit/accountEdit-page.compone
 
 
 const routes: Routes = [
+    { path: "", pathMatch: "full", redirectTo: "/account/friends"},
     { path: "login", component: LoginPageComponent },
     { path: "register", component: RegisterPageComponent },
     { path: "account" },
