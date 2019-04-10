@@ -1,20 +1,19 @@
 import * as globals from "./globals";
 import { screen } from "tns-core-modules/platform";
-import { SettingsClass, Setting } from "./settings-page/settings";
+import { SettingsService, Setting } from "./settings-page/settings.service";
 import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
 import { RouterExtensions } from "nativescript-angular/router/router-extensions";
 
 
 export class DrawerClass {
 
-    private settingsClass: SettingsClass;
+    private settingsService: SettingsService;
     private drawerSetting: Setting;
 
     constructor() {
-        this.settingsClass = globals.getSettingsClass();
-
+        this.settingsService = globals.settingsService;
         // Getting the drawer from settings
-        var drawersetting: Setting = this.settingsClass.getSetting(undefined, 48);
+        var drawersetting: Setting = this.settingsService.getSetting(undefined, 48);
         console.dir(this.drawerSetting);
         if (drawersetting != undefined){
             this.drawer.initialHeight = drawersetting.value;
@@ -27,7 +26,7 @@ export class DrawerClass {
                 value: this.drawer.initialHeight
             }
             console.log("DrawerSetting does not exist");
-            this.settingsClass.setSetting(drawersetting);
+            this.settingsService.setSetting(drawersetting);
             this.drawerSetting = drawersetting;
         }
     }
@@ -116,7 +115,7 @@ export class DrawerClass {
             // Saving the state of the drawer. Subject to change
             if (this.drawerSetting != undefined){
                 this.drawerSetting.value = this.drawer.initialHeight;
-                this.settingsClass.setSetting(this.drawerSetting);
+                this.settingsService.setSetting(this.drawerSetting);
             } else {
                 console.log("ERROR in drawer: Could not set setting drawerSetting, because it is not defined");
             }

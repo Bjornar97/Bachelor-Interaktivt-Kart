@@ -1,4 +1,7 @@
-import { knownFolders } from "tns-core-modules/file-system";
+import { Injectable, OnInit } from '@angular/core';
+import * as fs from "tns-core-modules/file-system";
+import { knownFolders, File, Folder } from "tns-core-modules/file-system";
+import * as globals from '../globals';
 
 export type Setting = {
   id: number,
@@ -7,9 +10,12 @@ export type Setting = {
   value: any,
 }
 
-export class SettingsClass {
+@Injectable({
+  providedIn: 'root'
+})
+export class SettingsService implements OnInit{
 
-  constructor() {
+  constructor() { 
     var settingsFile = this.getFile();
     this.settingsList = [];
     
@@ -17,10 +23,10 @@ export class SettingsClass {
       var text = settingsFile.readTextSync((error) => {
         console.log("Could not load settings from the file: " + error);
         settingsFile.removeSync();
+        this.settingsListSuccess = false;
       });
       var settings = text; 
       this.settingsList = JSON.parse(settings);
-      this.settingsListSuccess = true;
     } catch (error) {
       console.log("Could not load settings from the file: " + error);
       settingsFile.removeSync();
@@ -243,15 +249,13 @@ export class SettingsClass {
    * 
    * 5: All ImageMarkers Setting - Should all imagemarkers be shown on the map. If false, it only shows the markers on the trips that is drawn on the map.
    * 
-   * 4: ImageSave - Should images get saved to the gallery
-   * 
    * 11: Map menu setting.
    * 
    * 21: Drawer setting.
    * 
    * 31: Map position setting.
    * 
-   * 32: Trip Marker Ids - Ids for the markers from trips that is drawn on the map.
+   * 32: MarkerIds - A list with markerIds of every trip. Used to remove markers like start and stop from a trip that is drawn on a map.
    * 
    * 41: tripActive
    * 
@@ -275,8 +279,11 @@ export class SettingsClass {
       }
     } else {
       console.log("ERROR(settingsService): The settingsList did not succeed");
-      return null;
     }
+  }
+
+  ngOnInit(){
+    console.log("SettingsService has been initted");
   }
   
 }
