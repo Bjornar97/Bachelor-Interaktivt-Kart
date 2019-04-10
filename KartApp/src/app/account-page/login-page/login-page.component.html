@@ -19,10 +19,10 @@
                 <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Inn" (tap)="login(email.text,password.text)"></Button>
                 
                 <StackLayout>
-                        <Label text="Ikke medlem?" class="medlemText" [nsRouterLink]="['/account/register']"></Label>
-                <GridLayout rows="*,*" columns="auto,*" class="container" shadow elevation="2">
-                        <Label col="0" row="1" text="Registrer deg her!" fontWeight="Bold" class="SignUp" [nsRouterLink]="['/account/register']"></Label> 
-                        <Image col="1" row="1" src="res://icon_sign_up" class="BildeSignUp" stretch="aspectFill"  [nsRouterLink]="['/account/register']"></Image>  
+                <GridLayout rows="*,*" columns="auto,*" class="container" [nsRouterLink]="['/account/register']">
+                        <Label row="0" col="0" text="Ikke medlem?" class="medlemText"></Label>
+                        <Label col="0" row="1" text="Registrer deg her!" fontWeight="Bold" class="SignUp" ></Label> 
+                        <Image col="1" row="0" rowSpan="2" src="res://icon_sign_up" class="BildeSignUp" stretch="aspectFill"></Image>  
                 </GridLayout>
                 
                 </StackLayout>

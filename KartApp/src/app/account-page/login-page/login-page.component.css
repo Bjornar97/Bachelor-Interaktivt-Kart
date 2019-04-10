@@ -30,7 +30,6 @@
     color:#0c7023;
     text-align:left;
     font-weight: bold;
-    margin-top:95dt;
   }
 
   .SignUp{
@@ -39,15 +38,13 @@
     text-align:center;
   }
   .container{
-    border-width: 0 0 1 0;
-    margin-top:5dt;
+    margin-top: 40dp;
     background-color: transparent;
   }
   .BildeSignUp{
     width:60dt;
     height: 60dt;
     horizontal-align: right;
-    margin-bottom: 3dt;
   }
 
   
