@@ -58,15 +58,6 @@ export class LoginPageComponent implements OnInit {
 
 
   ngOnInit() {
-    var color=new Color("#0f0");
-    var textField=this.page.getViewById("email-text");
-    if (this.page.android){
-      textField.android.setHintTextColor(color.android);
-    }
-    else if(this.page.ios){
-      //var placeholder=textField.ios.valueForKey("placeholderLabel")
-      //placeholder.textColor=color.ios;
-    }
 
   }
 

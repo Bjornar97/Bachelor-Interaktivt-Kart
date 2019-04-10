@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { SettingsService } from '../settings-page/settings.service';
-
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +20,8 @@ export class BackendService {
       return this.http.get(this.serverURL + "/v1/user/all", { headers: headers, observe: "response" });
                     
   }
+
+  
 
   login(loginName, password){
     let options = this.createRequestOptions();
@@ -56,12 +57,41 @@ export class BackendService {
   }
 
   private createRequestHeader() {
-    // set headers here e.g.
     let token = this.settings.getSetting(undefined, 61).value;
     let headers = new HttpHeaders({
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",
     });
     return headers;
+  }
+
+  getFriendList() {
+    try {
+      let headers = this.createRequestHeader();
+      return this.http.get(this.serverURL + "/v1/friend", {headers: headers, observe: "response"});
+    } catch (error) {
+      console.log("ERROR while getting friendList in backendService: " + error);
+    }
+  }
+
+  /**
+   * 
+   * @param name The username of the user to send the request to
+   * @param status The status, send to send a new request, accept to accept a request
+   */
+  sendFriendRequest(name: string, status: string){
+    let headers = this.createRequestHeader();
+    let data = {
+      friend_name: name,
+      status: status
+    }
+    
+    return this.http.post(this.serverURL + "/v1/friend", data, {headers: headers, observe: "response"})
+  }
+
+  userNameExist(name: string) {
+    let headers = this.createRequestHeader();
+    let params = new HttpParams().set("user_name", name);
+    return this.http.get(this.serverURL + "/v1/user/exists", {headers: headers, observe: "response", params: params});
   }
 }
