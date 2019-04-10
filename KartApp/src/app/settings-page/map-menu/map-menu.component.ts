@@ -39,8 +39,6 @@ export class MapMenuComponent implements OnInit {
     this.drawer = globals.getDrawer();
   }
 
-  private settingsService: SettingsService;
-
   private goBack() {
     this.routerExtensions.backToPreviousPage();
   }
@@ -58,24 +56,16 @@ export class MapMenuComponent implements OnInit {
     this.isAutoRotate = Switch.checked;
     this.autoRotateSetting.value = Switch.checked;
     this.settingsClass.setSetting(this.autoRotateSetting);
-    globals.MainMap.setAutoRotate(Switch.checked);
   }
 
   changeRotateSwitch(){
-    var autorotate = this.isAutoRotate;
-    if (autorotate){
-      autorotate = false;
-    } else { 
-      autorotate = true;
-    }
-    this.autoRotateSetting.value = autorotate;
-    this.isAutoRotate = autorotate;
+    this.isAutoRotate = !this.isAutoRotate;
+    this.autoRotateSetting.value = this.isAutoRotate;
     this.settingsClass.setSetting(this.autoRotateSetting);
-    globals.MainMap.setAutoRotate(autorotate);
   }
 
   ngOnInit() {
-    let autoRotateSetting = this.settingsService.getSetting(undefined, 1);
+    let autoRotateSetting = this.settingsClass.getSetting(undefined, 1);
     if (autoRotateSetting == undefined || autoRotateSetting == null){
       autoRotateSetting = {
         id: 1,
@@ -83,11 +73,11 @@ export class MapMenuComponent implements OnInit {
         type: "switch",
         value: this.isAutoRotate
       }
-      this.settingsService.setSetting(autoRotateSetting);
+      this.settingsClass.setSetting(autoRotateSetting);
     }
     this.autoRotateSetting = autoRotateSetting;
 
-    let mapStyleSetting = this.settingsService.getSetting(undefined, 11);
+    let mapStyleSetting = this.settingsClass.getSetting(undefined, 11);
     if (mapStyleSetting == undefined || mapStyleSetting == null){
       mapStyleSetting = {
         id: 11,
@@ -95,7 +85,7 @@ export class MapMenuComponent implements OnInit {
         type: "buttonRow",
         value: this.mapStyle
       }
-      this.settingsService.setSetting(mapStyleSetting);
+      this.settingsClass.setSetting(mapStyleSetting);
     }
     this.mapStyleSetting = mapStyleSetting;
     

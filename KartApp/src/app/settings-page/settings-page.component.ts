@@ -44,14 +44,11 @@ export class SettingsPageComponent implements OnInit {
   drawerSnapChange(args) {
     let Switch = <Switch>args.object;
     this.isDrawerSnap = Switch.checked;
-    this.DrawerSnapSetting.value = this.isDrawerSnap;
-    this.settingsService.setSetting(this.DrawerSnapSetting);
+    this.setDrawerSnapSetting(this.isDrawerSnap);
   }
 
   toggleImageSave(){
     this.isImageSave = !this.isImageSave;
-    this.imageSaveSetting.value = this.isImageSave;
-    this.settingsService.setSetting(this.imageSaveSetting);
   }
 
   imageSaveChanged(args){

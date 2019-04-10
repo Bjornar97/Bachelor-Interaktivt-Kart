@@ -395,11 +395,24 @@ export class TripService {
             markers.push(pauseMarker, pauseContinueMarker);
             markerIds.push(currentWalk.startTime);
             markerIds.push(lastWalk.stopTime);
-            let markerIdSetting = this.settingsClass.getSetting(undefined, 32);
-            markerIdSetting.value[trip.id] = markerIds;
-            this.settingsClass.setSetting(markerIdSetting);
-          } else {
-            lastWalk = currentWalk;
+            // Hvis ikke distansen er over 5 meter, men pausen er over 5 sekunder, tegnes en enkelt pause-marker med lengden på pausen
+          } else if (pauseContinueMarker.id - pauseMarker.id > 5000) {
+            pauseMarker.title = "Pause";
+            pauseMarker.subtitle = globals.timeConversion(pauseMarker.id - trip.startTime) +  "\nLengde på pausen: " + globals.timeConversion(pauseContinueMarker.id - pauseMarker.id);
+            markers.push(pauseMarker);
+            markerIds.push(lastWalk.stopTime);
+          }
+
+          console.log("Making marker: " + lastWalk.stopTime);
+          markerIds.push(lastWalk.stopTime);
+          let markerIdSetting = this.settingsClass.getSetting(undefined, 32);
+          if (markerIdSetting == undefined){
+            markerIdSetting = {
+              id: 32,
+              name: "TripMarkerIds",
+              type: "markers",
+              value: []
+            }
           }
           markerIdSetting.value[trip.id] = markerIds;
           this.settingsClass.setSetting(markerIdSetting);

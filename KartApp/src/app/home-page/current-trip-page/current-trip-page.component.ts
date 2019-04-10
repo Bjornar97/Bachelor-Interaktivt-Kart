@@ -44,6 +44,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
   constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService) { 
     this.locationClass = new LocationClass();
     this.tracker = globals.MainTracker;
+    this.settingsClass = globals.getSettingsClass();
     page.actionBarHidden = true;
     this.settingsClass = globals.getSettingsClass();
   }
