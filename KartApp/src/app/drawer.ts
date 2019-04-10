@@ -2,6 +2,7 @@ import * as globals from "./globals";
 import { screen } from "tns-core-modules/platform";
 import { SettingsClass, Setting } from "./settings-page/settings";
 import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
+import { RouterExtensions } from "nativescript-angular/router/router-extensions";
 
 
 export class DrawerClass {
@@ -215,6 +216,25 @@ export class DrawerClass {
             this.closeDrawer();
         } else {
             this.openDrawer(height, buttonName);
+            if (buttonName == "home") {
+                try {
+                    globals.routerExtensions.navigate([globals.getCurrentHomePage()], {
+                        animated: true,
+                        clearHistory: true,
+                        transition: {
+                          name: "fade"
+                        }
+                    });
+                } catch (error) {
+                    globals.routerExtensions.navigate(["home"], {
+                        animated: true,
+                        clearHistory: true,
+                        transition: {
+                          name: "fade"
+                        }
+                    });
+                }
+            }
         }
     }
 }

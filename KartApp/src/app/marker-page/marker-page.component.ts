@@ -3,6 +3,8 @@ import * as globals from "../globals";
 import { DrawerClass } from "~/app/drawer";
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page/page';
+import { isAndroid } from "tns-core-modules/platform";
+import * as application from 'tns-core-modules/application';
 
 @Component({
   selector: 'ns-marker-page',
@@ -27,6 +29,12 @@ export class MarkerPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (isAndroid){
+      application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+        args.cancel = true;
+        this.goBack();
+      });
+    }
   }
 
 }

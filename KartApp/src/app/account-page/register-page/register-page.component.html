@@ -1,0 +1,44 @@
+<StackLayout>
+        <GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+            <GridLayout col="0" rows="*" columns="auto, *" class="actionBarBackButton" (tap)="goBack()">
+                <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
+                <label col="1" text="Logg Inn" verticalAlignment="center" class="actionBarBackButtonText"></label>
+            </GridLayout>
+            <label col="1" class="actionBarTitle" text="Registrering"></label>
+        </GridLayout>
+        <ScrollView class="scrollView">
+            <GridLayout android:fontFamily="cursive"
+            android:textStyle="bold">
+               
+            <StackLayout>
+                    <StackLayout class="form" >
+                            <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
+                            <Label [text]="username"></Label>
+                        <StackLayout class="input-field">
+                            <TextField #brukernavn hint="Brukernavn:" class="linje-under"> </TextField>   
+                        </StackLayout>
+                        <StackLayout class="input-field">
+                                <TextField #telefonNr hint="Telefon Nummer: (valgfritt)" class="linje-under"> </TextField>   
+                        </StackLayout>
+                        <StackLayout class="input-field">
+                            <TextField #email hint="E-post:" class="linje-under"> </TextField>   
+                        </StackLayout>
+                        <StackLayout class="input-field">
+                            <TextField #password hint="Passord:" class="linje-under" secure="true"> </TextField>   
+                        </StackLayout>
+                        <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Register" (tap)="register(brukernavn.text,telefonNr.text,email.text,password.text)"></Button>
+                        <StackLayout>
+                        <GridLayout rows="*,*" columns="auto,*" class="container" shadow elevation="2">
+                                <Label col="0" row="1" text="Medlem? Logg deg inn!" fontWeight="Bold" class="LoggInText" [nsRouterLink]="['/account/login']"></Label> 
+                                <Image col="1" row="1" src="res://logg_inn_icon" class="BildeLoggIn" stretch="aspectFill"  [nsRouterLink]="['/account/login']"></Image>  
+                        </GridLayout>
+                        </StackLayout>
+        
+                    </StackLayout>
+                </StackLayout>          
+                
+            </GridLayout>
+        </ScrollView>
+</StackLayout>
+      
+    

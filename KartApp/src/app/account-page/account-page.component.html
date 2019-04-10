@@ -1,39 +1,38 @@
 <StackLayout>
-<GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
-    <label col="1" class="actionBarTitle" text="Innlogging"></label>
-</GridLayout>
-<ScrollView class="scrollView">
-    <GridLayout android:fontFamily="cursive"
-    android:textStyle="bold">
-       
-        <StackLayout>
-            <StackLayout class="form" >
-                <StackLayout class="page m-20">
-                    <Label>
-                        <FormattedString>
-                        <Span text="Kart App" class="KartApp"></Span>
-                        </FormattedString>
-                    </Label>
-                </StackLayout>
-                    <Image src="res://fjellman" stretch="aspectFill" width="200dp" class="logo"></Image> 
-                    <Label [text]="username"></Label>
-                <StackLayout class="input-field">
-                    <TextField #email hint="Email:" id="email-text" class="linje-under" fontSize="14"> </TextField>   
-                </StackLayout>
-                <StackLayout class="input-field">
-                    <TextField #password hint="Password:" class="linje-under" fontSize="14" secure="true" > </TextField>   
-                </StackLayout>
-                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Log In" (tap)="login(email.text,password.text)"></Button>
-                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Hopp over"></Button>
-                <Label class="h3 p-15 m-15 text-left">
-                    <FormattedString>
-                        <Span text="Not a member? " color="gray"></Span>
-                        <Span text=" Sign Up" fontAttributes="Bold" fontSize="15"></Span>
-                    </FormattedString>
-                </Label>
-            </StackLayout>
-        </StackLayout> 
-        
-</GridLayout>
-</ScrollView>
+        <GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+            <label col="1" class="actionBarTitle" text="Konto"></label>
+        </GridLayout>
+        <ScrollView class="scrollView"> 
+            <GridLayout android:fontFamily="cursive"
+            android:textStyle="bold">
+               
+                <StackLayout>
+                    <Image src="res://user_page_icon" stretch="aspectFill" width="100dp" height="100dp"></Image>
+                    <Label [text]="userInfo" class="BrukernavnText"></Label>
+                    <StackLayout>
+                    <ContentView shadow elevation="2" class="container">
+                        <GridLayout columns="*,*" rows="*,*" class="innholdContainer">
+                            <Label col="0" row="0" text="Venner" class="MinLabel"></Label>
+                            <Label col="0" row="1" text="Venners turer" class="MinLabel"></Label>
+                        </GridLayout>
+                    </ContentView>
+                    </StackLayout>
+                    <StackLayout>
+                    <ContentView shadow elevation="2" class="container">
+                        <GridLayout columns="*,*" rows="*,*" class="innholdContainer">
+                            <Label col="0" row="0" text="Dine delte turer" class="MinLabel"></Label>
+                            <Label col="0" row="1" text="Lagrende turer" class="MinLabel"></Label>
+                        </GridLayout>
+                    </ContentView>
+                    </StackLayout>
+                    <StackLayout>
+                    <GridLayout columns="auto,*" rows="*,*" class="innholdContainer">
+                        <Label col="0" row="0" text="Konto-innstillinger" textAlignment="left" class="KontoInn"></Label> 
+                        <Image col="1" row="0" src="res://konto_innstilling_icon" stretch="aspectFill" width="60px" height="60px" horizontalAlignment="center"></Image>     
+                    </GridLayout>
+                    </StackLayout>
+                     <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Ut" (tap)=logOut()></Button>       
+                </StackLayout>          
+        </GridLayout>
+     </ScrollView>
 </StackLayout>
