@@ -8,25 +8,27 @@
        
         <StackLayout>
             <StackLayout class="form" >
-                    <Image src="res://fjellman" stretch="aspectFill" width="200dp" class="logo"></Image> 
-                    <Label [text]="username"></Label>
+                    <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
+                    <Label [text]="message"></Label>
                 <StackLayout class="input-field">
-                    <TextField #email hint="Email:" id="email-text" class="linje-under" fontSize="14"> </TextField>   
+                    <TextField #email hint="E-post:" keyboardType="email" class="linje-under"> </TextField>   
                 </StackLayout>
                 <StackLayout class="input-field">
-                    <TextField #password hint="Password:" class="linje-under" fontSize="14" secure="true" > </TextField>   
+                    <TextField #password hint="Passord:" class="linje-under" secure="true"> </TextField>   
                 </StackLayout>
-                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Log In" (tap)="login(email.text,password.text)"></Button>
-                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Hopp over"></Button>
-                <Label class="h3 p-15 m-15 text-left">
-                    <FormattedString>
-                        <Span text="Not a member? " color="gray"></Span>
-                        <Span text=" Sign Up" fontAttributes="Bold" fontSize="15" [nsRouterLink]="['/register-page']"></Span>
-                    </FormattedString>
-                </Label>
+                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Inn" (tap)="login(email.text,password.text)"></Button>
+                
+                <StackLayout>
+                        <Label text="Ikke medlem?" class="medlemText" [nsRouterLink]="['/account/register']"></Label>
+                <GridLayout rows="*,*" columns="auto,*" class="container" shadow elevation="2">
+                        <Label col="0" row="1" text="Registrer deg her!" fontWeight="Bold" class="SignUp" [nsRouterLink]="['/account/register']"></Label> 
+                        <Image col="1" row="1" src="res://icon_sign_up" class="BildeSignUp" stretch="aspectFill"  [nsRouterLink]="['/account/register']"></Image>  
+                </GridLayout>
+                
+                </StackLayout>
+
             </StackLayout>
-        </StackLayout> 
-        
+        </StackLayout>          
 </GridLayout>
 </ScrollView>
 </StackLayout>

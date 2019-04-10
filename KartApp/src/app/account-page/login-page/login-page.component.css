@@ -9,24 +9,45 @@
     margin-right: 30;
     flex-grow: 2;
   }
- 
+
   .linje-under{
     border-color:gray;
     border-width: 0 0 1 0;
-    text-align: left;
-    margin-top:20;
-   
-    
+    text-align: left;  
+    margin-top:25dt;
+    font-size: 18;
+    font-weight: bold; 
   }
   #my-button{
     background-color:#00b300;
+    color:#0c7023;
+    font-weight: bold;
+    margin-top:20dt;
   }
   
-  .KartApp{
-    font-style:italic;
-    font-size: 20;
-    color:#00b300;
-    
+  .medlemText{
+    font-size:25;
+    color:#0c7023;
+    text-align:left;
+    font-weight: bold;
+    margin-top:95dt;
+  }
+
+  .SignUp{
+    font-size:20;
+    color:#0c7023;
+    text-align:center;
+  }
+  .container{
+    border-width: 0 0 1 0;
+    margin-top:5dt;
+    background-color: transparent;
+  }
+  .BildeSignUp{
+    width:60dt;
+    height: 60dt;
+    horizontal-align: right;
+    margin-bottom: 3dt;
   }
 
   

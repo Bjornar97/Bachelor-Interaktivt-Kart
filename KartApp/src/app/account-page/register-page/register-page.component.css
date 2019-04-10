@@ -1,0 +1,43 @@
+.page {
+  align-items: center;    
+  background-color: transparent;
+  flex-direction: column;
+}
+  .form {
+    margin-left: 30;
+    margin-right: 30;
+    flex-grow: 2;
+  }
+ 
+  .linje-under{
+    border-color:gray;
+    border-width: 0 0 1 0;
+    text-align: left;  
+    margin-top:25dt;
+    font-size: 15;
+    font-weight: bold;
+    
+  }
+  #my-button{
+    background-color:#00b300;
+    color:#0c7023;
+    font-weight: bold;
+  }
+  
+  .LoggInText{
+    margin-top:5dt;
+    font-size:19;
+    color:#0c7023;
+    text-align:center;
+  }
+  .container{
+    border-width: 0 0 1 0;
+    margin-top:10dt;
+    background-color: transparent;
+  }
+  .BildeLoggIn{
+    width:60dt;
+    height: 60dt;
+    horizontal-align: right;
+    margin-bottom: 5dt;
+  }
