@@ -94,5 +94,6 @@ export class HomePageComponent implements OnInit {
         // Init your component properties here.
         var tripsUnsorted=this.tripService.getTrips();
         this.trips=this.tripService.sortTrips(tripsUnsorted);
+        globals.setCurrentHomePage("home");
     }
 }

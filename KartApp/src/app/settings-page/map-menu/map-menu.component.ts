@@ -7,6 +7,8 @@ import { SettingsService, Setting } from '../settings.service';
 import { Switch } from 'tns-core-modules/ui/switch/switch';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { DrawerClass } from '~/app/drawer';
+import { isAndroid } from "tns-core-modules/platform";
+import * as application from 'tns-core-modules/application';
 
 let mapStylesStrings = ["Satellitt", "Friluftsliv", "Veikart"]
 
@@ -95,6 +97,13 @@ export class MapMenuComponent implements OnInit {
       this.settingsService.setSetting(mapStyleSetting);
     }
     this.mapStyleSetting = mapStyleSetting;
+    
+    if (isAndroid){
+      application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+        args.cancel = true;
+        this.goBack();
+      });
+    }
   }
 
 }

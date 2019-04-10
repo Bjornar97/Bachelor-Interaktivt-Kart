@@ -12,6 +12,8 @@ import { DrawerClass } from '~/app/drawer';
 import { on as applicationOn, exitEvent, ApplicationEventData } from "tns-core-modules/application";
 import { Setting, SettingsService } from '~/app/settings-page/settings.service';
 import { trigger, transition, style, animate, state } from "@angular/animations";
+import { isAndroid } from "tns-core-modules/platform";
+import * as application from 'tns-core-modules/application';
 
 
 @Component({
@@ -191,6 +193,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
       if (result){
         try {
           this.trip = this.tripService.endTrip();
+          globals.setCurrentHomePage("home");
           this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
             animated: true,
             clearHistory: true,
@@ -274,6 +277,14 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
       }
       this.settingsService.setSetting(tripActive);
     });
+    
+    if (isAndroid){
+      application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+        args.cancel = true;
+        this.goBack();
+      });
+    }
 
+    globals.setCurrentHomePage("home/currentTrip");
   }
 }
