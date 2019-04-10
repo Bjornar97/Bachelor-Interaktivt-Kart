@@ -1,0 +1,7 @@
+<StackLayout class="error-container">
+    <ng-templage *ngFor="let error of errorList" class="bottomElement">
+        <ContentView class="error-box" shadow elevation="2">
+            <Label #errorBox class="error-text" [text]="error" horizontalAlignment="center" verticalAlignment="center" textWrap="true"></Label>
+        </ContentView>
+    </ng-templage>
+</StackLayout>
