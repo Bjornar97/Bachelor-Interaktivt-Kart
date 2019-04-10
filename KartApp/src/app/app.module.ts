@@ -9,7 +9,6 @@ import { MapComponent } from "./map/map.component";
 registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
 
-import { SettingsService } from "./settings-page/settings.service";
 import { NgShadowModule } from 'nativescript-ng-shadow';
 
 @NgModule({
@@ -25,7 +24,6 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
         AppComponent,
         MapComponent
     ],
-    providers: [SettingsService],
     schemas: [
         NO_ERRORS_SCHEMA
     ],

@@ -4,7 +4,7 @@ import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { SettingsPageComponent } from './settings-page.component';
 import { SettingsPageRoutingModule } from "./settings-page-routing.module";
 import { MapMenuComponent } from './map-menu/map-menu.component';
-import { SettingsService } from './settings.service';
+import { SettingsClass } from './settings';
 import { NgShadowModule } from 'nativescript-ng-shadow';
 
 @NgModule({
@@ -17,7 +17,6 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     SettingsPageRoutingModule,
     NgShadowModule
   ],
-  providers: [SettingsService],
   schemas: [NO_ERRORS_SCHEMA]
 })
 export class SettingsPageModule { 
