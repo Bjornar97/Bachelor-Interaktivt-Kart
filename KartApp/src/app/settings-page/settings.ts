@@ -130,6 +130,17 @@ export class SettingsClass {
       });
     }
 
+    // Drawer Height Setting
+    if (this.getSetting(undefined, 48) == undefined){
+      console.log("Setting 48 was undefined: drawerHeight");
+      this.setSetting({
+        id: 48,
+        name: "drawerHeight",
+        type: "height",
+        value: undefined
+      });
+    }
+
     // Home Page Height Setting
     if (this.getSetting(undefined, 51) == undefined){
       console.log("Setting 51 was undefined: HomePageHeight");
@@ -148,6 +159,17 @@ export class SettingsClass {
         id: 52,
         name: "currentTripHeight",
         type: "height",
+        value: undefined
+      });
+    }
+
+    // Logged in token Setting
+    if (this.getSetting(undefined, 61) == undefined){
+      console.log("Setting 61 was undefined: loggedInToken");
+      this.setSetting({
+        id: 61,
+        name: "LoggedInToken",
+        type: "token",
         value: undefined
       });
     }
@@ -175,6 +197,10 @@ export class SettingsClass {
   }
   
   setSetting(Setting: Setting){
+    if (Setting == null || Setting == undefined){
+      console.log("Cannot set a setting that is null or undefined");
+      return;
+    }
     console.log("Got into setSetting in service");
     this.settingsList[Setting.id] = Setting;
     var time = new Date();
@@ -233,23 +259,39 @@ export class SettingsClass {
    * 
    * 41: tripActive
    * 
+   * 48: drawerSettting - The height of the drawer
+   * 
    * 51: HomePageHeight - The height of the drawer in home-page
    * 
    * 52: currentTripPageHeight - The height of the drawer in currentTripPage
+   * 
+   * 61: Login Token - The logged in token
    * 
    * @returns The setting you asked for. If it does not exist, it doesnt return anything
    */
   getSetting(SettingName?: string, SettingId?: number): Setting {
     if (this.settingsListSuccess){
       if (SettingId != undefined){
-        return this.settingsList[SettingId];
-      } else if (SettingName != undefined){
-        var setting = this.getSettingsList().find(x => x.name == SettingName);
+        let setting = this.settingsList[SettingId];
+        if (setting == null || setting == undefined){
+          setting = {
+            id: SettingId,
+            name: "undefined",
+            type: "undefined",
+            value: undefined
+          }
+        }
         return setting;
       }
     } else {
       console.log("ERROR(settingsService): The settingsList did not succeed");
-      return null;
+      let setting: Setting = {
+        id: SettingId,
+        name: "undefined",
+        type: "undefined",
+        value: undefined
+      }
+      return setting;
     }
   }
   

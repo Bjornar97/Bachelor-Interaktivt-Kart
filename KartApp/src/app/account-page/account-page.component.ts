@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { DrawerClass } from '~/app/drawer';
 import { BackendService } from './backend.service';
-import { SettingsService } from '../settings-page/settings.service';
+import { SettingsClass } from '../settings-page/settings';
 import * as globals from "../globals";
 import { RouterExtensions } from 'nativescript-angular/router/router-extensions';
 
@@ -19,14 +19,15 @@ export class AccountPageComponent {
 
     private drawer: DrawerClass;
     private username: string;
+    private settingsClass: SettingsClass;
 
-
-    constructor(private page: Page, private backendService: BackendService, private settingsService: SettingsService, private routerExtensions: RouterExtensions) {
+    constructor(private page: Page, private backendService: BackendService, private routerExtensions: RouterExtensions) {
         // Use the component constructor to inject providers.
         this.drawer = globals.getDrawer();
         page.actionBarHidden = true; 
+        this.settingsClass = globals.getSettingsClass();
 
-        let token = this.settingsService.getSetting(undefined, 61);
+        let token = this.settingsClass.getSetting(undefined, 61);
         if (token == undefined) {
             console.log("TokenSetting is undefined");
             this.routerExtensions.navigate(["account", "login"], {
@@ -80,7 +81,7 @@ export class AccountPageComponent {
     private userInfo;
 
     logOut(){
-        let tokenSetting = this.settingsService.getSetting(undefined, 61);
+        let tokenSetting = this.settingsClass.getSetting(undefined, 61);
         this.backendService.logOut()
         .subscribe((result) => {
             console.dir(result);
@@ -93,7 +94,7 @@ export class AccountPageComponent {
                     value: undefined
                     }
                     tokenSetting.value=undefined;
-                    this.settingsService.setSetting(tokenSetting);
+                    this.settingsClass.setSetting(tokenSetting);
                 }
                 this.routerExtensions.navigate(["account", "login"], {
                     animated: true,

@@ -17,7 +17,7 @@
                             <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
                             <Label text="Skal bilder du tar på tur lagres i galleriet på telefonen?" class="infoText" textWrap="true"></Label>
                         </StackLayout>
-                        <Switch col="1" rowSpan="2" [checked]="isImageSave" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="imageSaveChanged($event)">
+                        <Switch col="1" rowSpan="2" [checked]="initialImageSave" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="imageSaveChanged($event)">
                         </Switch>
                     </GridLayout>
                 </StackLayout>
@@ -31,7 +31,7 @@
                             <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
                             <Label text="Skal skuffen feste seg til bestemte punkter, slik at det best passer innholdet på siden" class="infoText" textWrap="true"></Label>
                         </StackLayout>
-                        <Switch col="1" rowSpan="2" [checked]="isDrawerSnap" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="drawerSnapChange($event)">
+                        <Switch col="1" rowSpan="2" [checked]="initialDrawerSnap" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="drawerSnapChange($event)">
                         </Switch>
                     </GridLayout>
                 </StackLayout>
