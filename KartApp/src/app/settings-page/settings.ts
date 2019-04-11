@@ -197,6 +197,10 @@ export class SettingsClass {
   }
   
   setSetting(Setting: Setting){
+    if (Setting == null || Setting == undefined){
+      console.log("Cannot set a setting that is null or undefined");
+      return;
+    }
     console.log("Got into setSetting in service");
     this.settingsList[Setting.id] = Setting;
     var time = new Date();
@@ -268,14 +272,26 @@ export class SettingsClass {
   getSetting(SettingName?: string, SettingId?: number): Setting {
     if (this.settingsListSuccess){
       if (SettingId != undefined){
-        return this.settingsList[SettingId];
-      } else if (SettingName != undefined){
-        var setting = this.getSettingsList().find(x => x.name == SettingName);
+        let setting = this.settingsList[SettingId];
+        if (setting == null || setting == undefined){
+          setting = {
+            id: SettingId,
+            name: "undefined",
+            type: "undefined",
+            value: undefined
+          }
+        }
         return setting;
       }
     } else {
       console.log("ERROR(settingsService): The settingsList did not succeed");
-      return null;
+      let setting: Setting = {
+        id: SettingId,
+        name: "undefined",
+        type: "undefined",
+        value: undefined
+      }
+      return setting;
     }
   }
   
