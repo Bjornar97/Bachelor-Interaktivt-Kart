@@ -262,6 +262,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
         tripActiveSetting.value = false;
       }
       this.settingsClass.setSetting(tripActiveSetting);
+      this.settingsClass.saveSettings();
     });
     
     if (isAndroid){

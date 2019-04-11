@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { LocationClass } from "./location";
 import * as globals from "./globals";
 import { Setting, SettingsClass } from "./settings-page/settings";
@@ -16,7 +16,7 @@ import { DrawerClass } from "~/app/drawer";
     templateUrl: "app.component.html",
     providers: [TripService]
 })
-export class AppComponent { 
+export class AppComponent implements OnInit, OnDestroy {
     private drawer: DrawerClass;
 
     constructor(private routerExtensions: RouterExtensions, private tripService: TripService){
@@ -128,6 +128,10 @@ export class AppComponent {
             console.log("There was an error while resuming previous trip");
             console.log(error);
         }   
+    }
+
+    ngOnDestroy() {
+        this.settingsClass.saveSettings();
     }
 
     ngOnInit(): void {
