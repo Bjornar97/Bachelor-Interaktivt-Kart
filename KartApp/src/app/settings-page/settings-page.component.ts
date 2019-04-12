@@ -32,8 +32,6 @@ export class SettingsPageComponent implements OnInit {
 
     let isImageSaveSetting = this.settingsClass.getSetting(4, false);
     this.isImageSave = isImageSaveSetting.value;
-    this.initialDrawerSnap = this.isDrawerSnap;
-    this.initialImageSave = this.isImageSave;
   }
 
   toggleDrawerSnap(){
