@@ -20,164 +20,69 @@ export class SettingsClass {
       });
       var settings = text; 
       this.settingsList = JSON.parse(settings);
-      this.settingsListSuccess = true;
     } catch (error) {
       console.log("Could not load settings from the file: " + error);
       settingsFile.removeSync();
-      this.settingsListSuccess = false;
     }
-
-    console.log("The loading of settings succeded");
 
     console.log("Inittializing settings");
     
     // Auto Rotate Setting
-    if (this.getSetting(undefined, 1) == undefined){
-      console.log("Setting 1 was undefined: AutoRotate");
-      this.setSetting({
-        id: 1,
-        name: "AutoRotate",
-        type: "switch",
-        value: true
-      });
-    }
+    let autoRotateSetting = this.getSetting(1, true);
+    this.generateSetting(1, "AutoRotate", "switch", autoRotateSetting.value);
     
     // Image marker setting Setting
-    if (this.getSetting(undefined, 2) == undefined){
-      console.log("Setting 2 was undefined: ImageMarker");
-      this.setSetting({
-        id: 2,
-        name: "ImageMarker",
-        type: "switch",
-        value: true
-      });
-    }
+    let imageMarkerSetting = this.getSetting(2, true);
+    this.generateSetting(2, "ImageMarker", "switch", imageMarkerSetting.value);
 
     // Snap Setting
-    if (this.getSetting(undefined, 3) == undefined){
-      console.log("Setting 3 was undefined: Snap");
-      this.setSetting({
-        id: 3,
-        name: "Snap",
-        type: "switch",
-        value: true
-      });
-    }
+    let snapSetting = this.getSetting(3, true);
+    this.generateSetting(3, "Snap", "switch", snapSetting.value);
     
     // Image Save Setting
-    if (this.getSetting(undefined, 4) == undefined){
-      console.log("Setting 4 was undefined: ImageSave");
-      this.setSetting({
-        id: 4,
-        name: "ImageSave",
-        type: "switch",
-        value: false
-      });
-    }
+    let imageSaveSetting = this.getSetting(4, false);
+    this.generateSetting(4, "ImageSave", "switch", imageSaveSetting.value);
 
     // Map Menu Setting
-    if (this.getSetting(undefined, 11) == undefined){
-      console.log("Setting 11 was undefined: mapStyle");
-      this.setSetting({
-        id: 11,
-        name: "mapStyle",
-        type: "buttonRow",
-        value: "outdoors"
-      });
-    }
+    let mapStyleSetting = this.getSetting(11, "outdoors");
+    this.generateSetting(11, "mapStyle", "buttonRow", mapStyleSetting.value);
 
     // Drawer Setting
-    if (this.getSetting(undefined, 21) == undefined){
-      console.log("Setting 21 was undefined: Drawer");
-      this.setSetting({
-        id: 21,
-        name: "Drawer",
-        type: "Object",
-        value: undefined
-      });
-    }
+    let drawerSettting = this.getSetting(21);
+    this.generateSetting(1, "Drawer", "Object", drawerSettting.value);
 
     // Map Position Setting
-    if (this.getSetting(undefined, 31) == undefined){
-      console.log("Setting 31 was undefined: MapPosition");
-      this.setSetting({
-        id: 31,
-        name: "MapPosition",
-        type: "Object",
-        value: undefined
-      });
-    }
+    let mapPositionSetting = this.getSetting(31);
+    this.generateSetting(31, "MapPosition", "Object", mapPositionSetting.value);
 
     // Trip Marker Ids Setting
-    if (this.getSetting(undefined, 32) == undefined){
-      console.log("Setting 32 was undefined: TripMarkerIds");
-      this.setSetting({
-        id: 32,
-        name: "TripMarkerIds",
-        type: "markers",
-        value: []
-      });
-    }
+    let tripMarkerIdsSetting = this.getSetting(32, []);
+    this.generateSetting(32, "TripMarkerIds", "markers", tripMarkerIdsSetting.value);
 
     // tripActive Setting
-    if (this.getSetting(undefined, 41) == undefined){
-      console.log("Setting 41 was undefined: tripActive");
-      this.setSetting({
-        id: 41,
-        name: "tripActive",
-        type: "Object",
-        value: false
-      });
-    }
+    let tripActiveSetting = this.getSetting(41, false);
+    this.generateSetting(41, "tripActive", "Object", tripActiveSetting.value);
 
     // Drawer Height Setting
-    if (this.getSetting(undefined, 48) == undefined){
-      console.log("Setting 48 was undefined: drawerHeight");
-      this.setSetting({
-        id: 48,
-        name: "drawerHeight",
-        type: "height",
-        value: undefined
-      });
-    }
+    let drawerHeightSetting = this.getSetting(48);
+    this.generateSetting(48, "drawerHeight", "height", drawerHeightSetting.value);
 
     // Home Page Height Setting
-    if (this.getSetting(undefined, 51) == undefined){
-      console.log("Setting 51 was undefined: HomePageHeight");
-      this.setSetting({
-        id: 51,
-        name: "homePageHeight",
-        type: "height",
-        value: undefined
-      });
-    }
+    let homePageHeightSetting = this.getSetting(51);
+    this.generateSetting(51, "homePageHeight", "height", homePageHeightSetting.value);
 
     // Current Trip Page Height Setting
-    if (this.getSetting(undefined, 52) == undefined){
-      console.log("Setting 52 was undefined: currentTripHeight");
-      this.setSetting({
-        id: 52,
-        name: "currentTripHeight",
-        type: "height",
-        value: undefined
-      });
-    }
+    let currentTripHeightSetting = this.getSetting(52);
+    this.generateSetting(52, "currentTripHeight", "height", currentTripHeightSetting.value);
 
     // Logged in token Setting
-    if (this.getSetting(undefined, 61) == undefined){
-      console.log("Setting 61 was undefined: loggedInToken");
-      this.setSetting({
-        id: 61,
-        name: "LoggedInToken",
-        type: "token",
-        value: undefined
-      });
-    }
+    let loggedInTokenSetting = this.getSetting(61);
+    this.generateSetting(61, "MapPosition", "Object", loggedInTokenSetting.value);
+
+    console.log("Settings successfully innitialized");
   }
 
-  private settingsMap: Map<number, string>;
   private settingsList: Setting[];
-  private settingsListSuccess: boolean;
 
   private lastSave: Date;
   private saving = false;
@@ -197,10 +102,6 @@ export class SettingsClass {
   }
   
   setSetting(Setting: Setting){
-    if (Setting == null || Setting == undefined){
-      console.log("Cannot set a setting that is null or undefined");
-      return;
-    }
     console.log("Got into setSetting in service");
     this.settingsList[Setting.id] = Setting;
     var time = new Date();
@@ -269,30 +170,31 @@ export class SettingsClass {
    * 
    * @returns The setting you asked for. If it does not exist, it doesnt return anything
    */
-  getSetting(SettingName?: string, SettingId?: number): Setting {
-    if (this.settingsListSuccess){
+  getSetting(SettingId: number, defaultvalue: any = undefined): Setting {
       if (SettingId != undefined){
         let setting = this.settingsList[SettingId];
-        if (setting == null || setting == undefined){
+        if (setting == undefined) {
           setting = {
             id: SettingId,
-            name: "undefined",
-            type: "undefined",
-            value: undefined
+            name: undefined,
+            type: undefined,
+            value: defaultvalue
           }
         }
         return setting;
       }
-    } else {
-      console.log("ERROR(settingsService): The settingsList did not succeed");
-      let setting: Setting = {
-        id: SettingId,
-        name: "undefined",
-        type: "undefined",
-        value: undefined
-      }
-      return setting;
+  }
+
+  generateSetting(id: number, name: string, type: string, value: any) {
+    let setting = {
+      id: id,
+      name: name,
+      type: type,
+      value: value
     }
+    this.setSetting(setting);
+
+    return setting;
   }
   
 }

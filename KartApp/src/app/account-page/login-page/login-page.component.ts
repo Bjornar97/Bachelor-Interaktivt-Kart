@@ -33,7 +33,7 @@ export class LoginPageComponent implements OnInit {
     console.log("email: " + loginName + " passord: " + password);
     this.backendService.login(loginName, password)
     .subscribe((result) => {
-      let tokenSetting = this.settingsClass.getSetting(undefined, 61);
+      let tokenSetting = this.settingsClass.getSetting(61);
       if (tokenSetting == undefined){
         tokenSetting = {
           id: 61,

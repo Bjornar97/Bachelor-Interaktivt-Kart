@@ -16,9 +16,7 @@ export class BackendService {
   
   private serverURL = "https://kartapp.pythonanywhere.com";
 
-  getInfo(){
-    // TODO: Kalle createRequestHeader og legge den med i requesten
-   
+  getInfo(){   
       let headers = this.createRequestHeader();
       return this.http.get(this.serverURL + "/v1/user/all", { headers: headers, observe: "response" });
                     
@@ -60,7 +58,7 @@ export class BackendService {
   }
 
   private createRequestHeader() {
-    let token = this.settingsClass.getSetting(undefined, 61).value;
+    let token = this.settingsClass.getSetting(61).value;
     let headers = new HttpHeaders({
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",

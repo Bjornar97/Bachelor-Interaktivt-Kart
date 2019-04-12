@@ -52,7 +52,7 @@ export class MapComponent implements OnInit {
     }
 
     setAutoRotate(value: boolean){
-        let setting = this.settingsClass.getSetting(undefined, 1);
+        let setting = this.settingsClass.getSetting(1);
         setting.value = value;
         this.settingsClass.setSetting(setting);
     }
@@ -117,7 +117,7 @@ export class MapComponent implements OnInit {
     }
 
     public trackUser(){
-        var bearingSetting = this.settingsClass.getSetting(undefined, 1);
+        var bearingSetting = this.settingsClass.getSetting(1);
         let bearing;
         if (bearingSetting == null){
             bearing = true;
@@ -214,35 +214,33 @@ export class MapComponent implements OnInit {
         globals.setMap(this);
     }
 
-    let imageMarkerSetting = this.settingsClass.getSetting(undefined, 2);
-
-    console.log("Checking imageMarkerSetting");
-    if (imageMarkerSetting != null && imageMarkerSetting.value){
-        console.log("imageMarkerSetting is true");
+    let imageMarkerSetting = this.settingsClass.getSetting(2, true);
+    if (imageMarkerSetting.value){
         let markers = this.markerService.getMarkers("image");
         this.map.addMarkers(markers);
     }
-    console.log("Checked imageMarkersetting");
-
-    let markers = this.markerService.getMarkers("image");
-    this.map.addMarkers(markers);
-    this.settingsClass.setSetting(imageMarkerSetting);
-
-    let map = this.map;
 
     // Getting map position from settingsClass
-    this.mapSetting = this.settingsClass.getSetting(undefined, 31);
-    console.dir(this.mapSetting);
+    this.mapSetting = this.settingsClass.getSetting(31);
+    if (this.mapSetting.name == undefined) {
+        this.mapSetting = {
+            id: 31,
+            name: "MapPosition",
+            type: "Object",
+            value: undefined
+        }
+    }
+
     // If the setting exists, it uses that to set the center and zoom level of the map
     if (this.mapSetting.value != undefined){
         console.log("Center is being set from setting: ");
         console.dir(typeof this.mapSetting.value);
-        map.setCenter({
+        this.map.setCenter({
             animated: false,
             lat: this.mapSetting.value.lat,
             lng: this.mapSetting.value.lng
         });
-        map.setZoomLevel({
+        this.map.setZoomLevel({
             animated: false,
             level: this.mapSetting.value.zoomLevel
         });
@@ -251,25 +249,25 @@ export class MapComponent implements OnInit {
         console.log("Setting center from location");
         this.locationClass.getLocation(undefined, 3000, 0).then((loc) => {
             console.log("Latitude: " + loc.lat + ", longitude: " + loc.lng);
-            map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
-            map.setZoomLevel({level: 16, animated: false});
+            this.map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
+            this.map.setZoomLevel({level: 16, animated: false});
 
             console.log("Setting mapPosSetting");
-            let mapPosSetting = this.settingsClass.getSetting(undefined, 31);
+            let mapPosSetting = this.settingsClass.getSetting(31);
             mapPosSetting.value = {
                 lat: loc.lat,
                 lng: loc.lng,
                 zoomLevel: 16
             }
-            
             this.settingsClass.setSetting(this.mapSetting);
+
         }, function (err) {
             console.log("ERROR: ");
             console.dir(err);
         });
     }
 
-    map.setOnScrollListener((point?) => {
+    this.map.setOnScrollListener((point?) => {
         this.saveMapPosition(point);
     });
 
@@ -282,7 +280,15 @@ export class MapComponent implements OnInit {
        
     });
 
-    var styleSetting = globals.settingsClass.getSetting(undefined, 11);
+    var styleSetting = globals.settingsClass.getSetting(11);
+    if (styleSetting.name == undefined) {
+        styleSetting = {
+            id: 11,
+            name: "mapStyle",
+            type: "buttonRow",
+            value: "outdoors"
+        }
+    }
     if (styleSetting != undefined){
         this.setMapStyle(styleSetting.value);
     }
