@@ -42,7 +42,8 @@ export class SettingsPageComponent implements OnInit {
 
   drawerSnapChange(args) {
     let Switch = <Switch>args.object;
-    this.setDrawerSnapSetting(Switch.checked);
+    this.isDrawerSnap = Switch.checked;
+    this.setDrawerSnapSetting(this.isDrawerSnap);
   }
 
   toggleSwitch(switchView: Switch){
@@ -51,8 +52,9 @@ export class SettingsPageComponent implements OnInit {
 
   imageSaveChanged(args){
     let Switch = <Switch>args.object;
+    this.isImageSave = Switch.checked;
     let setting = this.settingsClass.getSetting(4);
-    setting.value = Switch.checked;
+    setting.value = this.isImageSave;
     this.settingsClass.setSetting(setting);
   }
 
