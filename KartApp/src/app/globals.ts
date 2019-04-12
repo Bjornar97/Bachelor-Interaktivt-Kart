@@ -26,7 +26,7 @@ export function setRouterExtensions(routerExt: RouterExtensions){
 export var buttons: Object;
 
 // Settings Service
-export var settingsClass: SettingsClass;
+export var settingsClass: SettingsClass = undefined;
 
 export function getSettingsClass(){
     if (settingsClass == undefined){

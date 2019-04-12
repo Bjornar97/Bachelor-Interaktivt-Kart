@@ -21,80 +21,64 @@ let mapStylesStrings = ["Satellitt", "Friluftsliv", "Veikart"];
 export class MapMenuComponent implements OnInit {
   private settingsClass: SettingsClass;
   private drawer: DrawerClass;
-
-  private mapStyleSetting: Setting;
-  private autoRotateSetting: Setting;
  
   private isAutoRotate = true;
   private mapStyle;
 
   constructor(page: Page, private routerExtensions: RouterExtensions) { 
     page.actionBarHidden = true;
+    console.log("Creating map-menu");
     this.settingsClass = globals.getSettingsClass();
-    this.mapStyle = this.settingsClass.getSetting(undefined, 11).value;
-
-    this.autoRotateSetting = this.settingsClass.getSetting(undefined, 1);
-    this.isAutoRotate = this.autoRotateSetting.value;
-
     this.drawer = globals.getDrawer();
+
+    let mapStyleSetting = this.settingsClass.getSetting(11, "outdoors");
+    this.mapStyle = mapStyleSetting.value;
+
+    let autoRotateSetting = this.settingsClass.getSetting(1, true);
+    this.isAutoRotate = autoRotateSetting.value;
+
+    console.log("Created settings from settingsClass: ");
+    console.dir(autoRotateSetting);
   }
 
   private goBack() {
-    this.routerExtensions.backToPreviousPage();
+    this.routerExtensions.navigate(["settings"], {
+      animated: true,
+      clearHistory: true,
+      transition: {
+        name: "slideRight"
+      }
+    });
   }
 
   mapStyleChanged(style){
     globals.MainMap.setMapStyle(style);
-    let setting = this.settingsClass.getSetting(undefined, 11);
+    let setting = this.settingsClass.getSetting(11, "outdoors");
     setting.value = style;
     this.mapStyle = style;
     this.settingsClass.setSetting(setting);
   }
 
+  toggleAutoRotate() {
+    this.isAutoRotate = !this.isAutoRotate;
+  }
+
   onAutoRotateChecked(args){
     let Switch = <Switch>args.object;
     this.isAutoRotate = Switch.checked;
-    this.autoRotateSetting.value = Switch.checked;
-    this.settingsClass.setSetting(this.autoRotateSetting);
+    let autoRotateSetting = this.settingsClass.getSetting(1, true);
+    autoRotateSetting.value = Switch.checked;
+    this.settingsClass.setSetting(autoRotateSetting);
   }
 
-  changeRotateSwitch(){
-    this.isAutoRotate = !this.isAutoRotate;
-    this.autoRotateSetting.value = this.isAutoRotate;
-    this.settingsClass.setSetting(this.autoRotateSetting);
-  }
-
-  ngOnInit() {
-    let autoRotateSetting = this.settingsClass.getSetting(undefined, 1);
-    if (autoRotateSetting == undefined || autoRotateSetting == null){
-      autoRotateSetting = {
-        id: 1,
-        name: "autoRotate",
-        type: "switch",
-        value: this.isAutoRotate
-      }
-      this.settingsClass.setSetting(autoRotateSetting);
-    }
-    this.autoRotateSetting = autoRotateSetting;
-
-    let mapStyleSetting = this.settingsClass.getSetting(undefined, 11);
-    if (mapStyleSetting == undefined || mapStyleSetting == null){
-      mapStyleSetting = {
-        id: 11,
-        name: "mapStyle",
-        type: "buttonRow",
-        value: this.mapStyle
-      }
-      this.settingsClass.setSetting(mapStyleSetting);
-    }
-    this.mapStyleSetting = mapStyleSetting;
-    
+  ngOnInit() {    
     if (isAndroid){
       application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
         args.cancel = true;
         this.goBack();
       });
     }
+    console.log("Initted map menu");
   }
 
 }

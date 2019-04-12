@@ -30,7 +30,7 @@ export class RegisterPageComponent {
         console.log("email: " + loginName + " passord: " + password + "telNummer" +phoneNumber + "username" + username);
         this.backendService.register(username,phoneNumber,loginName, password)
         .subscribe((result) => {
-          let tokenSetting = this.settingsClass.getSetting(undefined, 61);
+          let tokenSetting = this.settingsClass.getSetting(61);
           if (tokenSetting == undefined){
             tokenSetting = {
               id: 61,

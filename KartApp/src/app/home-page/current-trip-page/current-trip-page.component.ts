@@ -83,7 +83,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
 
   private goBack(){
     let height = this.drawer.drawer.heightInt;
-    let setting = this.settingsClass.getSetting(undefined, 52);
+    let setting = this.settingsClass.getSetting(52);
     if (height <= 350){
       setting.value = 160;
     } else {
@@ -111,7 +111,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
    */
   OpenCamera(){
     console.log("Taking picture");
-    let saveImageSetting = this.settingsClass.getSetting(undefined, 4);
+    let saveImageSetting = this.settingsClass.getSetting(4);
     let saveImage;
     if (saveImageSetting == null) {
       saveImage = false;
@@ -219,10 +219,10 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){
-    let mountSetting = this.settingsClass.getSetting(undefined, 3);
+    let mountSetting = this.settingsClass.getSetting(3);
     if (mountSetting != null && mountSetting != undefined){
       if (mountSetting.value){
-        let heightSetting = this.settingsClass.getSetting(undefined, 52);
+        let heightSetting = this.settingsClass.getSetting(52);
         if (heightSetting.value == undefined){
           heightSetting.value = 160;
         }
@@ -252,7 +252,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
     this.drawer = globals.getDrawer();
 
     applicationOn(exitEvent, (args: ApplicationEventData) => {
-      let tripActiveSetting = this.settingsClass.getSetting(undefined, 41);
+      let tripActiveSetting = this.settingsClass.getSetting(41);
       if (!this.tripService.isPaused()) {
         console.log("Not paused, saving setting: ");
         tripActiveSetting.value = true;

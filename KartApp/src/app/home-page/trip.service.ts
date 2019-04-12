@@ -405,7 +405,7 @@ export class TripService {
 
           console.log("Making marker: " + lastWalk.stopTime);
           markerIds.push(lastWalk.stopTime);
-          let markerIdSetting = this.settingsClass.getSetting(undefined, 32);
+          let markerIdSetting = this.settingsClass.getSetting(32);
           if (markerIdSetting == undefined){
             markerIdSetting = {
               id: 32,
@@ -439,7 +439,7 @@ export class TripService {
 
     globals.MainMap.removeLine(ids);
 
-    let markerIdsSetting = this.settingsClass.getSetting(undefined, 32);
+    let markerIdsSetting = this.settingsClass.getSetting(32);
     globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
   }
 

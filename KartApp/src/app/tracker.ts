@@ -170,8 +170,9 @@ export class Tracker {
             {
                 desiredAccuracy: this.accuracy, 
                 timeout: 5000,
-                maximumAge: 1000,
-                updateTime: 1000,
+                maximumAge: 3000,
+                updateTime: 2000,
+                updateDistance: 5,
                 minimumUpdateTime: 500,
                 iosAllowsBackgroundLocationUpdates: true,
                 iosPausesLocationUpdatesAutomatically: false
