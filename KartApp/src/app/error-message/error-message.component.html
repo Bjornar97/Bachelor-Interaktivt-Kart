@@ -1,7 +1,8 @@
 <StackLayout class="error-container">
     <ng-templage *ngFor="let error of errorList" class="bottomElement">
-        <ContentView class="error-box" shadow elevation="2">
-            <Label class="error-text" [text]="error" horizontalAlignment="center" verticalAlignment="center" textWrap="true"></Label>
+        <ContentView *ngIf="ios" class="error-box" shadow elevation="2">
+            <Label class="ios-error-text" [text]="error" horizontalAlignment="center" verticalAlignment="center" textWrap="true"></Label>
         </ContentView>
+        <Label *ngIf="android" class="android-error-text" bgcolor="#f5f5f5" shadow elevation="4" [text]="error" horizontalAlignment="center" verticalAlignment="center" textWrap="true" cornerRadius="5dp"></Label>
     </ng-templage>
 </StackLayout>

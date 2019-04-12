@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as globals from "../globals";
-import { View } from 'tns-core-modules/ui/page/page';
+import { View, isAndroid, isIOS } from 'tns-core-modules/ui/page/page';
 import * as dialogs from "tns-core-modules/ui/dialogs";
 
 @Component({
@@ -12,8 +12,10 @@ import * as dialogs from "tns-core-modules/ui/dialogs";
 export class ErrorMessageComponent implements OnInit {
 
   constructor() {
-    
   }
+
+  private android: boolean = isAndroid;
+  private ios: boolean = isIOS;
 
   private errorList: string[];
   
