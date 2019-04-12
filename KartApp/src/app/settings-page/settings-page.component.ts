@@ -30,10 +30,6 @@ export class SettingsPageComponent implements OnInit {
     this.isImageSave = this.settingsClass.getSetting(undefined, 4).value;
   }
 
-  toggleDrawerSnap(){
-    this.isDrawerSnap = !this.isDrawerSnap;
-  }
-
   setDrawerSnapSetting(value: boolean){
     let setting = this.settingsClass.getSetting(undefined, 3);
     setting.value = value;
@@ -46,8 +42,8 @@ export class SettingsPageComponent implements OnInit {
     this.setDrawerSnapSetting(this.isDrawerSnap);
   }
 
-  toggleImageSave(){
-    this.isImageSave = !this.isImageSave;
+  toggleSwitch(switchView: Switch){
+    switchView.checked = !switchView.checked;
   }
 
   imageSaveChanged(args){
