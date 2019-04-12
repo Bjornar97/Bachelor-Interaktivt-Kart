@@ -22,9 +22,6 @@ export class SettingsPageComponent implements OnInit {
   private isDrawerSnap;
   private isImageSave;
 
-  private initialDrawerSnap;
-  private initialImageSave;
-
   constructor(page: Page, private routerExtensions: RouterExtensions) {
     page.actionBarHidden = true;
     this.settingsClass = globals.getSettingsClass();
