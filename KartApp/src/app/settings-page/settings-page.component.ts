@@ -29,8 +29,12 @@ export class SettingsPageComponent implements OnInit {
     page.actionBarHidden = true;
     this.settingsClass = globals.getSettingsClass();
     this.drawer = globals.getDrawer();
-    this.isDrawerSnap = this.settingsClass.getSetting(undefined, 3).value;
-    this.isImageSave = this.settingsClass.getSetting(undefined, 4).value;
+    
+    let drawerSnapSetting = this.settingsClass.getSetting(3, true);
+    this.isDrawerSnap = drawerSnapSetting.value;
+
+    let isImageSaveSetting = this.settingsClass.getSetting(4, false);
+    this.isImageSave = isImageSaveSetting.value;
     this.initialDrawerSnap = this.isDrawerSnap;
     this.initialImageSave = this.isImageSave;
   }
@@ -40,7 +44,7 @@ export class SettingsPageComponent implements OnInit {
   }
 
   setDrawerSnapSetting(value: boolean){
-    let setting = this.settingsClass.getSetting(undefined, 3);
+    let setting = this.settingsClass.getSetting(3);
     setting.value = value;
     this.settingsClass.setSetting(setting);
   }
@@ -58,7 +62,7 @@ export class SettingsPageComponent implements OnInit {
   imageSaveChanged(args){
     let Switch = <Switch>args.object;
     this.isImageSave = Switch.checked;
-    let setting = this.settingsClass.getSetting(undefined, 4);
+    let setting = this.settingsClass.getSetting(4);
     setting.value = this.isImageSave;
     this.settingsClass.setSetting(setting);
   }

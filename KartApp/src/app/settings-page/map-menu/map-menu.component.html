@@ -23,7 +23,7 @@
                     <Label text="Kartet" textWrap="true" class="title"></Label>
                     <GridLayout rows="*" columns="*, auto" class="setting">
                         <Label col="0" text="Roter kart automatisk mens du flytter deg" class="labelSwitch" (tap)="changeRotateSwitch()" textWrap="true"></Label>
-                        <Switch col="1" [checked]="isAutoRotate" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="onAutoRotateChecked($event)"></Switch>
+                        <Switch col="1" [checked]="initialAutoRotate" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="onAutoRotateChecked($event)"></Switch>
                     </GridLayout>
                 </StackLayout>
             </ContentView>

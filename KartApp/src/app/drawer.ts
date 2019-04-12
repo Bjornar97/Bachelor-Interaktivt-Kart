@@ -14,7 +14,7 @@ export class DrawerClass {
         this.settingsClass = globals.getSettingsClass();
 
         // Getting the drawer from settings
-        var drawersetting: Setting = this.settingsClass.getSetting(undefined, 48);
+        var drawersetting: Setting = this.settingsClass.getSetting(48);
         console.dir(this.drawerSetting);
         if (drawersetting != undefined){
             this.drawer.initialHeight = drawersetting.value;

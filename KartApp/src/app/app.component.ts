@@ -119,7 +119,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 console.log("Trip exists already: ");
             }
             
-            let tripActive = this.settingsClass.getSetting(undefined, 41);
+            let tripActive = this.settingsClass.getSetting(41);
             console.log("TripActive: " + tripActive.value);
             if (tripActive.value) {
                 this.tripService.unpauseTrip();

@@ -124,7 +124,7 @@ export class MarkerService {
     info.lastID = id;
     this.writeInfo(info);
     if (type == "image"){
-      if (this.settingsClass.getSetting(undefined, 2).value){
+      if (this.settingsClass.getSetting(2).value){
         globals.MainMap.addMarkers([marker]);
       }
     }

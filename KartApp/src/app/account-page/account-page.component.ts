@@ -27,7 +27,7 @@ export class AccountPageComponent {
         page.actionBarHidden = true; 
         this.settingsClass = globals.getSettingsClass();
 
-        let token = this.settingsClass.getSetting(undefined, 61);
+        let token = this.settingsClass.getSetting(61);
         if (token == undefined) {
             console.log("TokenSetting is undefined");
             this.routerExtensions.navigate(["account", "login"], {
@@ -81,7 +81,7 @@ export class AccountPageComponent {
     private userInfo;
 
     logOut(){
-        let tokenSetting = this.settingsClass.getSetting(undefined, 61);
+        let tokenSetting = this.settingsClass.getSetting(61);
         this.backendService.logOut()
         .subscribe((result) => {
             console.dir(result);
