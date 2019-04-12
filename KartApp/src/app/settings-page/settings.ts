@@ -49,7 +49,7 @@ export class SettingsClass {
 
     // Drawer Setting
     let drawerSettting = this.getSetting(21);
-    this.generateSetting(1, "Drawer", "Object", drawerSettting.value);
+    this.generateSetting(21, "Drawer", "Object", drawerSettting.value);
 
     // Map Position Setting
     let mapPositionSetting = this.getSetting(31);

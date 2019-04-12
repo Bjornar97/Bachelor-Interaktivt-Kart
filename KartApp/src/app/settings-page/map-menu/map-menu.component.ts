@@ -23,11 +23,11 @@ export class MapMenuComponent implements OnInit {
   private drawer: DrawerClass;
  
   private isAutoRotate = true;
-  private initialAutoRotate;
   private mapStyle;
 
   constructor(page: Page, private routerExtensions: RouterExtensions) { 
     page.actionBarHidden = true;
+    console.log("Creating map-menu");
     this.settingsClass = globals.getSettingsClass();
     this.drawer = globals.getDrawer();
 
@@ -35,8 +35,10 @@ export class MapMenuComponent implements OnInit {
     this.mapStyle = mapStyleSetting.value;
 
     let autoRotateSetting = this.settingsClass.getSetting(1, true);
-    this.initialAutoRotate = autoRotateSetting.value;
     this.isAutoRotate = autoRotateSetting.value;
+
+    console.log("Created settings from settingsClass: ");
+    console.dir(autoRotateSetting);
   }
 
   private goBack() {
@@ -51,18 +53,15 @@ export class MapMenuComponent implements OnInit {
     this.settingsClass.setSetting(setting);
   }
 
+  toggleAutoRotate() {
+    this.isAutoRotate = !this.isAutoRotate;
+  }
+
   onAutoRotateChecked(args){
     let Switch = <Switch>args.object;
     this.isAutoRotate = Switch.checked;
     let autoRotateSetting = this.settingsClass.getSetting(1, true);
     autoRotateSetting.value = Switch.checked;
-    this.settingsClass.setSetting(autoRotateSetting);
-  }
-
-  changeRotateSwitch(){
-    this.isAutoRotate = !this.isAutoRotate;
-    let autoRotateSetting = this.settingsClass.getSetting(1, true);
-    autoRotateSetting.value = this.isAutoRotate;
     this.settingsClass.setSetting(autoRotateSetting);
   }
 
@@ -73,6 +72,7 @@ export class MapMenuComponent implements OnInit {
         this.goBack();
       });
     }
+    console.log("Initted map menu");
   }
 
 }
