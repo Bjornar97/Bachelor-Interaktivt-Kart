@@ -22,17 +22,12 @@ export class SettingsPageComponent implements OnInit {
   private isDrawerSnap;
   private isImageSave;
 
-  private initialDrawerSnap;
-  private initialImageSave;
-
   constructor(page: Page, private routerExtensions: RouterExtensions) {
     page.actionBarHidden = true;
     this.settingsClass = globals.getSettingsClass();
     this.drawer = globals.getDrawer();
     this.isDrawerSnap = this.settingsClass.getSetting(undefined, 3).value;
     this.isImageSave = this.settingsClass.getSetting(undefined, 4).value;
-    this.initialDrawerSnap = this.isDrawerSnap;
-    this.initialImageSave = this.isImageSave;
   }
 
   toggleDrawerSnap(){

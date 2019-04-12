@@ -11,13 +11,13 @@
                         <Label col="0" text="Kartinstillinger" [nsRouterLink]="['./menu/map']" pageTransition="slide" class="menu"></Label>
                         <Image col="1" src="res://baseline_chevron_right_black_24" [nsRouterLink]="['./menu/map']" pageTransition="slide"></Image>
                     </GridLayout>
-                    <GridLayout rows="*, *" columns="*, auto" class="setting" (tap)="toggleImageSave()">
-                        <Label col="0" text="Lagre bilder til galleriet" textWrap="true" class="settingLabel"></Label>
-                        <StackLayout col="0" row="1" orientation="horizontal">
+                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                        <Label col="0" text="Lagre bilder til galleriet" textWrap="true" class="settingLabel" (tap)="toggleImageSave()"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleImageSave()">
                             <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
                             <Label text="Skal bilder du tar på tur lagres i galleriet på telefonen?" class="infoText" textWrap="true"></Label>
                         </StackLayout>
-                        <Switch col="1" rowSpan="2" [checked]="initialImageSave" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="imageSaveChanged($event)">
+                        <Switch col="1" rowSpan="2" [checked]="isImageSave" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="imageSaveChanged($event)">
                         </Switch>
                     </GridLayout>
                 </StackLayout>
@@ -25,13 +25,13 @@
             <ContentView class="container" shadow elevation="2">
                 <StackLayout>
                     <Label class="title" text="Avansert" textWrap="true"></Label>
-                    <GridLayout rows="*, *" columns="*, auto" class="setting" (tap)="toggleDrawerSnap()">
-                        <Label col="0" text="Festepunkter" textWrap="true" class="settingLabel"></Label>
-                        <StackLayout col="0" row="1" orientation="horizontal">
+                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                        <Label col="0" text="Festepunkter" textWrap="true" class="settingLabel" (tap)="toggleDrawerSnap()"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleDrawerSnap()">
                             <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
                             <Label text="Skal skuffen feste seg til bestemte punkter, slik at det best passer innholdet på siden" class="infoText" textWrap="true"></Label>
                         </StackLayout>
-                        <Switch col="1" rowSpan="2" [checked]="initialDrawerSnap" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="drawerSnapChange($event)">
+                        <Switch col="1" rowSpan="2" [checked]="isDrawerSnap" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="drawerSnapChange($event)">
                         </Switch>
                     </GridLayout>
                 </StackLayout>
