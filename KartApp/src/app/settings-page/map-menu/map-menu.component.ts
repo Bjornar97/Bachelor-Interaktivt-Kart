@@ -42,7 +42,13 @@ export class MapMenuComponent implements OnInit {
   }
 
   private goBack() {
-    this.routerExtensions.backToPreviousPage();
+    this.routerExtensions.navigate(["settings"], {
+      animated: true,
+      clearHistory: true,
+      transition: {
+        name: "slideRight"
+      }
+    });
   }
 
   mapStyleChanged(style){
