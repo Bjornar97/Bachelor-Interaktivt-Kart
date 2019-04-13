@@ -10,6 +10,9 @@ import { TextField } from "tns-core-modules/ui/text-field";
 import { Button } from "tns-core-modules/ui/button";
 import { DrawerClass } from '~/app/drawer';
 import * as globals from "~/app/globals";
+import * as utils from "tns-core-modules/utils/utils";
+import { isIOS, isAndroid } from "tns-core-modules/platform";
+import * as frame from "tns-core-modules/ui/frame";
 
 
 @Component({
@@ -41,6 +44,15 @@ export class FriendsPageComponent implements OnInit{
 
     goBack() {
         this.routerExtentions.backToPreviousPage();
+    }
+    
+    dismissSoftKeybaord(){
+        if (isIOS) {
+        frame.topmost().nativeView.endEditing(true);
+        }
+        if (isAndroid) {
+        utils.ad.dismissSoftInput();
+        }
     }
 
     expandNewFriend(arrow: Label, box: GridLayout){

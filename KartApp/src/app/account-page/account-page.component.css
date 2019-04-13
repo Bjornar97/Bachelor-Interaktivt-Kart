@@ -13,6 +13,15 @@
     margin-top: 8dp;
 }
 
+.refresh {
+    font-size: 20;
+    color: #008000;
+}
+
+.activity-indicator {
+    color: #008000;
+}
+
 .userIcon {
     font-size: 66;
     color: #008000;

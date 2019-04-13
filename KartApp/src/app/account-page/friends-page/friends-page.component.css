@@ -11,6 +11,7 @@
 }
 
 .newFriendContent {
+    background-color: #fff;
     margin: 15dp 5dp;
     color: #008000;
     font-size: 16;
@@ -50,6 +51,12 @@
 .request {
     height: 50;
     color: #000;
+}
+
+.refresh {
+    color: #008000;
+    font-size: 20;
+    text-align: center;
 }
 
 .request, .friend {

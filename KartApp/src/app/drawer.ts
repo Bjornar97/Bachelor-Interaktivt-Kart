@@ -234,6 +234,38 @@ export class DrawerClass {
                         }
                     });
                 }
+            } else if (buttonName == "account") {
+                try {
+                    let token = this.settingsClass.getSetting(61).value;
+                    if (token == undefined) {
+                        console.log("Token is undefined in drawer");
+                        globals.routerExtensions.navigate(["account/login"], {
+                            animated: true,
+                            clearHistory: true,
+                            transition: {
+                                name: "fade"
+                            }
+                        });
+                    } else {
+                        console.log("Token is not undefined in drawer");
+                        globals.routerExtensions.navigate(["account"], {
+                            animated: true,
+                            clearHistory: true,
+                            transition: {
+                                name: "fade"
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.log("ERROR in drawer while finding token");
+                    globals.routerExtensions.navigate(["account", "login"], {
+                        animated: true,
+                        clearHistory: true,
+                        transition: {
+                            name: "fade"
+                        }
+                    });
+                }
             }
         }
     }

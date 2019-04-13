@@ -5,6 +5,7 @@
             <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
             <label col="1" text="Konto" verticalAlignment="center" class="actionBarBackButtonText"></label>
         </GridLayout>
+        <Label col="2" *ngIf="!loading" text="&#xf2f9;" textWrap="false" class="fas refresh" (tap)="loadFriends()"></Label>
     </GridLayout>
 
     <ActivityIndicator *ngIf="loading" width="50" height="50" [busy]="loading" class="activity-indicator"></ActivityIndicator>
@@ -12,7 +13,7 @@
     <Button *ngIf="!success" text="Prøv igjen" (tap)="loadFriends()" class="tryAgainBtn"></Button>
     <StackLayout #content *ngIf="!loading && success" (loaded)="animate(content)">
         <ScrollView height="1000">
-            <StackLayout>
+            <StackLayout (tap)="dismissSoftKeybaord()">
                 <ContentView shadow elevation="2" class="newFriendContent">
                     <GridLayout #newFriendBox rows="*, *" columns="*, auto" height="60" class="newFriendBox">
                         <Label row="0" col="1" #expandNewFriendArrow text="&#xf078;" height="20dp" width="20dp" horizontalAlignment="right" verticalAlignment="top" class="fas downArrow" (tap)="expandNewFriend(expandNewFriendArrow, newFriendBox)" textWrap="false"></Label>

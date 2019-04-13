@@ -16,13 +16,15 @@ export class BackendService {
   
   private serverURL = "https://kartapp.pythonanywhere.com";
 
-  getInfo(){   
+
+  getInfo(){
+    try {
       let headers = this.createRequestHeader();
       return this.http.get(this.serverURL + "/v1/user/all", { headers: headers, observe: "response" });
-                    
+    } catch (error) {
+      console.log("ERROR in getInfo in backendService");
+    }               
   }
-
-  
 
   login(loginName, password){
     let options = this.createRequestOptions();

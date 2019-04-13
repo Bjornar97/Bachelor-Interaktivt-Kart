@@ -15,29 +15,23 @@ import { RouterExtensions } from 'nativescript-angular/router/router-extensions'
     providers: [BackendService]
 })
  
-export class AccountPageComponent {
+export class AccountPageComponent implements OnInit{
 
     private drawer: DrawerClass;
     private username: string;
     private settingsClass: SettingsClass;
+    private loading = true;
 
     constructor(private page: Page, private backendService: BackendService, private routerExtensions: RouterExtensions) {
         // Use the component constructor to inject providers.
         this.drawer = globals.getDrawer();
         page.actionBarHidden = true; 
         this.settingsClass = globals.getSettingsClass();
+    }
 
+    loadUsername() {
         let token = this.settingsClass.getSetting(61);
-        if (token == undefined) {
-            console.log("TokenSetting is undefined");
-            this.routerExtensions.navigate(["account", "login"], {
-                animated: true,
-                clearHistory: true,
-                transition: {
-                    name: "slideRight"
-                }
-            });
-        } else if (token.value == undefined){
+        if (token.value == undefined){
             console.log("Token is undefined");
             this.routerExtensions.navigate(["account", "login"], {
                 animated: true,
@@ -49,11 +43,12 @@ export class AccountPageComponent {
         } else {
             console.log("Token is defined");
             try {
-                this.backendService.getInfo()
+                let request = this.backendService.getInfo()
                 .subscribe((result) => {
                     console.dir(<any>result);
                     if(<any>result.status == 202){
-                        this.userInfo = (<any>result).body.username
+                        this.username = (<any>result).body.username;
+                        this.loading = false;
                     } else {
                         this.routerExtensions.navigate(["account", "login"], {
                             animated: true,
@@ -62,8 +57,16 @@ export class AccountPageComponent {
                                 name: "slideRight"
                             }
                         });
+                        this.loading = false;
                     }
                 });
+                setTimeout(() => {
+                    if (this.loading) {
+                        this.username = "Kunne ikke hente brukernavn";
+                        request.unsubscribe();
+                        this.loading = false;
+                    }
+                }, 10000);
             } catch (error) {
                 console.log("Error while getting username: " + error);
                 this.routerExtensions.navigate(["account", "login"], {
@@ -74,28 +77,43 @@ export class AccountPageComponent {
                     }
                 });
             }
-            
         }
     }
 
-    private userInfo;
+    private logoutLoading = false;
 
-    logOut(){
-        let tokenSetting = this.settingsClass.getSetting(61);
-        this.backendService.logOut()
-        .subscribe((result) => {
-            console.dir(result);
-            if (<any>result.status == 200 || <any>result.status == 401){
-                if (tokenSetting == undefined){
-                    tokenSetting = {
-                    id: 61,
-                    name: "tokenSetting",
-                    type: "token",
-                    value: undefined
+    logOut(){   
+        this.logoutLoading = true;
+        try {
+            let tokenSetting = this.settingsClass.getSetting(61);
+            this.backendService.logOut()
+                .subscribe((result) => {
+                    console.dir(result);
+                    if (<any>result.status == 200 || <any>result.status == 401){
+                        tokenSetting.value = undefined;
+                        this.settingsClass.setSetting(tokenSetting);
+                        this.routerExtensions.navigate(["account", "login"], {
+                            animated: true,
+                            clearHistory: true,
+                            transition: {
+                                name: "slideRight"
+                            }
+                        });
+                        this.logoutLoading = false;
                     }
-                    tokenSetting.value=undefined;
-                    this.settingsClass.setSetting(tokenSetting);
-                }
+                });
+        } catch (error) {
+            let tokenSetting = this.settingsClass.getSetting(61);
+            tokenSetting.value = undefined;
+            this.settingsClass.setSetting(tokenSetting);
+        }
+        setTimeout(() => {
+            if (this.logoutLoading) {
+                this.logoutLoading = false;
+                let tokenSetting = this.settingsClass.getSetting(61);
+                tokenSetting.value = undefined;
+                this.settingsClass.setSetting(tokenSetting);
+                
                 this.routerExtensions.navigate(["account", "login"], {
                     animated: true,
                     clearHistory: true,
@@ -103,10 +121,12 @@ export class AccountPageComponent {
                         name: "slideRight"
                     }
                 });
-            } else {
-
             }
-        });
+        }, 10000);
+    }
+
+    ngOnInit() {
+        this.loadUsername();
     }
 
 }

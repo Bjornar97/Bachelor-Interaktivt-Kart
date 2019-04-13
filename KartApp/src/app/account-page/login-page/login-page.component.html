@@ -7,19 +7,20 @@
     android:textStyle="bold">
        
         <StackLayout>
-            <StackLayout class="form" >
+            <StackLayout class="form" (tap)="dismissSoftKeybaord()">
                     <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
-                    <Label [text]="message"></Label>
+                    <Label [text]="message" class="message"></Label>
                 <StackLayout class="input-field">
-                    <TextField #email hint="E-post:" keyboardType="email" class="linje-under"> </TextField>   
+                    <TextField #email hint="E-post:" (returnPress)="changeTextField(password)" keyboardType="email" class="linje-under"> </TextField>   
                 </StackLayout>
                 <StackLayout class="input-field">
-                    <TextField #password hint="Passord:" class="linje-under" secure="true"> </TextField>   
+                    <TextField #password hint="Passord:" class="linje-under" (returnPress)="login(email.text,password.text)" secure="true"> </TextField>   
                 </StackLayout>
-                <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Inn" (tap)="login(email.text,password.text)"></Button>
-                
+                <Button id="my-button" class="btn btn-primary btn-rounded-sm" [isEnabled]="!loading" text="Logg Inn" (tap)="login(email.text,password.text)"></Button>
+                <ActivityIndicator width="50" height="50" horizontalAlignment="center" [busy]="loading" class="activity-indicator"></ActivityIndicator>
+
                 <StackLayout>
-                <GridLayout rows="*,*" columns="auto,*" class="container" [nsRouterLink]="['/account/register']">
+                <GridLayout rows="*,*" columns="auto,*" class="container" [nsRouterLink]="['/account/register']" pageTransition="slideLeft">
                         <Label row="0" col="0" text="Ikke medlem?" class="medlemText"></Label>
                         <Label col="0" row="1" text="Registrer deg her!" fontWeight="Bold" class="SignUp" ></Label> 
                         <Image col="1" row="0" rowSpan="2" src="res://icon_sign_up" class="BildeSignUp" stretch="aspectFill"></Image>  
