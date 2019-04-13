@@ -27,13 +27,15 @@
                             class="newFriendTextField"
                             autocorrect="false" 
                             (textChange)="checkUsername($event)" 
-                            (returnPress)="sendNewRequest($event)"
+                            (returnPress)="sendRequest($event)"
                             >
                         </TextField>
                         <StackLayout *ngIf="newFriendExpanded" orientation="horizontal" row="1" col="1">
                             <Label *ngIf="usernameExists" text="Check" textWrap="false" verticalAlignment="center"></Label>
                             <Label *ngIf="!usernameExists && usernameExists != undefined" text="Cross" verticalAlignment="center" textWrap="false"></Label>
-                            <Button #sendFriendButton text="Send" class="newFriendBtn" [isEnabled]="!sendingRequest" (tap)="sendRequest()"></Button>
+                            <Button #sendFriendButton text="Send" class="newFriendBtn" *ngIf="!newFriendLoading" (tap)="sendFriendRequest(usernameTextField)"></Button>
+                            <ActivityIndicator *ngIf="newFriendLoading" width="30" height="30" [busy]="newFriendLoading" class="activity-indicator"></ActivityIndicator>
+                            
                         </StackLayout>
                         
                     </GridLayout>
