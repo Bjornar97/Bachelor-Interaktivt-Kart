@@ -5,6 +5,9 @@ import { Page } from 'tns-core-modules/ui/page/page';
 import { DrawerClass } from '~/app/drawer';
 import * as globals from "../../globals";
 import { RouterExtensions } from 'nativescript-angular/router';
+import * as utils from "tns-core-modules/utils/utils";
+import { isIOS, isAndroid } from "tns-core-modules/platform";
+import * as frame from "tns-core-modules/ui/frame";
 
 @Component({
     moduleId: module.id,
@@ -44,6 +47,15 @@ export class RegisterPageComponent {
           this.username = (<any>result).body.message;
           this.settingsClass.setSetting(tokenSetting);
         });
+    }
+    
+    dismissSoftKeybaord(){
+      if (isIOS) {
+        frame.topmost().nativeView.endEditing(true);
+      }
+      if (isAndroid) {
+        utils.ad.dismissSoftInput();
+      }
     }
 
 
