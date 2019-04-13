@@ -11,7 +11,6 @@ import { ImageService } from './image.service';
 import { MarkerService } from '../map/marker.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { MapboxMarker } from 'nativescript-mapbox';
-import { start } from 'tns-core-modules/application/application';
 import { SettingsClass } from '../settings-page/settings';
 import { GC } from 'tns-core-modules/utils/utils';
 import { BackendService } from '../account-page/backend.service';

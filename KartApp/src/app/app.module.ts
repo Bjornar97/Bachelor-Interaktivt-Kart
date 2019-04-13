@@ -3,6 +3,7 @@ import { NativeScriptModule } from "nativescript-angular/nativescript.module";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { HttpClientModule } from "@angular/common/http";
 
 import { registerElement } from "nativescript-angular/element-registry";
 import { MapComponent } from "./map/map.component";
@@ -18,7 +19,8 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     imports: [
         NativeScriptModule,
         AppRoutingModule,
-        NgShadowModule
+        NgShadowModule,
+        HttpClientModule
     ],
     declarations: [
         AppComponent,
