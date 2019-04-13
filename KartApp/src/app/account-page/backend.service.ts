@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from "@angular/common/http";
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { SettingsClass } from '../settings-page/settings';
 import * as globals from "../globals";
 
@@ -15,7 +17,6 @@ export class BackendService {
   private settingsClass: SettingsClass;
   
   private serverURL = "https://kartapp.pythonanywhere.com";
-
 
   getInfo(){
     try {

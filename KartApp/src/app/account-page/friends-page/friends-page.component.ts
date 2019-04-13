@@ -93,9 +93,6 @@ export class FriendsPageComponent implements OnInit{
         }
     }
 
-    animateNewFriend(textfield: TextField, btn: Button) {
-    }
-
     private usernameExists = undefined;
     private checkingUsername = false;
     private lastCheck: Date;
@@ -164,6 +161,35 @@ export class FriendsPageComponent implements OnInit{
                     }
             }
         }
+    }
+
+    private newFriendLoading = false;
+    sendRequest(args) {
+        let textField = <TextField>args.object;
+        this.newFriendLoading = true;
+        console.log(textField.text);
+        try {
+            let response = this.backendService.sendFriendRequest(textField.text, "send");
+            response.subscribe((result) => {
+                console.dir(result);
+                this.newFriendLoading = false;
+                if (<any>result.status == 201) {
+                    this.friendRequests.push({
+                        name: textField.text,
+                        status: "sent",
+                        loading: false
+                    });
+                } else {
+                    console.log("Status is not 201: " + result.status);
+                    this.usernameExists = false;
+                    this.newFriendLoading = false;
+                }
+            });
+        } catch (error) {
+            this.usernameExists = false;
+            this.newFriendLoading = false;
+        }
+        
     }
 
     getFriendIndex(name: string, type = "request") {

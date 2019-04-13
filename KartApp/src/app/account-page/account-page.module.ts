@@ -6,6 +6,7 @@ import { LoginPageComponent } from "./login-page/login-page.component";
 import { AccountPageRoutingModule } from "./account-page-routing.module";
 import { RegisterPageComponent } from "./register-page/register-page.component";
 import { FriendsPageComponent } from "./friends-page/friends-page.component";
+import { HttpClientModule } from "@angular/common/http";
 
 import { NgShadowModule } from 'nativescript-ng-shadow';
 
@@ -21,7 +22,8 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     NativeScriptCommonModule,
     AccountPageRoutingModule,
     NativeScriptHttpClientModule,
-    NgShadowModule
+    NgShadowModule,
+    HttpClientModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })
