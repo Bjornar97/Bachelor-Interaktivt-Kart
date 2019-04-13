@@ -5,6 +5,7 @@
             <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
             <label col="1" text="Konto" verticalAlignment="center" class="actionBarBackButtonText"></label>
         </GridLayout>
+        <Label col="2" *ngIf="!loading" text="&#xf2f9;" textWrap="false" class="fas refresh" (tap)="loadFriends()"></Label>
     </GridLayout>
 
     <ActivityIndicator *ngIf="loading" width="50" height="50" [busy]="loading" class="activity-indicator"></ActivityIndicator>

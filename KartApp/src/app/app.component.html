@@ -9,7 +9,7 @@
                 <GridLayout rows="auto, auto, auto" columns="*,*, auto" class="overlayBottomRow" width="100%" shadow elevation="8" shadow shadowOffset="-10">
                     <GridLayout row="0" rows="*" colSpan="3" columns="*,*,*">
                         <Button height="50dp" row="0" col="0" text="&#xf015;" fontSize="30" (tap)="drawer.onButtonPress('home')" [class]="drawer.buttons.home.buttonClass"></Button>
-                        <Button height="50dp" row="0" col="1" text="&#xf2bb;" fontSize="30" [nsRouterLink]="['/account']" pageTransition="fade" (tap)="drawer.onButtonPress('account')" clearHistory="true" [class]="drawer.buttons.account.buttonClass"></Button>
+                        <Button height="50dp" row="0" col="1" text="&#xf2bb;" fontSize="30" (tap)="drawer.onButtonPress('account')" clearHistory="true" [class]="drawer.buttons.account.buttonClass"></Button>
                         <Button height="50dp" row="0" col="2" text="&#xf013;" fontSize="30" [nsRouterLink]="['/settings']" pageTransition="fade" (tap)="drawer.onButtonPress('settings')" clearHistory="true" [class]="drawer.buttons.settings.buttonClass"></Button>
                     </GridLayout> 
                 </GridLayout>

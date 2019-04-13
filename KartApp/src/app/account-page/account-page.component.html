@@ -1,6 +1,7 @@
 <StackLayout>
         <GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
             <label col="1" class="actionBarTitle" text="Konto"></label>
+            <Label col="2" *ngIf="!loading" text="&#xf2f9;" textWrap="false" class="fas refresh" (tap)="loadUsername()"></Label>
         </GridLayout>
         <ScrollView class="scrollView" height="1000">
             <GridLayout android:fontFamily="cursive"
@@ -8,7 +9,9 @@
                
                 <StackLayout>
                     <Label text="&#xf007;" class="userIcon" textWrap="true"></Label>
-                    <Label [text]="userInfo" class="BrukernavnText"></Label>
+                    <Label [text]="username" *ngIf="!loading" height="30" class="BrukernavnText"verticalAlignment="center"></Label>
+                    <ActivityIndicator *ngIf="loading" width="30" height="30" [busy]="loading" class="activity-indicator"></ActivityIndicator>
+                    
                     <StackLayout>
                     <ContentView shadow elevation="2" class="container">
                         <GridLayout columns="*,*" rows="*,*" class="innholdContainer">
@@ -31,7 +34,8 @@
                         <Label col="0" row="0" text="&#xf044;" class="icon" stretch="aspectFill" horizontalAlignment="center" [nsRouterLink]="['/account/accountEdit']"></Label>     
                     </GridLayout>
                     </StackLayout>
-                     <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Ut" (tap)=logOut()></Button>       
+                     <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Ut" (tap)=logOut()></Button>
+                     <ActivityIndicator width="30" height="30" [busy]="logoutLoading" class="activity-indicator"></ActivityIndicator>
                 </StackLayout>          
         </GridLayout>
      </ScrollView>

@@ -52,6 +52,12 @@
     color: #000;
 }
 
+.refresh {
+    color: #008000;
+    font-size: 20;
+    text-align: center;
+}
+
 .request, .friend {
     font-size: 16;
 }
