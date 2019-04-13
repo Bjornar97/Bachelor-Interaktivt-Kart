@@ -13,7 +13,7 @@
     <Button *ngIf="!success" text="Prøv igjen" (tap)="loadFriends()" class="tryAgainBtn"></Button>
     <StackLayout #content *ngIf="!loading && success" (loaded)="animate(content)">
         <ScrollView height="1000">
-            <StackLayout>
+            <StackLayout (tap)="dismissSoftKeybaord()">
                 <ContentView shadow elevation="2" class="newFriendContent">
                     <GridLayout #newFriendBox rows="*, *" columns="*, auto" height="60" class="newFriendBox">
                         <Label row="0" col="1" #expandNewFriendArrow text="&#xf078;" height="20dp" width="20dp" horizontalAlignment="right" verticalAlignment="top" class="fas downArrow" (tap)="expandNewFriend(expandNewFriendArrow, newFriendBox)" textWrap="false"></Label>
