@@ -14,6 +14,7 @@ import { MapboxMarker } from 'nativescript-mapbox';
 import { start } from 'tns-core-modules/application/application';
 import { SettingsClass } from '../settings-page/settings';
 import { GC } from 'tns-core-modules/utils/utils';
+import { BackendService } from '../account-page/backend.service';
 
 @Injectable({
   providedIn: AppModule
@@ -22,7 +23,7 @@ export class TripService {
 
   private settingsClass: SettingsClass;
 
-  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
+  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions, private backendService: BackendService) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
@@ -460,6 +461,37 @@ export class TripService {
     globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
   }
 
+  saveTrip(trip: Trip, uploaded: boolean = false) {
+    let info;
+    let infoFile = this.getTripFolder().getFile("Info.json");
+    
+    try {
+      let file = this.makeTripFile(trip.id);
+      let jsonTrip = JSON.stringify(trip);
+
+      file.writeText(jsonTrip).catch((error) => {
+        console.log("ERROR: tripService: Error while writing trip to file: " + error);
+      });
+
+      info = JSON.parse(infoFile.readTextSync());
+      if (uploaded) {
+        if (info.uploadTripIds == undefined) {
+          info.uploadTripIds = [];
+        }
+        info.uploadedIds.push(trip.id);
+      }
+      info.ids.push(trip.id);
+      infoFile.writeText(JSON.stringify(info));
+    } catch (error) {
+      console.log("ERROR in tripService(endTrip): " + error);
+      info = {
+        ids: [],
+        lastTripID: 0
+      }
+      infoFile.writeText(JSON.stringify(info));
+    }
+  }
+
   /**
    * endTrip() - End the current trip.
    * 
@@ -472,38 +504,37 @@ export class TripService {
       if (trip.id == undefined){
         throw new Error("Trip is undefined!");
       }
-      var file = this.makeTripFile(trip.id);
+      let autoUploadSetting = this.settingsClass.getSetting(62, true);
+      let success = false;
+      if (autoUploadSetting.value) {
+        this.backendService.uploadTrips([trip])
+          .subscribe((result) => {
+            if (<any>result == 201) {
+              trip = (<any>result).body.trips[0];
+                this.saveTrip(trip, true);
+                GC();
+                success = true;
+
+                return trip;
+            } else {
+              this.saveTrip(trip);
+              success = true;
+              return trip;
+            }
+          });
+          setTimeout(() => {
+            if (!success) {
+              this.saveTrip(trip);
+              return trip;
+            }
+          }, 10000);
+      } else {
+        this.saveTrip(trip);
+        return trip;
+      }
     } catch (error) {
       console.log("ERROR in TripService: " + error);
       this.tracker.reset();
-    }
-    try {
-      var jsonTrip = JSON.stringify(trip);
-    } catch (error) {
-      console.log("An error occured while stringifying trip. " + error);
-      
-    }
-    
-    file.writeText(jsonTrip).catch((error) => {
-      console.log("ERROR: tripService: Error while writing trip to file: " + error);
-    });
-    var infoFile = this.getTripFolder().getFile("Info.json");
-    var info;
-    try {
-      info = JSON.parse(infoFile.readTextSync());
-      info.ids.push(trip.id);
-      infoFile.writeText(JSON.stringify(info));
-      return trip;
-
-    } catch (error) {
-      console.log("ERROR in tripService(endTrip): " + error);
-      info = {
-        ids: [],
-        lastTripID: 0
-      }
-      infoFile.writeText(JSON.stringify(info));
-      GC();
-      return trip;
     }
   }
 

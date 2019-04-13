@@ -79,6 +79,9 @@ export class SettingsClass {
     let loggedInTokenSetting = this.getSetting(61);
     this.generateSetting(61, "MapPosition", "Object", loggedInTokenSetting.value);
 
+    let autoUploadTrips = this.getSetting(61, false);
+    this.generateSetting(62, "autoUpload", "switch", autoUploadTrips.value);
+
     console.log("Settings successfully innitialized");
   }
 
@@ -167,6 +170,8 @@ export class SettingsClass {
    * 52: currentTripPageHeight - The height of the drawer in currentTripPage
    * 
    * 61: Login Token - The logged in token
+   * 
+   * 62: Auto Upload - Should new trips be automatically uploaded?
    * 
    * @returns The setting you asked for. If it does not exist, it doesnt return anything
    */

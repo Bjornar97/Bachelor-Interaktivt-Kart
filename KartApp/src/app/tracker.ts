@@ -24,7 +24,8 @@ export type Trip = {
         imageSrc: string
     }[],
     distanceMeters: number,
-    duration: number
+    duration: number,
+    uploaded?: boolean
 }
 
 type subTrip = {
