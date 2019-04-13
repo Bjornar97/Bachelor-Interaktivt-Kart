@@ -490,6 +490,7 @@ export class TripService {
       }
       infoFile.writeText(JSON.stringify(info));
     }
+    GC();
   }
 
   /**
