@@ -1,0 +1,27 @@
+/* Add mobile styles for the component here.  */
+
+.error-containter {
+
+}
+
+.error-box {
+    margin: 0dp 5p 5dp;
+}
+
+.android-error-text {
+    color: #c00;
+    font-size: 15;
+    padding: 5dp 15dp;
+    border-radius: 10dp;
+    text-align: center;
+    margin: 3dp 10dp;
+}
+
+.ios-error-text {
+    background-color: rgba(250, 250, 250, 0.8);
+    color: #c00;
+    font-size: 15;
+    padding: 5dp 15dp;
+    border-radius: 10dp;
+    text-align: center;
+}

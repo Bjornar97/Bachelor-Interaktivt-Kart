@@ -10,6 +10,7 @@ registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
 
 import { NgShadowModule } from 'nativescript-ng-shadow';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
     bootstrap: [
@@ -22,7 +23,8 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     ],
     declarations: [
         AppComponent,
-        MapComponent
+        MapComponent,
+        ErrorMessageComponent
     ],
     schemas: [
         NO_ERRORS_SCHEMA

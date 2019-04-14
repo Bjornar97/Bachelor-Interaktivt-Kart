@@ -183,3 +183,7 @@ components that have the btn class name.
 .actionBarBackButtonText {
     font-size: 18dp;
 }
+
+.error-outer-container {
+    z-index: 30;
+}
