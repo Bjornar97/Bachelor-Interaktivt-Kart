@@ -11,6 +11,7 @@ import { TripBoxModule } from "../trip-box/trip-box.module";
 import { NgShadowModule } from 'nativescript-ng-shadow';
 import { FriendsSharedTripsPageComponent } from './friendsSharedTrips/friendsSharedTrips-page.component';
 import { SavedTripsComponent } from './saved-trips/saved-trips.component';
+import { AccountEditPageComponent } from '~/app/account-page/accountEdit/accountEdit-page.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { SavedTripsComponent } from './saved-trips/saved-trips.component';
     AccountPageComponent,
     FriendsPageComponent,
     FriendsSharedTripsPageComponent,
-    SavedTripsComponent
+    SavedTripsComponent,
+    AccountEditPageComponent
   ],
   imports: [
     NativeScriptCommonModule,
