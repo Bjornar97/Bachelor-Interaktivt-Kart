@@ -8,7 +8,7 @@
 </GridLayout>
 <ScrollView>
     <StackLayout>
-        <ContentView class="container" shadow elevation="2" class="container">
+        <ContentView class="container" shadow elevation="2">
             <GridLayout rows="*, *, *, *" columns="*, *" class="innholdContainer">
                     <Label col="0" row="0" id="info" text="Start: " textWrap="true" ></Label>
                     <Label col="1" row="0" [text]="startTimeString" textWrap="true"></Label>        
@@ -21,24 +21,32 @@
             
                     <Label col="0" row="3" id="info" text="Lengde: " textWrap="true"></Label>
                     <Label col="1" row="3" text="{{distanceString}} km" textWrap="true"></Label>          
-            </GridLayout>
+            </GridLayout> 
         </ContentView>
         
-        <StackLayout *ngFor="let event of events" class="container">
-            <GridLayout rows="*" columns="auto, *">
+        <StackLayout *ngFor="let event of events" class="containerEvents">
+            <GridLayout rows="*" columns="auto, *, *">
                     <StackLayout col="0" verticalAlignment="center">
                         <Label [text]="event.timestamp"></Label>
                         <Label *ngIf="event.type == 'pause'" text="Pause"></Label>
-                        <Label *ngIf="event.type == 'walk'" text="Deltur"></Label>
+                        <Label *ngIf="event.type == 'walk'" text="Deltur" ></Label>
+                        <Label *ngIf="event.type == 'image'" text="Tatt bilde" ></Label>
                     </StackLayout>
-                    <Image col="1" *ngIf="event.type == 'image'" [src]="event.value.imageSrc" height="90" width="90" horizontalAlignment="right"></Image>
-                    <StackLayout col="1" *ngIf="event.type == 'walk'" id="eventInnhold" class="event">
+
+                    <StackLayout col="1" verticalAlignment="center">
+                        <Label *ngIf="event.type == 'pause'" text="&#xf04c;" class="pause" horizontalAlignment="left"></Label>
+                        <Label *ngIf="event.type == 'walk'" text="&#xf04b;" class="play" horizontalAlignment="left"></Label>
+                        <Label *ngIf="event.type == 'image'" text="&#xf030;" class="play" horizontalAlignment="left" ></Label>
+                    </StackLayout>
+
+                    <Image col="2" *ngIf="event.type == 'image'" [src]="event.value.imageSrc" height="90" width="90" horizontalAlignment="right"></Image>
+                    <StackLayout col="2" *ngIf="event.type == 'walk'" class="event">
                             <Label [text]="'Start: ' + event.value.startTime"></Label>
                             <Label [text]="'Stopp: ' + event.value.stopTime"></Label>
                             <Label [text]="'Distanse: ' + event.value.distanceMeters + ' km'"></Label>
                             <Label [text]="'Hastighet: ' + event.value.avgSpeed + ' min/km'" ></Label>
                     </StackLayout>
-                    <StackLayout col="1" *ngIf="event.type == 'pause'" class="event">
+                    <StackLayout col="2" *ngIf="event.type == 'pause'" class="event">
                             <Label [text]="'Fra: ' + event.value.from"></Label>
                             <Label [text]="'Til: ' + event.value.to"></Label>
                     </StackLayout>
