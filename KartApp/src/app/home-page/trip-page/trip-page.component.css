@@ -10,9 +10,12 @@
 } 
 .innholdContainer{
     height: 125dp;
-    margin:10dp 0dp -10dp 10dp;
+    margin:10dp 0dp 10dp 10dp;
 }
 .container{
+    margin:15dp 10dp 15dp 10dp;
+}
+.containerEvents{
     margin:15dp 10dp 15dp 10dp;
 }
 .event{
@@ -37,3 +40,12 @@
 .far {
     font-family: "Font Awesome 5 Free", "fa-regular-400";
 }
+.pause{
+    color: #f1bc0d;
+    margin-left:7dt;
+}
+.play{
+    color: #008000;
+    margin-left:7dt;
+}
+
