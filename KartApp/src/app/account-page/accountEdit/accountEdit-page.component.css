@@ -1,0 +1,35 @@
+page {
+    align-items: center;    
+    background-color: transparent;
+    flex-direction: column;
+  }
+  .form {
+     margin-left: 30;
+     margin-right: 30;
+     flex-grow: 2;
+  }
+     
+  .linje-under{
+      border-color:gray;
+      border-width: 0 0 1 0;
+      text-align: left;  
+      margin-top:15dt;
+      font-size: 15;
+      font-weight: bold;
+  }
+  #my-button{
+      background-color:#00b300;
+      color:#0c7023;
+      font-weight: bold;
+  }
+  .icon {
+    color: #008000;
+    font-size: 25;
+    margin-top:8dp;
+}
+.KontoInn{
+    font-size:20;
+    font-weight:bold;
+    margin-top:20dp;
+    margin-left:8dp;
+}
