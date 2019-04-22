@@ -31,10 +31,9 @@ export class AccountEditPageComponent  {
         this.settingsClass = globals.getSettingsClass();
     }
 
-
-    edit(phoneNumber,email){
-        console.log("email: " + email + " phoneNumber: " + phoneNumber );
-        this.backendService.edit(phoneNumber,email)
+    edit(username,phoneNumber,email){
+        console.log("email: " + email + " phoneNumber: " + phoneNumber + "username" + username);
+        this.backendService.edit(phoneNumber, email)
         .subscribe((result) => {
             let tokenSetting = this.settingsClass.getSetting(61);
         if (<any>result.status == 201){
@@ -49,6 +48,8 @@ export class AccountEditPageComponent  {
               type: "token",
               value: undefined
             } 
+        }else if (<any>result.status == 404){
+            this.message = "Brukernavnet finnes ikke i databasen";
         }else {
             this.message = "Noe gikk galt. Prøv igjen";
         }

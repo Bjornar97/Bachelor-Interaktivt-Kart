@@ -14,6 +14,10 @@
             <StackLayout class="form" >
             <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
             <Label [text]="vellyket" height="30" verticalAlignment="center" class="{{ checkColor ? 'redColor' : 'defaultColor'}}"></Label>
+            <Label [text]="username"></Label>
+                <StackLayout class="input-field">
+                    <TextField #brukernavn hint="Brukernavn:" class="linje-under"> </TextField>   
+                </StackLayout>
                 <StackLayout class="input-field">
                     <TextField #telefonNr hint="Telefon Nummer:" class="linje-under"> </TextField>   
                 </StackLayout>
