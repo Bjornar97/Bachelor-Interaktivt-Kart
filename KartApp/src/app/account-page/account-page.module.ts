@@ -8,6 +8,7 @@ import { RegisterPageComponent } from "./register-page/register-page.component";
 import { FriendsPageComponent } from "./friends-page/friends-page.component";
 
 import { NgShadowModule } from 'nativescript-ng-shadow';
+import { AccountEditPageComponent } from '~/app/account-page/accountEdit/accountEdit-page.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     LoginPageComponent,
     RegisterPageComponent,
     AccountPageComponent,
-    FriendsPageComponent
+    FriendsPageComponent,
+    AccountEditPageComponent
   ],
   imports: [
     NativeScriptCommonModule,
