@@ -5,6 +5,10 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { isAndroid } from "tns-core-modules/platform";
 import * as application from 'tns-core-modules/application';
+import { MapboxMarker } from 'nativescript-mapbox';
+import { MarkerService } from "../map/marker.service";
+import { ActivatedRoute } from '@angular/router/src/router_state';
+import { ImageService } from '~/app/home-page/image.service';
 
 @Component({
   selector: 'ns-marker-page',
@@ -16,7 +20,7 @@ export class MarkerPageComponent implements OnInit {
   
   private drawer: DrawerClass;
 
-  constructor(private routerExtensions: RouterExtensions, page: Page) {
+  constructor(private routerExtensions: RouterExtensions, private route: ActivatedRoute, private markerService: MarkerService, private imageService: ImageService, page: Page) {
     this.drawer = globals.getDrawer();
     page.actionBarHidden = true;
   }
@@ -27,6 +31,10 @@ export class MarkerPageComponent implements OnInit {
   private goBack() {
     this.routerExtensions.backToPreviousPage();
   }
+  
+  private sub;
+  private marker: MapboxMarker;
+  private imageSrc: string;
 
   ngOnInit() {
     if (isAndroid){
@@ -35,6 +43,13 @@ export class MarkerPageComponent implements OnInit {
         this.goBack();
       });
     }
+    this.sub = this.route.params.subscribe(params => {
+      console.log("TEST1");
+      this.marker = this.markerService.getMarkers(undefined, [parseInt(params["id"])])[0];
+      console.log("TEST2");
+      this.imageSrc = this.imageService.getImageSrc(this.marker.id);
+      console.log("TEST3");
+    });
   }
 
 }
