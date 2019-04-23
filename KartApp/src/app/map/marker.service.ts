@@ -11,7 +11,7 @@ import { DrawerClass } from "~/app/drawer";
 })
 export class MarkerService {
 
-  constructor() { 
+  constructor(private ngZone: NgZone) { 
     this.settingsClass = globals.getSettingsClass();
     this.drawer = globals.getDrawer();
   }
@@ -113,7 +113,6 @@ export class MarkerService {
       lat: lat,
       lng: lng,
       onTap: () => {
-        // TODO: Open Drawer
         console.log("Tapped marker " + id + ". URL: " + url + id);
         this.ngZone.run(() => {
           this.drawer.openDrawer();
