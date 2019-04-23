@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Trip, Tracker } from '~/app/tracker';
 import { TripService } from '../trip.service';
@@ -14,6 +14,7 @@ import { Setting, SettingsClass } from '~/app/settings-page/settings';
 import { trigger, transition, style, animate, state } from "@angular/animations";
 import { isAndroid } from "tns-core-modules/platform";
 import * as application from 'tns-core-modules/application';
+import { GC } from 'tns-core-modules/utils/utils';
 
 
 @Component({
@@ -39,7 +40,7 @@ import * as application from 'tns-core-modules/application';
   providers: [TripService, MarkerService],
   moduleId: module.id,
 })
-export class CurrentTripPageComponent implements OnInit, AfterViewInit {
+export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService) { 
     this.locationClass = new LocationClass();
@@ -126,6 +127,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
               this.trip = this.tripService.getCurrentTrip();
               this.trip.images.forEach((image) => {
                 this.imageSrcs.push(image);
+                GC();
               });
             });
           }).catch((error) => {
@@ -273,5 +275,9 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
     }
 
     globals.setCurrentHomePage("home/currentTrip");
+  }
+
+  ngOnDestroy() {
+    GC();
   }
 }
