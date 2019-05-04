@@ -48,17 +48,16 @@ export class BackendService {
   }
 
   endrePassord(password){
-    let options=this.createRequestOptions();
+    let options=this.createRequestHeader();
     let data = {
       password: password,
     }
-    return this.http.post(this.serverURL + "/v1/user/edit", data, {headers: options, observe: "response"});
+    return this.http.post(this.serverURL + "/v1/user/password", data, {headers: options, observe: "response"});
   }
 
-  edit(username,phoneNumber,email){
-    let options=this.createRequestOptions();
+  edit(phoneNumber,email){
+    let options=this.createRequestHeader();
     let data = {
-      username: username,
       phone:phoneNumber,
       email:email
     }
