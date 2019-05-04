@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { BackendService } from '../backend.service';
-import { SettingsService } from '../../settings-page/settings.service';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { DrawerClass } from '~/app/drawer';
 import * as globals from "../../globals";
@@ -25,7 +24,7 @@ export class AccountEditPageComponent  {
     private vellyket: string;
 
 
-    constructor(private routerExtensions: RouterExtensions,private page: Page, private backendService: BackendService, private settingsService: SettingsService) {
+    constructor(private routerExtensions: RouterExtensions,private page: Page, private backendService: BackendService) {
         // Use the component constructor to inject providers.
         this.drawer = globals.getDrawer();
         page.actionBarHidden = true; 
