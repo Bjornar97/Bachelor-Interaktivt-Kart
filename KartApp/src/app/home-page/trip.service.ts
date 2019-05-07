@@ -13,6 +13,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { MapboxMarker } from 'nativescript-mapbox';
 import { start } from 'tns-core-modules/application/application';
 import { SettingsClass } from '../settings-page/settings';
+import { BackendService } from '../account-page/backend.service';
 
 @Injectable({
   providedIn: AppModule
@@ -21,7 +22,7 @@ export class TripService {
 
   private settingsClass: SettingsClass;
 
-  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
+  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions, private backendService: BackendService) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
@@ -468,12 +469,30 @@ export class TripService {
       var jsonTrip = JSON.stringify(trip);
     } catch (error) {
       console.log("An error occured while stringifying trip. " + error);
-      
     }
     
     file.writeTextSync(jsonTrip, (error) => {
       console.log("ERROR: tripService: Error while writing trip to file: " + error);
     });
+
+    console.log("Uploading trip");
+    this.backendService.uploadTrip(trip).subscribe((res) => {
+      console.log("Result: ");
+      console.dir(res);
+      if (<any>res.status == 200) {
+        let sett = this.settingsClass.getSetting(42);
+        sett.value.push(trip.id);
+        this.settingsClass.setSetting(sett);
+        console.log("Successfully uploaded trip");
+      } else {
+        globals.showError("Turen kunne ikke lastes opp");
+      }
+    }, (error) => {
+      console.log("Error: ");
+      console.dir(error);
+      globals.showError("Turen kunne ikke lastes opp: kode 100");
+    });
+
     var infoFile = this.getTripFolder().getFile("Info.json");
     var info;
     try {
