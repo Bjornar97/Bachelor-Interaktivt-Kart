@@ -62,10 +62,12 @@ export class BackendService {
 
   private createRequestHeader() {
     let token = this.settingsClass.getSetting(61).value;
+    console.log("Token: " + token);
     let headers = new HttpHeaders({
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",
     });
+    console.log("AuthHeader: " + headers.get("Authorization"));
     return headers;
   }
 

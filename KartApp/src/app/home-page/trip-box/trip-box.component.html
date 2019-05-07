@@ -14,14 +14,18 @@
         </StackLayout>
         
         <GridLayout row="2" colSpan="3" rows="auto" columns="*, *" class="actionRow">
-            <StackLayout orientation="horizontal" col="0" horizontalAlignment="center" verticalAlignment="center" class="actionLabel first">
-                <Label text="&#xf1e0;" class="fontIcon actionIcon" textWrap="false"></Label>
-                <Label text=" Del" class="actionText" textWrap="false" verticalAlignment="center"></Label>
+            <StackLayout orientation="horizontal" col="0" horizontalAlignment="center" verticalAlignment="center" class="actionLabel first" (tap)="upload()" *ngIf="!loading && personal">
+                <Label text="&#xf093;" class="fontIcon actionIcon" textWrap="false" [ngClass]="{'uploaded': uploaded, 'failed': failed}"></Label>
+                <Label *ngIf="!uploaded && !failed" text=" Last opp" class="actionText" textWrap="false" verticalAlignment="center"></Label>
+                <Label *ngIf="failed" text="&#xf06a; Prøv igjen" verticalAlignment="center" class="failed" textWrap="false"></Label>
             </StackLayout>
-            <StackLayout orientation="horizontal" col="1" horizontalAlignment="center" verticalAlignment="center" class="actionLabel" (tap)="deleteTrip(Box)">
+            <ActivityIndicator *ngIf="loading" width="30" height="30" [busy]="loading" class="activity-indicator"></ActivityIndicator>
+
+            <StackLayout orientation="horizontal" col="1" horizontalAlignment="center" verticalAlignment="center" class="actionLabel" (tap)="deleteTrip(Box)" *ngIf="personal">
                 <Label text="&#xf1f8;" class="fontIcon actionIcon" textWrap="false"></Label>
                 <Label text=" Slett" class="actionText" verticalAlignment="center" textWrap="false"></Label>
             </StackLayout>
         </GridLayout>
+
     </GridLayout>
 </ContentView>

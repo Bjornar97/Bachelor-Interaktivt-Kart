@@ -479,7 +479,7 @@ export class TripService {
     this.backendService.uploadTrip(trip).subscribe((res) => {
       console.log("Result: ");
       console.dir(res);
-      if (<any>res.status == 200) {
+      if (<any>res.status == 201) {
         let sett = this.settingsClass.getSetting(42);
         sett.value.push(trip.id);
         this.settingsClass.setSetting(sett);

@@ -25,6 +25,14 @@
     padding: 5dp;
 }
 
+.uploaded {
+    color: #008000;
+}
+
+.failed {
+    color: orangered;
+}
+
 .actionIcon {
     padding: 0 5dp;
     font-size: 24;
@@ -41,4 +49,8 @@
     margin-top: 10dp;
     border-color: #aaa;
     border-top-width: 1dp;
+}
+
+.activity-indicator {
+    color: #008000;
 }

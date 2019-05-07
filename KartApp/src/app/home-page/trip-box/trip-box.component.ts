@@ -7,6 +7,8 @@ import * as dialogs from "tns-core-modules/ui/dialogs";
 import { View } from 'tns-core-modules/ui/page/page';
 import { screen } from "tns-core-modules/platform";
 import * as globals from "~/app/globals";
+import { BackendService } from '~/app/account-page/backend.service';
+import { SettingsClass } from '~/app/settings-page/settings';
 
 let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
 
@@ -19,11 +21,15 @@ let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lør
 })
 export class TripBoxComponent implements OnInit, OnChanges {
 
-  constructor(private tripService: TripService, private routerExt: RouterExtensions) { 
-
+  constructor(private tripService: TripService, private routerExt: RouterExtensions, private backendService: BackendService) { 
+    this.settingsClass = globals.getSettingsClass();
   }
 
+  private settingsClass: SettingsClass;
+
   @Input() id: number;
+  @Input() personal: boolean;
+  @Input() username: string;
   
   @Output()
   delete = new EventEmitter<string>();
@@ -31,11 +37,14 @@ export class TripBoxComponent implements OnInit, OnChanges {
   private checked: boolean = false;
   private skipCheck = false;
 
+  private loading: boolean;
   private trip: Trip;
   private totalTimeString: string;
   private startTimeString: string;
   private durationString: string;
   private distanceString: string;
+  private uploaded: boolean;
+  private failed: boolean;
 
   deleteTrip(box: View){
     let options = {
@@ -60,6 +69,48 @@ export class TripBoxComponent implements OnInit, OnChanges {
          });
       }
     });
+  }
+
+  upload() {
+    if (this.uploaded) {
+      this.failed = false;
+      return;
+    }
+    this.loading = true;
+    let token = this.settingsClass.getSetting(61, "").value;
+    if (token == "") {
+      globals.showError("Du må være logget inn for å laste opp turer");
+      return;
+    }
+    try {
+      this.backendService.uploadTrip(this.trip).subscribe((res) => {
+        if (<any>res.status == 200 || <any>res.status == 201){
+          console.log("Successfully uploaded trip");
+          this.loading = false;
+          this.failed = false;
+          let setting = this.settingsClass.getSetting(42, []);
+          setting.value.push(this.id);
+          this.uploaded = true;
+        } else {
+          globals.showError("Noe gikk galt under opplasting av tur, husk at du må være logget inn");
+          this.failed = true;
+          this.loading = false;
+        }
+      });  
+    } catch(error) {
+      console.log("An error occured in upload in tripbox: " + error);
+      globals.showError("Noe gikk galt under opplasting av tur");
+      this.failed = true;
+      this.loading = false;
+    }
+
+    setTimeout(() => {
+      if (this.loading) {
+        this.loading = false;
+        this.failed = true;
+        globals.showError("Noe gikk galt under opplasting, prøv igjen");
+      }
+    }, 10000);
   }
 
   drawCheck(){
@@ -102,6 +153,13 @@ export class TripBoxComponent implements OnInit, OnChanges {
     if (globals.getCheckboxList(this.id)) {
       this.skipCheck = true;
       this.checked = true;
+    }
+
+    let uploadedList: Array<any> = this.settingsClass.getSetting(42).value;
+    if (uploadedList.indexOf(this.id) != -1) {
+      this.uploaded = true;
+    } else {
+      this.uploaded = false;
     }
   }
 
