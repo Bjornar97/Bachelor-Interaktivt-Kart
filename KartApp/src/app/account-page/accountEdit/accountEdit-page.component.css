@@ -36,3 +36,11 @@ page {
 .passord{
     margin-top:-50dp;
 }
+
+.redColor {
+    color:red;
+    }
+    
+.defaultColor {
+    color:blue;
+  }

@@ -13,7 +13,7 @@
         <StackLayout>
             <StackLayout class="form" >
             <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
-            <Label [text]="vellyket" height="30" verticalAlignment="center"></Label>
+            <Label [text]="vellyket" height="30" verticalAlignment="center" class="{{ checkColor ? 'redColor' : 'defaultColor'}}"></Label>
                 <StackLayout class="input-field">
                     <TextField #telefonNr hint="Telefon Nummer:" class="linje-under"> </TextField>   
                 </StackLayout>
@@ -35,7 +35,7 @@
                 
                 <GridLayout *ngIf="newPasswordExpanded" rows="*,*,*" columns="*,auto" class="passord" >
                 <StackLayout class="input-field"  row="0" col="0">
-                    <TextField #password hint="Nytt passord:" class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
+                    <TextField #password hint="Nytt passord:"  class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
                 </StackLayout>
                 
                 <Label col="1" row="0" text ="&#xf06e;" (tap)="toggleShow()" class="fas fa-eye" color="#008000"></Label>
@@ -43,13 +43,13 @@
 
 
                 <StackLayout class="input-field" row="1" col="0">
-                    <TextField #password hint="Passord bekreftelse:" class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
+                    <TextField #password2 hint="Passord bekreftelse:" class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
                 </StackLayout>
 
                 <Label row="1" col="1" text ="&#xf06e;" (tap)="toggleShow()" class="fas fa-eye" color="#008000"></Label>
                 
                 
-                <Button row="2" colspan="2" id="my-button" class="btn btn-primary btn-rounded-sm" text="Lagre passord" (tap)="endrePassord(password.text)"></Button> 
+                <Button row="2" colspan="2" id="my-button" class="btn btn-primary btn-rounded-sm" text="Endre passord" (tap)="endrePassord(password.text, password2.text)"></Button> 
                 
                 </GridLayout>
                
