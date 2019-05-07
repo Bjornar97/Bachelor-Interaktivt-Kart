@@ -48,6 +48,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
     dialogs.confirm(options).then((result: boolean) => {
       var screenWidth = screen.mainScreen.widthDIPs;
       if (result){
+        this.tripService.unDrawTrip(this.trip.id);
         box.animate({
           scale: {x: 0, y: 0},
           duration: 700,
