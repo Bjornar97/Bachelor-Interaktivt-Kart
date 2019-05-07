@@ -22,7 +22,7 @@ export class AccountEditPageComponent  {
     private newPasswordExpanded = false;
     private securePassword= true;
     private vellyket: string;
-
+    private checkColor=true;
 
     constructor(private routerExtensions: RouterExtensions,private page: Page, private backendService: BackendService) {
         // Use the component constructor to inject providers.
@@ -55,28 +55,36 @@ export class AccountEditPageComponent  {
         });
     }
     
-
-    endrePassord(password){
-        console.log("password: " + password);
-        this.backendService.endrePassord(password)
-        .subscribe((result) => {
-            let tokenSetting = this.settingsClass.getSetting(61);
-            if (tokenSetting == undefined){
-              tokenSetting = {
-                id: 61,
-                name: "tokenSetting",
-                type: "token",
-                value: undefined
-              }
-            }
-            else if (<any>result.status == 201) {
-                this.message = "Du blei registrert";
-            }
+    endrePassord(password, password2){
+        console.log("Pass1: " + password + ", pass2: " + password2)
+        if (password != password2){
+            console.log("Ikke like")
+            this.vellyket="Passordene skal være like!"
+            this.checkColor=true;
+            console.log("password: " +password2);
+        }else if(password == password2){
+            this.backendService.endrePassord(password)
+            .subscribe((result) => {
+                console.dir(result);
+                let tokenSetting = this.settingsClass.getSetting(61);
+                    if (tokenSetting == undefined){
+                        tokenSetting = {
+                            id: 61,
+                            name: "tokenSetting",
+                            type: "token",
+                            value: undefined
+                        }
+                    }
+                    else if (<any>result.status == 201) {
+                        this.message = "Endring av passord var vellyket!";
+                        this.checkColor=false;
+                    }
             console.dir(result);
             tokenSetting.value = (<any>result).body.access_token;
             this.vellyket = (<any>result).body.message;
             this.settingsClass.setSetting(tokenSetting);
-        });
+            });
+        }
     }
     
     expendNewPassword(arrow: Label, box: GridLayout){
