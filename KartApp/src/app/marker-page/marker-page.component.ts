@@ -7,7 +7,7 @@ import { isAndroid } from "tns-core-modules/platform";
 import * as application from 'tns-core-modules/application';
 import { MapboxMarker } from 'nativescript-mapbox';
 import { MarkerService } from "../map/marker.service";
-import { ActivatedRoute } from '@angular/router/src/router_state';
+import { ActivatedRoute } from '@angular/router';
 import { ImageService } from '~/app/home-page/image.service';
 
 @Component({
@@ -44,11 +44,9 @@ export class MarkerPageComponent implements OnInit {
       });
     }
     this.sub = this.route.params.subscribe(params => {
-      console.log("TEST1");
       this.marker = this.markerService.getMarkers(undefined, [parseInt(params["id"])])[0];
-      console.log("TEST2");
       this.imageSrc = this.imageService.getImageSrc(this.marker.id);
-      console.log("TEST3");
+      this.pageTitle = "Marker " + this.marker.id;
     });
   }
 
