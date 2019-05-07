@@ -39,7 +39,7 @@
                 
                 <GridLayout *ngIf="newPasswordExpanded" rows="*,*,*" columns="*,auto" class="passord" >
                 <StackLayout class="input-field"  row="0" col="0">
-                    <TextField #password hint="Nytt passord:" class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
+                    <TextField #password hint="Nytt passord:"  class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
                 </StackLayout>
                 
                 <Label col="1" row="0" text ="&#xf06e;" (tap)="toggleShow()" class="fas fa-eye" color="#008000"></Label>

@@ -124,44 +124,6 @@ export class AccountEditPageComponent  {
             });
         }
     }
-    
-    expendNewPassword(arrow: Label, box: GridLayout){
-        console.log("Expanding");
-        if (!this.newPasswordExpanded){
-            arrow.animate({
-                rotate: 180,
-                duration: 250
-            }).then(() => {
-                let height = 100;
-                let interval = setInterval(() => {
-                    if (height >= 120){
-                        box.set("height", "80dp");
-                        this.newPasswordExpanded = true;
-                        clearInterval(interval);
-                    }
-                    height += 5;
-                    box.set("height", height + "dp");
-                }, 5);
-                
-            });
-        } else {
-            arrow.animate({
-                rotate: 0,
-                duration: 250
-            }).then(() => {
-                let height = 120;
-                let interval = setInterval(() => {
-                    if (height <= 100){
-                        box.set("height", "60dp");
-                        this.newPasswordExpanded = false;
-                        clearInterval(interval);
-                    }
-                    height -= 5;
-                    box.set("height", height + "dp");
-                }, 5);
-            });
-        }
-    }
 
     toggleShow() {
         this.securePassword = !this.securePassword;
