@@ -98,8 +98,6 @@ export class TripBoxComponent implements OnInit, OnChanges {
 
     this.distanceString = (Math.round(this.trip.distanceMeters)/1000).toFixed(2);
     console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
-    console.log("Created tripbox id: " + this.id + "\n_____________________________________");
-    console.log("globals.getCheckboxList(" + this.id + "): " + globals.getCheckboxList(this.id))
     if (globals.getCheckboxList(this.id)) {
       this.skipCheck = true;
       this.checked = true;
