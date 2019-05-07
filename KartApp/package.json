@@ -1,11 +1,11 @@
 {
   "nativescript": {
     "id": "org.nativescript.KartApp123456",
-    "tns-ios": {
-      "version": "5.4.0-2019-04-05-131911-02"
-    },
     "tns-android": {
       "version": "5.2.1"
+    },
+    "tns-ios": {
+      "version": "5.2.0"
     }
   },
   "description": "NativeScript Application",

@@ -4,16 +4,19 @@ import { MapboxMarker } from 'nativescript-mapbox';
 import { SettingsClass } from '../settings-page/settings';
 import * as globals from "../globals";
 import { RouterExtensions } from 'nativescript-angular/router';
+import { DrawerClass } from "~/app/drawer";
 
 @Injectable({
   providedIn: 'root'
 })
 export class MarkerService {
 
-  constructor() { 
+  constructor(private ngZone: NgZone) { 
     this.settingsClass = globals.getSettingsClass();
+    this.drawer = globals.getDrawer();
   }
 
+  private drawer: DrawerClass;
   private settingsClass: SettingsClass;
 
   getFolder(){
@@ -109,10 +112,12 @@ export class MarkerService {
       id: id,
       lat: lat,
       lng: lng,
-      onTap: function(){
-        // TODO: Open Drawer
+      onTap: () => {
         console.log("Tapped marker " + id + ". URL: " + url + id);
-        globals.routerExtensions.navigateByUrl(url + id);
+        this.ngZone.run(() => {
+          this.drawer.openDrawer();
+          globals.routerExtensions.navigateByUrl(url + id);
+        });
       },
       icon: iconPath
     }
@@ -141,9 +146,12 @@ export class MarkerService {
         lat: markerObject.lat,
         lng: markerObject.lng,
         icon: markerObject.icon,
-        onTap: function(){
+        onTap: () => {
           console.log("Tapped marker " + id + ". URL: " + markerObject.url + id);
-          globals.routerExtensions.navigateByUrl(markerObject.url + id);
+          this.ngZone.run(() => {
+            this.drawer.openDrawer();
+            globals.routerExtensions.navigateByUrl(markerObject.url + id);
+          });
         }
       }
       return marker;
