@@ -65,7 +65,7 @@ export class SettingsClass {
 
     // Logged in token Setting
     let tripsUploaded = this.getSetting(42, []);
-    this.generateSetting(61, "MapPosition", "Object", tripsUploaded.value);
+    this.generateSetting(42, "tripsUploaded", "tripIds", tripsUploaded.value);
 
     // Drawer Height Setting
     let drawerHeightSetting = this.getSetting(48);
