@@ -36,7 +36,9 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private backButtonText = "Tilbake";
 
   private goBack(){
-    this.tripService.unDrawTrip(this.trip.id);
+    if (!globals.getCheckboxList(this.trip.id)) {
+      this.tripService.unDrawTrip(this.trip.id);
+    }
     this.routerExtensions.navigate(["home"], {
       animated: true,
       clearHistory: true,
@@ -88,7 +90,9 @@ export class TripPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    this.tripService.unDrawTrip(this.trip.id);
+    if (!globals.getCheckboxList(this.trip.id)) {
+      this.tripService.unDrawTrip(this.trip.id);
+    }
     this.sub.unsubscribe();
     if (isAndroid) {
       application.android.removeEventListener(application.AndroidApplication.activityBackPressedEvent);

@@ -128,3 +128,17 @@ export function showError(errorString: string) {
     return date.getDate() + "." + months[date.getMonth()] + "." + "kl. " + date.getHours() + ":" + date.getHours();
 
   }
+
+  var CheckboxList: boolean[] = [];
+  
+  export function getCheckboxList(id: number){
+    if (CheckboxList[id] == undefined){
+      console.log("Creating CheckboxList entry");
+      CheckboxList[id] = false;
+    }
+    return CheckboxList[id];
+  }
+
+  export function setCheckboxList(id: number, value: boolean){
+    CheckboxList[id] = value;
+  }

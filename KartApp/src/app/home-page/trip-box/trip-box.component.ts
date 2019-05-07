@@ -29,6 +29,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
   delete = new EventEmitter<string>();
 
   private checked: boolean = false;
+  private skipCheck = false;
 
   private trip: Trip;
   private totalTimeString: string;
@@ -74,11 +75,12 @@ export class TripBoxComponent implements OnInit, OnChanges {
   }
 
   toggleCheck(){
-    if (this.checked) {
-      this.checked = false;
+    if (!this.skipCheck) {
+      this.checked = !this.checked;
     } else {
-      this.checked = true;
+      this.skipCheck = false;
     }
+    globals.setCheckboxList(this.id, this.checked);
     this.drawCheck();
   }
 
@@ -96,6 +98,12 @@ export class TripBoxComponent implements OnInit, OnChanges {
 
     this.distanceString = (Math.round(this.trip.distanceMeters)/1000).toFixed(2);
     console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
+    console.log("Created tripbox id: " + this.id + "\n_____________________________________");
+    console.log("globals.getCheckboxList(" + this.id + "): " + globals.getCheckboxList(this.id))
+    if (globals.getCheckboxList(this.id)) {
+      this.skipCheck = true;
+      this.checked = true;
+    }
   }
 
 }
