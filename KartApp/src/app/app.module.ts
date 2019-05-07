@@ -11,6 +11,7 @@ registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
 
 import { NgShadowModule } from 'nativescript-ng-shadow';
 import { ErrorMessageComponent } from './error-message/error-message.component';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
     bootstrap: [
@@ -19,7 +20,8 @@ import { ErrorMessageComponent } from './error-message/error-message.component';
     imports: [
         NativeScriptModule,
         AppRoutingModule,
-        NgShadowModule
+        NgShadowModule,
+        HttpClientModule
     ],
     declarations: [
         AppComponent,

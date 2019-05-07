@@ -63,6 +63,10 @@ export class SettingsClass {
     let tripActiveSetting = this.getSetting(41, false);
     this.generateSetting(41, "tripActive", "Object", tripActiveSetting.value);
 
+    // Logged in token Setting
+    let tripsUploaded = this.getSetting(42, []);
+    this.generateSetting(61, "MapPosition", "Object", tripsUploaded.value);
+
     // Drawer Height Setting
     let drawerHeightSetting = this.getSetting(48);
     this.generateSetting(48, "drawerHeight", "height", drawerHeightSetting.value);
@@ -159,6 +163,8 @@ export class SettingsClass {
    * 32: Trip Marker Ids - Ids for the markers from trips that is drawn on the map.
    * 
    * 41: tripActive
+   * 
+   * 42: Uploaded Trips
    * 
    * 48: drawerSettting - The height of the drawer
    * 
