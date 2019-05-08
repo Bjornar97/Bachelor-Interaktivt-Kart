@@ -11,6 +11,7 @@
                         <Label col="0" text="Kartinstillinger" [nsRouterLink]="['./menu/map']" pageTransition="slide" class="menu"></Label>
                         <Image col="1" src="res://baseline_chevron_right_black_24" [nsRouterLink]="['./menu/map']" pageTransition="slide"></Image>
                     </GridLayout>
+
                     <GridLayout rows="*, *" columns="*, auto" class="setting">
                         <Label col="0" text="Lagre bilder til galleriet" textWrap="true" class="settingLabel" (tap)="toggleSwitch(imageSaveSwitch)"></Label>
                         <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleSwitch(imageSaveSwitch)">
@@ -18,6 +19,26 @@
                             <Label text="Skal bilder du tar på tur lagres i galleriet på telefonen?" class="infoText" textWrap="true"></Label>
                         </StackLayout>
                         <Switch #imageSaveSwitch col="1" rowSpan="2" [checked]="isImageSave" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="imageSaveChanged($event)">
+                        </Switch>
+                    </GridLayout>
+
+                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                        <Label col="0" text="Vise alle bildemarkører" textWrap="true" class="settingLabel" (tap)="toggleAllImagesSwitch(allImageSwitch)"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleAllImagesSwitch(allImages)">
+                            <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
+                            <Label text="Skal alle markørene for bilder vises hele tiden? Hvis av, vises kun markørene for bildene som er tatt av turene som vises" class="infoText" textWrap="true"></Label>
+                        </StackLayout>
+                        <Switch #allImages col="1" rowSpan="2" [checked]="isAllImages" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="allImagesChanged($event)">
+                        </Switch>
+                    </GridLayout>
+
+                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                        <Label col="0" text="Automatisk synkronisering" textWrap="true" class="settingLabel" (tap)="toggleAutoUploadSwitch(autoUploadSwitch)"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleAutoUploadSwitch(autoUploadSwitch)">
+                            <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
+                            <Label text="Skal turene dine automatisk bli lastet opp når du avslutter de?" class="infoText" textWrap="true"></Label>
+                        </StackLayout>
+                        <Switch #autoUploadSwitch col="1" rowSpan="2" [checked]="isAutoUpload" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="autoUploadChanged($event)">
                         </Switch>
                     </GridLayout>
                 </StackLayout>

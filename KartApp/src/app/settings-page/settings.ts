@@ -43,6 +43,14 @@ export class SettingsClass {
     let imageSaveSetting = this.getSetting(4, false);
     this.generateSetting(4, "ImageSave", "switch", imageSaveSetting.value);
 
+    // All ImageMarkers Setting
+    let AllImageMarkersSetting = this.getSetting(5, true);
+    this.generateSetting(5, "AllImageMarkersSetting", "switch", AllImageMarkersSetting.value);
+
+    // Auto Upload Setting
+    let autoUploadSetting = this.getSetting(6, true);
+    this.generateSetting(6, "AutoUpload", "switch", autoUploadSetting.value);
+
     // Map Menu Setting
     let mapStyleSetting = this.getSetting(11, "outdoors");
     this.generateSetting(11, "mapStyle", "buttonRow", mapStyleSetting.value);
@@ -152,7 +160,7 @@ export class SettingsClass {
    * 
    * 5: All ImageMarkers Setting - Should all imagemarkers be shown on the map. If false, it only shows the markers on the trips that is drawn on the map.
    * 
-   * 4: ImageSave - Should images get saved to the gallery
+   * 6: Auto Upload Setting - Should the trip upload automatically when you stop it.
    * 
    * 11: Map menu setting.
    * 
