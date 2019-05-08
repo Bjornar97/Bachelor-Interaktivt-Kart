@@ -19,8 +19,10 @@ export class SettingsPageComponent implements OnInit {
   private settingsClass: SettingsClass;
   private drawer: DrawerClass;
 
-  private isDrawerSnap;
-  private isImageSave;
+  private isDrawerSnap: boolean;
+  private isImageSave: boolean;
+  private isAllImages: boolean;
+  private isAutoUpload: boolean;
 
   constructor(page: Page, private routerExtensions: RouterExtensions) {
     page.actionBarHidden = true;
@@ -32,6 +34,12 @@ export class SettingsPageComponent implements OnInit {
 
     let isImageSaveSetting = this.settingsClass.getSetting(4, false);
     this.isImageSave = isImageSaveSetting.value;
+
+    let isAllImagesSetting = this.settingsClass.getSetting(5, true);
+    this.isAllImages = isAllImagesSetting.value;
+
+    let autoUploadSetting = this.settingsClass.getSetting(6, true);
+    this.isAutoUpload = autoUploadSetting.value;
   }
 
   setDrawerSnapSetting(value: boolean){
@@ -55,6 +63,30 @@ export class SettingsPageComponent implements OnInit {
     this.isImageSave = Switch.checked;
     let setting = this.settingsClass.getSetting(4);
     setting.value = this.isImageSave;
+    this.settingsClass.setSetting(setting);
+  }
+
+  toggleAllImagesSwitch(switchView: Switch) {
+    switchView.checked = !switchView.checked;
+  }
+
+  allImagesChanged(args) {
+    let Switch = <Switch>args.object;
+    this.isAllImages = Switch.checked;
+    let setting = this.settingsClass.getSetting(5);
+    setting.value = this.isAllImages;
+    this.settingsClass.setSetting(setting);
+  }
+
+  toggleAutoUploadSwitch(switchView: Switch) {
+    switchView.checked = !switchView.checked;
+  }
+
+  autoUploadChanged(args) {
+    let Switch = <Switch>args.object;
+    this.isAutoUpload = Switch.checked;
+    let setting = this.settingsClass.getSetting(6);
+    setting.value = this.isAutoUpload;
     this.settingsClass.setSetting(setting);
   }
 
