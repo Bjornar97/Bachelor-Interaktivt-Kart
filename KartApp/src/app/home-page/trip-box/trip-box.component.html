@@ -14,6 +14,8 @@
         </StackLayout>
         
         <GridLayout row="2" colSpan="3" rows="auto" columns="*, *" class="actionRow">
+            <Label col="0" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="center" *ngIf="!personal" [text]="username" textWrap="true"></Label>
+            
             <StackLayout orientation="horizontal" col="0" horizontalAlignment="center" verticalAlignment="center" class="actionLabel first" (tap)="upload()" *ngIf="!loading && personal">
                 <Label text="&#xf093;" class="fontIcon actionIcon" textWrap="false" [ngClass]="{'uploaded': uploaded, 'failed': failed}"></Label>
                 <Label *ngIf="!uploaded && !failed" text=" Last opp" class="actionText" textWrap="false" verticalAlignment="center"></Label>
