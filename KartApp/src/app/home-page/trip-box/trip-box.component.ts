@@ -16,7 +16,7 @@ let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lør
   selector: 'ns-trip-box',
   templateUrl: './trip-box.component.html',
   styleUrls: ['./trip-box.component.css'],
-  providers: [TripService],
+  providers: [TripService, BackendService],
   moduleId: module.id,
 })
 export class TripBoxComponent implements OnInit, OnChanges {
