@@ -476,22 +476,26 @@ export class TripService {
     });
 
     console.log("Uploading trip");
-    this.backendService.uploadTrip(trip).subscribe((res) => {
-      console.log("Result: ");
-      console.dir(res);
-      if (<any>res.status == 201) {
-        let sett = this.settingsClass.getSetting(42);
-        sett.value.push(trip.id);
-        this.settingsClass.setSetting(sett);
-        console.log("Successfully uploaded trip");
-      } else {
-        globals.showError("Turen kunne ikke lastes opp");
-      }
-    }, (error) => {
-      console.log("Error: ");
-      console.dir(error);
-      globals.showError("Turen kunne ikke lastes opp: kode 100");
-    });
+    let autoUploadSetting = this.settingsClass.getSetting(6, true);
+    let token = this.settingsClass.getSetting(61, "").value;
+    if (autoUploadSetting.value && token != "") {
+      this.backendService.uploadTrip(trip).subscribe((res) => {
+        console.log("Result: ");
+        console.dir(res);
+        if (<any>res.status == 201) {
+          let sett = this.settingsClass.getSetting(42);
+          sett.value.push(trip.id);
+          this.settingsClass.setSetting(sett);
+          console.log("Successfully uploaded trip");
+        } else {
+          globals.showError("Turen kunne ikke lastes opp");
+        }
+      }, (error) => {
+        console.log("Error: ");
+        console.dir(error);
+        globals.showError("Turen kunne ikke lastes opp: kode 100");
+      });
+    }
 
     var infoFile = this.getTripFolder().getFile("Info.json");
     var info;
