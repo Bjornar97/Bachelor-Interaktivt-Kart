@@ -426,7 +426,7 @@ export class TripService {
       }
       markerIdSetting.value[trip.id] = markerIds;
       console.dir(markerIdSetting);
-      //this.settingsClass.setSetting(markerIdSetting);
+      this.settingsClass.setSetting(markerIdSetting);
       console.dir(markerIdSetting);
       globals.MainMap.addMarkers(markers);
     }
@@ -647,11 +647,14 @@ export class TripService {
   }
 
   bookmarkTrip(trip: Trip, tid: number, username: string){
+    console.log("Tid: " + tid);
+    console.log("username: " + username);
+    console.log();
     try {
       trip.id = tid;
       trip.username = username;
       let folder = this.getTripFolder();
-      let file = folder.getFile("savedTrips");
+      let file = folder.getFile("savedtrips.json");
       let object;
       try {
         console.log("Reading file");
@@ -662,18 +665,19 @@ export class TripService {
         object = {
           trips: []
         }
-        object.trips[tid] = trip;
+        object.trips.push(trip);
         file.writeTextSync(JSON.stringify(object));
         console.log("Written new to file");
         return true;
       }
-      if (object.trips[tid] != undefined){
+      if (object.trips.indexOf(trip) != -1){
         return true;
       } else {
         console.log("Adding to array");
-        object.trips[tid] = trip;
+        object.trips.push(trip);
         file.writeText(JSON.stringify(object));
         console.log("Added to array");
+        return true;
       }
     } catch (error) {
       console.log("Something went wrong: " + error);
@@ -696,7 +700,13 @@ export class TripService {
         file.writeText(JSON.stringify(object));
         return true;
       }
-      object.trips[tid] = undefined;
+      let bookmarkedTrips = this.getBookmarkedTrips();
+      bookmarkedTrips.forEach((trip, index) => {
+        if (trip.id == tid){
+          bookmarkedTrips[index] = undefined;
+        }
+      });
+      file.writeTextSync(JSON.stringify(bookmarkedTrips));
       return true;
     } catch (error) {
       console.log("Noe gikk galt: " + error);
@@ -707,7 +717,12 @@ export class TripService {
 
   getSavedTrip(tid) {
     let bookTrips = this.getBookmarkedTrips();
-    return bookTrips[tid];
+    bookTrips.forEach(trip => {
+      if (trip.id == tid) {
+        return trip;
+      }
+    });
+    return undefined;
   }
 
   saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){

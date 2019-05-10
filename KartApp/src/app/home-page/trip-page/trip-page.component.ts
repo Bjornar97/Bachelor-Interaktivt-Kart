@@ -120,7 +120,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
       this.marked = false;
       this.tripService.unbookmarkTrip(this.tripid);
     } else {
-      console.log("Bookmarking");
+      console.log("Bookmarking: " + this.tripid + ", " + this.trip.username);
       let success = this.tripService.bookmarkTrip(this.trip, this.tripid, this.trip.username);
       console.log("Success: " + success);
       if (success){
