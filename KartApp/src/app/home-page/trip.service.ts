@@ -415,18 +415,16 @@ export class TripService {
 
         lastWalk = currentWalk;
       });
-      let markerIdSetting = this.settingsClass.getSetting(32);
-      if (markerIdSetting == undefined){
-        markerIdSetting = {
-          id: 32,
-          name: "TripMarkerIds",
-          type: "markers",
-          value: []
-        }
-      }
+      let markerIdSetting = this.settingsClass.getSetting(32, []);
       markerIdSetting.value[trip.id] = markerIds;
+      console.log("Draw trip____________________________________________________________");
+      console.log("markerIds:");
+      console.dir(markerIds);
+      console.log("markerIdSetting:");
       console.dir(markerIdSetting);
-      this.settingsClass.setSetting(markerIdSetting);
+      console.log("_______________________________________________________________");
+      this.settingsClass.setSetting(markerIdSetting);  // Her skjer problemet
+      console.log("OK______________________________________________________________");
       console.dir(markerIdSetting);
       globals.MainMap.addMarkers(markers);
     }

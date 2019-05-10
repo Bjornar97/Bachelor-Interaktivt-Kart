@@ -1,5 +1,5 @@
-<ActivityIndicator *ngIf="loading" width="50" height="50" [busy]="loading" class="activity-indicator"></ActivityIndicator>
 <StackLayout>
+    <ActivityIndicator *ngIf="loading" width="50" height="50" [busy]="loading" class="activity-indicator"></ActivityIndicator>
     <GridLayout rows="*" columns="auto, *, auto" class="actionBar" (pan)="drawer.onPan($event)">
         <GridLayout col="0" rows="*" columns="auto, *" class="actionBarBackButton" (tap)="goBack()">
             <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
