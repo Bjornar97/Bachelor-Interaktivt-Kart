@@ -181,7 +181,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     if (!globals.getCheckboxList(this.trip.id) && !this.failed) {
-      this.tripService.unDrawTrip(this.trip.id);
+      this.tripService.unDrawTrip(this.trip.id, this.local, this.trip);
     }
     this.sub.unsubscribe();
     if (isAndroid) {
