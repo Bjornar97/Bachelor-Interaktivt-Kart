@@ -11,7 +11,7 @@
                     <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
                     <Label [text]="message" class="message"></Label>
                 <StackLayout class="input-field">
-                    <TextField #email hint="E-post:" (returnPress)="changeTextField(password)" keyboardType="email" class="linje-under"> </TextField>   
+                    <TextField #email hint="E-post eller brukernavn:" (returnPress)="changeTextField(password)" keyboardType="email" class="linje-under"> </TextField>   
                 </StackLayout>
                 <StackLayout class="input-field">
                     <TextField #password hint="Passord:" class="linje-under" (returnPress)="login(email.text,password.text)" secure="true"> </TextField>   

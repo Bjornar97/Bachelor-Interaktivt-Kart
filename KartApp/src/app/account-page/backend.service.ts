@@ -47,6 +47,23 @@ export class BackendService {
     return this.http.post(this.serverURL + "/v1/registration", data, {headers: options, observe: "response"});
   }
 
+  endrePassord(password){
+    let options=this.createRequestHeader();
+    let data = {
+      password: password,
+    }
+    return this.http.post(this.serverURL + "/v1/user/password", data, {headers: options, observe: "response"});
+  }
+
+  edit(phoneNumber,email){
+    let options=this.createRequestHeader();
+    let data = {
+      phone:phoneNumber,
+      email:email
+    }
+    return this.http.post(this.serverURL + "/v1/user/edit", data, {headers: options, observe: "response"});
+  }
+
   logOut(){
     let headers = this.createRequestHeader();
     return this.http.post(this.serverURL + "/v1/logout", undefined, {headers: headers, observe: "response"});
