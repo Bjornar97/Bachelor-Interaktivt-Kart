@@ -688,7 +688,7 @@ export class TripService {
   unbookmarkTrip(tid: number) {
     try {
       let folder = this.getTripFolder();
-      let file = folder.getFile("savedTrips");
+      let file = folder.getFile("savedTrips.json");
       let object;
       try {
         object = JSON.parse(file.readTextSync());
@@ -699,15 +699,16 @@ export class TripService {
         file.writeText(JSON.stringify(object));
         return true;
       }
-      let bookmarkedTrips = this.getBookmarkedTrips();
+      let bookmarkedTrips = object.trips;
       bookmarkedTrips.forEach((trip, index) => {
         if (trip != undefined){
           if (trip.id == tid){
-            bookmarkedTrips[index] = undefined;
+            bookmarkedTrips.splice(index, 1);
           }
         }
       });
-      file.writeTextSync(JSON.stringify(bookmarkedTrips));
+      object.trips = bookmarkedTrips;
+      file.writeTextSync(JSON.stringify(object));
       return true;
     } catch (error) {
       console.log("Noe gikk galt: " + error);
