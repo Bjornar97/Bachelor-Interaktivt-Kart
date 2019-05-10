@@ -10,6 +10,7 @@ import { MySharedTripsPageComponent } from "./mySharedTrips/mySharedTrips-page.c
 import { FriendsSharedTripsPageComponent } from "./friendsSharedTrips/friendsSharedTrips-page.component";
 import { AccountEditPageComponent } from "./accountEdit/accountEdit-page.component";
 import { AccountPageComponent } from "~/app/account-page/account-page.component";
+import { SavedTripsComponent } from "./saved-trips/saved-trips.component";
 
 
 
@@ -20,6 +21,7 @@ const routes: Routes = [
     { path: "friends",component:FriendsPageComponent },
     { path: "mySharedTrips", component:MySharedTripsPageComponent },
     { path: "friendsSharedTrips", component:FriendsSharedTripsPageComponent },
+    { path: "savedTrips", component: SavedTripsComponent },
     { path: "accountEdit", component: AccountEditPageComponent }
 ];
 

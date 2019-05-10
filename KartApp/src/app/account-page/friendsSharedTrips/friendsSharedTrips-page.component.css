@@ -1,0 +1,17 @@
+.actionBarTitle {
+    text-align: left;
+}
+
+.refresh {
+    padding-right: 10dp;
+    font-size: 20;
+    color: #008000;
+}
+
+.invisibleRefresh {
+    color: transparent;
+}
+
+.activity-indicator {
+    color: #008000;
+}

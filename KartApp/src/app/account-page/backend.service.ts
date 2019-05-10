@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { SettingsClass } from '../settings-page/settings';
 import * as globals from "../globals";
+import { Trip } from '../tracker';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,7 @@ export class BackendService {
   login(loginName, password){
     let options = this.createRequestOptions();
     let data = {
-      email: loginName,
+      loginName: loginName,
       password: password
     }
     return this.http.post(this.serverURL + "/v1/login", data, {headers: options, observe: "response"});
@@ -96,5 +97,25 @@ export class BackendService {
     let headers = this.createRequestHeader();
     let params = new HttpParams().set("user_name", name);
     return this.http.get(this.serverURL + "/v1/user/exists", {headers: headers, observe: "response", params: params});
+  }
+
+  uploadTrip(trip: Trip, isPublic = true){
+    let headers = this.createRequestHeader();
+    let data = {
+      trip: JSON.stringify(trip),
+      public: isPublic
+    }
+    return this.http.post(this.serverURL + "/v1/trip", data, {headers: headers, observe: "response"});
+  }
+
+  getTrip(tid: number) {
+    let headers = this.createRequestHeader();
+    let params = new HttpParams().set("tripid", tid.toString());
+    return this.http.get(this.serverURL + "/v1/trip", {headers: headers, params: params,observe: "response"});
+  }
+
+  getFriendsTrips() {
+    let headers = this.createRequestHeader();
+    return this.http.get(this.serverURL + "/v1/trip/friends", {headers: headers, observe: "response"});
   }
 }

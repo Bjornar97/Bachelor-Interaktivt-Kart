@@ -13,6 +13,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { MapboxMarker } from 'nativescript-mapbox';
 import { start } from 'tns-core-modules/application/application';
 import { SettingsClass } from '../settings-page/settings';
+import { BackendService } from '../account-page/backend.service';
 
 @Injectable({
   providedIn: AppModule
@@ -21,7 +22,7 @@ export class TripService {
 
   private settingsClass: SettingsClass;
 
-  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
+  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions, private backendService: BackendService) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
@@ -324,8 +325,11 @@ export class TripService {
    * 
    * @param id The Id of the trip
    */
-  drawTrip(id: number){
-    let trip = this.getTrip(id);
+  drawTrip(id: number, local = true, trip?: Trip){
+    if (local) {
+      trip = this.getTrip(id);
+    }
+    
     trip.walks.forEach((walk) => {
       console.log("Drawing line: " + walk.startTime);
       globals.MainMap.drawLine(walk.points, walk.startTime + 1, "#fff", 4);
@@ -365,6 +369,7 @@ export class TripService {
       console.log("Distance is above 50: " + trip.distanceMeters);
       let lastWalk;
       trip.walks.forEach((walk) => {
+        console.log("In a walk: ");
         let currentWalk = walk;
 
         if (lastWalk != undefined){
@@ -406,23 +411,16 @@ export class TripService {
           console.log("Making marker: " + lastWalk.stopTime);
           markerIds.push(lastWalk.stopTime);
         }
-        
-        let markerIdSetting = this.settingsClass.getSetting(32);
-        if (markerIdSetting == undefined){
-          markerIdSetting = {
-            id: 32,
-            name: "TripMarkerIds",
-            type: "markers",
-            value: []
-          }
-        }
-        markerIdSetting.value[trip.id] = markerIds;
-        this.settingsClass.setSetting(markerIdSetting);
-        console.dir(markerIdSetting);
 
         lastWalk = currentWalk;
       });
+      let markerIdSetting = this.settingsClass.getSetting(32, []);
 
+      markerIdSetting.value.push({
+        id: trip.id,
+        markers: markerIds
+      });
+      this.settingsClass.setSetting(markerIdSetting);
       globals.MainMap.addMarkers(markers);
     }
   }
@@ -432,8 +430,11 @@ export class TripService {
    * 
    * @param id The id of the Trip
    */
-  unDrawTrip(id: number){
-    let trip = this.getTrip(id);
+  unDrawTrip(id: number, local = true, trip?: Trip){
+    if (local) {
+      trip = this.getTrip(id);
+    }
+    
     let ids = [];
     trip.walks.forEach((walk) => {
       ids.push(walk.startTime);
@@ -442,9 +443,15 @@ export class TripService {
 
     globals.MainMap.removeLine(ids);
 
-    let markerIdsSetting = this.settingsClass.getSetting(32);
-    console.dir(markerIdsSetting);
-    globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
+    let markerIds: Array<any> = this.settingsClass.getSetting(32).value;
+    markerIds.forEach((tripMarkers) => {
+      if (tripMarkers != undefined){
+        if (tripMarkers.id == id){
+          globals.MainMap.removeMarkers(tripMarkers.markers);
+        }
+      }
+    });
+    
   }
 
   /**
@@ -468,12 +475,35 @@ export class TripService {
       var jsonTrip = JSON.stringify(trip);
     } catch (error) {
       console.log("An error occured while stringifying trip. " + error);
-      
     }
     
     file.writeTextSync(jsonTrip, (error) => {
       console.log("ERROR: tripService: Error while writing trip to file: " + error);
     });
+
+    // Uploading trip
+    console.log("Uploading trip");
+    let autoUploadSetting = this.settingsClass.getSetting(6, true);
+    let token = this.settingsClass.getSetting(61, "").value;
+    if (autoUploadSetting.value && token != "") {
+      this.backendService.uploadTrip(trip).subscribe((res) => {
+        console.log("Result: ");
+        console.dir(res);
+        if (<any>res.status == 201) {
+          let sett = this.settingsClass.getSetting(42);
+          sett.value.push(trip.id);
+          this.settingsClass.setSetting(sett);
+          console.log("Successfully uploaded trip");
+        } else {
+          globals.showError("Turen kunne ikke lastes opp");
+        }
+      }, (error) => {
+        console.log("Error: ");
+        console.dir(error);
+        globals.showError("Turen kunne ikke lastes opp, prøv igjen senere");
+      });
+    }
+
     var infoFile = this.getTripFolder().getFile("Info.json");
     var info;
     try {
@@ -500,13 +530,15 @@ export class TripService {
    * 
    * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
    */
-  getTripEvents(id): {
+  getTripEvents(id, local = true, trip?): {
       timestamp: number,
       type: string,
       value: any,
     }[] 
     {
-    var trip = this.getTrip(id);
+    if (local) {
+      trip = this.getTrip(id);
+    }
     var events = [];
 
     if (trip != undefined){
@@ -595,6 +627,109 @@ export class TripService {
     }
   }
 
+  getBookmarkedTrips(): Trip[] {
+    try {
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips.json");
+      let object;
+      try {
+        object = JSON.parse(file.readTextSync());
+      } catch {
+        object = {
+          trips: []
+        }
+      }
+      return object.trips;
+    } catch (error) {
+      console.log("Noe gikk galt: " + error)
+    }
+  }
+
+  bookmarkTrip(trip: Trip, tid: number, username: string){
+    console.log("Tid: " + tid);
+    console.log("username: " + username);
+    console.log();
+    try {
+      trip.id = tid;
+      trip.username = username;
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips.json");
+      let object;
+      try {
+        console.log("Reading file");
+        object = JSON.parse(file.readTextSync());
+        console.log("Finished reading file");
+      } catch (error) {
+        console.log("Failed reading, making new: " + error);
+        object = {
+          trips: []
+        }
+        object.trips.push(trip);
+        file.writeTextSync(JSON.stringify(object));
+        console.log("Written new to file");
+        return true;
+      }
+      if (object.trips.indexOf(trip) != -1){
+        return true;
+      } else {
+        console.log("Adding to array");
+        object.trips.push(trip);
+        file.writeText(JSON.stringify(object));
+        console.log("Added to array");
+        return true;
+      }
+    } catch (error) {
+      console.log("Something went wrong: " + error);
+      globals.showError("Noe gikk galt under lagring av tur");
+      return false;
+    }
+  }
+
+  unbookmarkTrip(tid: number) {
+    try {
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips.json");
+      let object;
+      try {
+        object = JSON.parse(file.readTextSync());
+      } catch (error) {
+        object = {
+          trips: []
+        }
+        file.writeText(JSON.stringify(object));
+        return true;
+      }
+      let bookmarkedTrips = object.trips;
+      bookmarkedTrips.forEach((trip, index) => {
+        if (trip != undefined){
+          if (trip.id == tid){
+            bookmarkedTrips.splice(index, 1);
+          }
+        }
+      });
+      object.trips = bookmarkedTrips;
+      file.writeTextSync(JSON.stringify(object));
+      return true;
+    } catch (error) {
+      console.log("Noe gikk galt: " + error);
+      globals.showError("Noe gikk galt under fjerning av lagret tur");
+      return false;
+    }
+  }
+
+  getSavedTrip(tid) {
+    let bookTrips = this.getBookmarkedTrips();
+    let returnedTrip = undefined;
+    bookTrips.forEach(trip => {
+      if (trip != undefined){
+        if (trip.id == tid) {
+          returnedTrip = trip;
+          return;
+        }
+      }
+    });
+    return returnedTrip;
+  }
 
   saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){
     return new Promise((resolve, reject) => {
