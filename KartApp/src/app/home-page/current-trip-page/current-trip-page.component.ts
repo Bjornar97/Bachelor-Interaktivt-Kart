@@ -275,6 +275,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     globals.setCurrentHomePage("home/currentTrip");
+    globals.setTripPrevious("home");
   }
 
   ngOnDestroy() {

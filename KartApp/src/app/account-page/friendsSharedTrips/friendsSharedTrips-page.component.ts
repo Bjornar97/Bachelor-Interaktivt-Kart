@@ -4,6 +4,8 @@ import { Trip } from '~/app/tracker';
 import * as globals from "~/app/globals";
 import { Page } from 'tns-core-modules/ui/page/page';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { isAndroid } from "tns-core-modules/platform";
+import * as application from 'tns-core-modules/application';
 
 
 @Component({
@@ -66,6 +68,13 @@ export class FriendsSharedTripsPageComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (isAndroid){
+          application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+            args.cancel = true;
+            this.goBack();
+          });
+        }
         this.getTrips();
+        globals.setTripPrevious("account/friendsSharedTrips");
     }
 }

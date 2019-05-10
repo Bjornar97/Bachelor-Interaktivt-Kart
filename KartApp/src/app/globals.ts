@@ -72,6 +72,17 @@ export function setCurrentHomePage(currentHomePage: string) {
     CurrentHomePage = currentHomePage;
 }
 
+// Remembering previous page from trip page
+var TripPrevious: string = "home";
+
+export function getTripPrevious() {
+    return TripPrevious;
+}
+
+export function setTripPrevious(tripPrevious: string) {
+    TripPrevious = tripPrevious;
+}
+
 // Error list
 var errorList: string[] = [];
 

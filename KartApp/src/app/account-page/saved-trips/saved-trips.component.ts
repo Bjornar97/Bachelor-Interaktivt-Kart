@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { TripService } from '~/app/home-page/trip.service';
 import { Trip } from '~/app/tracker';
-import { Page, isAndroid } from 'tns-core-modules/ui/page/page';
+import { Page } from 'tns-core-modules/ui/page/page';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as application from 'tns-core-modules/application';
 import { DrawerClass } from '~/app/drawer';
 import * as globals from '~/app/globals';
+import { isAndroid } from "tns-core-modules/platform";
 
 @Component({
   selector: 'ns-saved-trips',
@@ -51,6 +52,7 @@ export class SavedTripsComponent implements OnInit {
         this.goBack();
       });
     }
+    globals.setTripPrevious("account/savedTrips");
     this.getTrips();
   }
 }
