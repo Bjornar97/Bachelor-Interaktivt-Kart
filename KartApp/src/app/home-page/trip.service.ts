@@ -426,7 +426,7 @@ export class TripService {
       }
       markerIdSetting.value[trip.id] = markerIds;
       console.dir(markerIdSetting);
-      this.settingsClass.setSetting(markerIdSetting);
+      //this.settingsClass.setSetting(markerIdSetting);
       console.dir(markerIdSetting);
       globals.MainMap.addMarkers(markers);
     }

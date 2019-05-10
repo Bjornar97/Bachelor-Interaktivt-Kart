@@ -50,6 +50,9 @@ export class TripBoxComponent implements OnInit, OnChanges {
 
 
   navigateToTrip() {
+    if (!booleanConverter(this.personal)) {
+      globals.setCurrentTrip(this.trip);
+    }
     console.log("Navigating to trip");
     this.routerExt.navigate(["home", "trip", this.id, this.personal], {
       animated: true,
