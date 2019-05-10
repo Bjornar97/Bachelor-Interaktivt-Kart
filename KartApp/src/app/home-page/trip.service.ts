@@ -425,6 +425,7 @@ export class TripService {
         }
       }
       markerIdSetting.value[trip.id] = markerIds;
+      console.dir(markerIdSetting);
       this.settingsClass.setSetting(markerIdSetting);
       console.dir(markerIdSetting);
       globals.MainMap.addMarkers(markers);
@@ -436,8 +437,11 @@ export class TripService {
    * 
    * @param id The id of the Trip
    */
-  unDrawTrip(id: number){
-    let trip = this.getTrip(id);
+  unDrawTrip(id: number, local = true, trip?: Trip){
+    if (local) {
+      trip = this.getTrip(id);
+    }
+    
     let ids = [];
     trip.walks.forEach((walk) => {
       ids.push(walk.startTime);
