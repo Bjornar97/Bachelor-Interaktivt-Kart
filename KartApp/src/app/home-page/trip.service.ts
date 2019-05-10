@@ -370,7 +370,6 @@ export class TripService {
       let lastWalk;
       trip.walks.forEach((walk) => {
         console.log("In a walk: ");
-        console.dir(walk);
         let currentWalk = walk;
 
         if (lastWalk != undefined){
@@ -422,7 +421,6 @@ export class TripService {
         markers: markerIds
       });
       this.settingsClass.setSetting(markerIdSetting);
-      console.dir(markerIdSetting);
       globals.MainMap.addMarkers(markers);
     }
   }
@@ -446,7 +444,6 @@ export class TripService {
     globals.MainMap.removeLine(ids);
 
     let markerIds: Array<any> = this.settingsClass.getSetting(32).value;
-    console.dir(markerIds);
     markerIds.forEach((tripMarkers) => {
       if (tripMarkers != undefined){
         if (tripMarkers.id == id){
@@ -633,7 +630,7 @@ export class TripService {
   getBookmarkedTrips(): Trip[] {
     try {
       let folder = this.getTripFolder();
-      let file = folder.getFile("savedTrips");
+      let file = folder.getFile("savedTrips.json");
       let object;
       try {
         object = JSON.parse(file.readTextSync());
@@ -704,8 +701,10 @@ export class TripService {
       }
       let bookmarkedTrips = this.getBookmarkedTrips();
       bookmarkedTrips.forEach((trip, index) => {
-        if (trip.id == tid){
-          bookmarkedTrips[index] = undefined;
+        if (trip != undefined){
+          if (trip.id == tid){
+            bookmarkedTrips[index] = undefined;
+          }
         }
       });
       file.writeTextSync(JSON.stringify(bookmarkedTrips));
@@ -720,8 +719,10 @@ export class TripService {
   getSavedTrip(tid) {
     let bookTrips = this.getBookmarkedTrips();
     bookTrips.forEach(trip => {
-      if (trip.id == tid) {
-        return trip;
+      if (trip != undefined){
+        if (trip.id == tid) {
+          return trip;
+        }
       }
     });
     return undefined;
