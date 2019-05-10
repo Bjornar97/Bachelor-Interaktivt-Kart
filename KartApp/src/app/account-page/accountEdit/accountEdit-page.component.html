@@ -16,23 +16,20 @@
             <Label [text]="vellyket" height="30" verticalAlignment="center" class="{{ checkColor ? 'redColor' : 'defaultColor'}}"></Label>
             <Label [text]="username"></Label>
                 <StackLayout class="input-field">
-                    <TextField #brukernavn hint="Brukernavn:" class="linje-under"> </TextField>   
-                </StackLayout>
-                <StackLayout class="input-field">
-                    <TextField #telefonNr hint="Telefon Nummer:" class="linje-under"> </TextField>   
+                    <TextField #telefonNr hint="Telefonnummer:" class="linje-under"> </TextField>   
                 </StackLayout>
                 <StackLayout class="input-field">
                     <TextField #email hint="E-post:" class="linje-under"> </TextField>   
                 </StackLayout>
                 <StackLayout>
-                    <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Lagre endringer" (tap)="edit(brukernavn.text,telefonNr.text,email.text)" ></Button>
+                    <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Lagre endringer" (tap)="edit(telefonNr.text,email.text)" ></Button>
                 </StackLayout>
                 
                 
                 <StackLayout>
                     <GridLayout #newPasswordBox columns="auto,*, auto" rows="*" ios:height="60">
                         <Label col="1" row="0" text="Endre passord" class="KontoInn" textAlignment="left" horizontalAlignment="left" verticalAlignment="top" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
-                        <Label col="0" row="0"  text="&#xf023;" color="#008000" fontSize="25" class="fas fa-lock" stretch="aspectFill" horizontalAlignment="center" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
+                        <Label col="0" row="0"  text="&#xf023;" color="#008000" fontSize="25" class="fas fa-lock" stretch="aspectFill" horizontalAlignment="center" verticalAlignment="top" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
                         <Label col="2" row="0" #expandNewPasswordArrow text="&#xf078;" verticalAlignment="top" horizontalAlignment="right"  class="fas downArrow"  color="#008000" stretch="aspectFill" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
                     </GridLayout>
                 </StackLayout>

@@ -30,6 +30,7 @@ export class AccountPageComponent implements OnInit{
     }
 
     loadUsername() {
+        this.loading = true;
         let token = this.settingsClass.getSetting(61);
         if (token.value == undefined){
             console.log("Token is undefined");
@@ -68,6 +69,7 @@ export class AccountPageComponent implements OnInit{
                     }
                 }, 10000);
             } catch (error) {
+                this.loading = false;
                 console.log("Error while getting username: " + error);
                 this.routerExtensions.navigate(["account", "login"], {
                     animated: true,

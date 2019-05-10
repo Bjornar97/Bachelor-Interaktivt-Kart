@@ -23,15 +23,15 @@
                     <StackLayout>
                     <ContentView shadow elevation="2" class="container">
                         <GridLayout columns="*,*" rows="*,*" class="innholdContainer" [nsRouterLink]="['savedTrips']" pageTransition="slideLeft">
-                            <Label col="0" row="0" text="Dine delte turer" class="MinLabel"></Label>
+                            <!-- <Label col="0" row="0" text="Dine delte turer" class="MinLabel"></Label> -->
                             <Label col="0" row="1" text="Lagrede turer" class="MinLabel"></Label>
                         </GridLayout>
                     </ContentView>
                     </StackLayout>
                     <StackLayout>
                     <GridLayout columns="auto,*" rows="*,*" class="innholdContainer">
-                        <Label col="1" row="0" text="Rediger konto" textAlignment="left" verticalAlignment="center" class="KontoInn" [nsRouterLink]="['/account/accountEdit']"></Label> 
-                        <Label col="0" row="0" text="&#xf044;" class="icon" stretch="aspectFill" horizontalAlignment="center" [nsRouterLink]="['/account/accountEdit']"></Label>     
+                        <Label col="1" row="0" text="Rediger konto" textAlignment="left" verticalAlignment="center" class="KontoInn" [nsRouterLink]="['/account/accountEdit']" pageTransition="slideLeft"></Label> 
+                        <Label col="0" row="0" text="&#xf044;" class="icon" stretch="aspectFill" horizontalAlignment="center" [nsRouterLink]="['/account/accountEdit']" pageTransition="slideLeft"></Label>     
                     </GridLayout>
                     </StackLayout>
                      <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Logg Ut" (tap)=logOut()></Button>
