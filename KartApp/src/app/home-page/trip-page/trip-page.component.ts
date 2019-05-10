@@ -48,7 +48,7 @@ export class TripPageComponent implements OnInit, OnDestroy {
 
   private goBack(){
     if (!this.failed && !globals.getCheckboxList(this.trip.id)) {
-      this.tripService.unDrawTrip(this.tripid);
+      this.tripService.unDrawTrip(this.tripid, this.local, this.trip);
     }
     if (this.local) {
       this.routerExtensions.navigate(["home"], {
@@ -165,7 +165,8 @@ export class TripPageComponent implements OnInit, OnDestroy {
         this.setupTrip();
       } else {
         console.log("Getting trip from backend");
-        this.loadTrip();
+        this.trip = globals.CurrentTrip;
+        this.setupTrip();
         this.marked = false;
       }
       

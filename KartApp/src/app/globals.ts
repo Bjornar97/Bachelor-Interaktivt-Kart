@@ -1,8 +1,9 @@
 import { MapComponent } from "./map/map.component";
-import { Tracker } from "./tracker";
+import { Tracker, Trip } from "./tracker";
 import { Setting, SettingsClass } from "./settings-page/settings";
 import { RouterExtensions } from "nativescript-angular/router";
 import { DrawerClass } from "~/app/drawer";
+import { CurrentTripPageComponent } from "./home-page/current-trip-page/current-trip-page.component";
 
 //The main map of the application.
 export var MainMap: MapComponent;
@@ -141,4 +142,11 @@ export function showError(errorString: string) {
 
   export function setCheckboxList(id: number, value: boolean){
     CheckboxList[id] = value;
+  }
+
+  // Current friends-trip
+  export var CurrentTrip: Trip;
+
+  export function setCurrentTrip(currentTrip) {
+      CurrentTrip = currentTrip;
   }
