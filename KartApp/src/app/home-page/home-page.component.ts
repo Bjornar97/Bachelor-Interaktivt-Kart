@@ -96,6 +96,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
         var tripsUnsorted=this.tripService.getTrips();
         this.trips=this.tripService.sortTrips(tripsUnsorted);
         globals.setCurrentHomePage("home");
+        globals.setTripPrevious("home");
     }
 
     ngOnDestroy() {

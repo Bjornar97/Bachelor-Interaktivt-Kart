@@ -1,9 +1,12 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { BackendService } from '../backend.service';
 import { Trip } from '~/app/tracker';
 import * as globals from "~/app/globals";
 import { Page } from 'tns-core-modules/ui/page/page';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { isAndroid } from "tns-core-modules/platform";
+import * as application from 'tns-core-modules/application';
+import { GC } from 'tns-core-modules/utils/utils';
 
 
 @Component({
@@ -13,7 +16,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
     providers: [BackendService],
     moduleId: module.id,
   })
-export class FriendsSharedTripsPageComponent implements OnInit, AfterViewInit {
+export class FriendsSharedTripsPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private friendsTrips: Trip[] = [];
 
@@ -66,10 +69,21 @@ export class FriendsSharedTripsPageComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        
+        if (isAndroid){
+            application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+              args.cancel = true;
+              this.goBack();
+            });
+          }
+          globals.setTripPrevious("account/friendsSharedTrips");
     }
 
     ngAfterViewInit() {
         this.getTrips();
     }
+
+    ngOnDestroy() {
+        GC();
+    }
+    
 }

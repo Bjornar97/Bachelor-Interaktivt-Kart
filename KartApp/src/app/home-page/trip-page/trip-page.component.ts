@@ -50,17 +50,13 @@ export class TripPageComponent implements OnInit, OnDestroy {
     if (!this.failed && !globals.getCheckboxList(this.trip.id)) {
       this.tripService.unDrawTrip(this.tripid, this.local, this.trip);
     }
-    if (this.local) {
-      this.routerExtensions.navigate(["home"], {
-        animated: true,
-        clearHistory: true,
-        transition: {
-          name: "slideRight"
-        }
-      });
-    } else {
-      this.routerExtensions.backToPreviousPage();
-    }
+    this.routerExtensions.navigate([globals.getTripPrevious()], {
+      animated: true,
+      clearHistory: true,
+      transition: {
+        name: "slideRight"
+      }
+    });
   }
 
   private totalTimeString: string;
