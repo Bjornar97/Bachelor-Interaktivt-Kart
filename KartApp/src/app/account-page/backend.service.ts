@@ -62,12 +62,10 @@ export class BackendService {
 
   private createRequestHeader() {
     let token = this.settingsClass.getSetting(61).value;
-    console.log("Token: " + token);
     let headers = new HttpHeaders({
         "Authorization": "Bearer " + token,
         "Content-Type": "application/json",
     });
-    console.log("AuthHeader: " + headers.get("Authorization"));
     return headers;
   }
 
@@ -104,9 +102,20 @@ export class BackendService {
   uploadTrip(trip: Trip, isPublic = true){
     let headers = this.createRequestHeader();
     let data = {
-      trip: trip,
+      trip: JSON.stringify(trip),
       public: isPublic
     }
     return this.http.post(this.serverURL + "/v1/trip", data, {headers: headers, observe: "response"});
+  }
+
+  getTrip(tid: number) {
+    let headers = this.createRequestHeader();
+    let params = new HttpParams().set("tripid", tid.toString());
+    return this.http.get(this.serverURL + "/v1/trip", {headers: headers, params: params,observe: "response"});
+  }
+
+  getFriendsTrips() {
+    let headers = this.createRequestHeader();
+    return this.http.get(this.serverURL + "/v1/trip/friends", {headers: headers, observe: "response"});
   }
 }

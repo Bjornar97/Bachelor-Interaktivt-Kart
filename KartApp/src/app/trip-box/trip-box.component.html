@@ -1,9 +1,9 @@
 <ContentView #Box class="outerBox" shadow elevation="2">
     <GridLayout class="box" rows="*, *, *" columns="auto, *, *">
-        <CheckBox col="0" rowSpan="2" class="checkBox" fontSize="25" verticalAlignment="center" fillColor="#008000" [checked]="checked" (checkedChange)="toggleCheck()"></CheckBox>
-        <Label col="1" row="0" class="boxLabel" [text]="startTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
-        <Label col="1" row="1" class="boxLabel" [text]="totalTimeString" textWrap="true" [nsRouterLink]="['./trip', trip.id]" pageTransition="slideLeft"></Label>
-        <StackLayout col="2" row="1">
+        <CheckBox col="0" rowSpan="2" class="checkBox" fontSize="25" fillColor="#008000" [checked]="checked" (checkedChange)="toggleCheck()"></CheckBox>
+        <Label col="1" row="0" class="boxLabel time" [text]="startTimeString" textWrap="true" (tap)="navigateToTrip()"></Label>
+        <Label col="1" row="1" class="boxLabel" [text]="totalTimeString" textWrap="true" (tap)="navigateToTrip()"></Label>
+        <StackLayout col="2" row="1" (tap)="navigateToTrip()">
             <Label text="" textWrap="true" class="boxLabel">
                 <FormattedString>
                     <Span text="Distanse: "></Span>
@@ -14,7 +14,7 @@
         </StackLayout>
         
         <GridLayout row="2" colSpan="3" rows="auto" columns="*, *" class="actionRow">
-            <Label col="0" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="center" *ngIf="!personal" [text]="username" textWrap="true"></Label>
+            <Label col="0" row="0" colSpan="2" horizontalAlignment="center" verticalAlignment="center" *ngIf="!personal" [text]="username" class="username" textWrap="true"></Label>
             
             <StackLayout orientation="horizontal" col="0" horizontalAlignment="center" verticalAlignment="center" class="actionLabel first" (tap)="upload()" *ngIf="!loading && personal">
                 <Label text="&#xf093;" class="fontIcon actionIcon" textWrap="false" [ngClass]="{'uploaded': uploaded, 'failed': failed}"></Label>

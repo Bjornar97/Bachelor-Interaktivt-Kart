@@ -5,8 +5,15 @@
         <label col="1" [text]="backButtonText" verticalAlignment="center" class="actionBarBackButtonText"></label>
     </GridLayout>
     <label col="1" class="actionBarTitle" [text]="pageTitle"></label>
+    <Label col="2" *ngIf="!local && !marked" text="&#xf02e;" class="far bookmark" (tap)="bookmark()" textWrap="true"></Label>
+    <Label col="2" *ngIf="!local && marked" text="&#xf02e;" class="bookmark" (tap)="bookmark()" textWrap="true"></Label>
+    
 </GridLayout>
-<ScrollView>
+<ActivityIndicator *ngIf="loading" width="50" height="50" [busy]="loading" class="activity-indicator"></ActivityIndicator>
+<Label *ngIf="failed" text="Kunne ikke laste tur akkurat nå" textWrap="true" class="failedText"></Label>
+<Button *ngIf="failed" text="Prøv igjen" (tap)="loadTrip()"></Button>
+
+<ScrollView *ngIf="!loading && !failed" height="2000">
     <StackLayout>
         <ContentView class="container" shadow elevation="2" class="container">
             <GridLayout rows="*, *, *, *" columns="*, *" class="innholdContainer">
@@ -45,8 +52,7 @@
             </GridLayout>
     
         </StackLayout> 
-         <!--Tur knappen fungere ikke enda-->
-        <Button text="Gå til tur" class="btn btn-primary btn-rounded-sm" id="button"></Button>
+        <Button text="Gå til tur" (tap)="goToTrip()" class="btn btn-primary btn-rounded-sm" id="button"></Button>
     </StackLayout>
 </ScrollView>
 

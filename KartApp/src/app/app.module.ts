@@ -26,7 +26,7 @@ import { HttpClientModule } from "@angular/common/http";
     declarations: [
         AppComponent,
         MapComponent,
-        ErrorMessageComponent
+        ErrorMessageComponent,
     ],
     schemas: [
         NO_ERRORS_SCHEMA

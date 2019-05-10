@@ -6,8 +6,11 @@ import { LoginPageComponent } from "./login-page/login-page.component";
 import { AccountPageRoutingModule } from "./account-page-routing.module";
 import { RegisterPageComponent } from "./register-page/register-page.component";
 import { FriendsPageComponent } from "./friends-page/friends-page.component";
+import { TripBoxModule } from "../trip-box/trip-box.module";
 
 import { NgShadowModule } from 'nativescript-ng-shadow';
+import { FriendsSharedTripsPageComponent } from './friendsSharedTrips/friendsSharedTrips-page.component';
+import { SavedTripsComponent } from './saved-trips/saved-trips.component';
 
 
 @NgModule({
@@ -15,13 +18,16 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     LoginPageComponent,
     RegisterPageComponent,
     AccountPageComponent,
-    FriendsPageComponent
+    FriendsPageComponent,
+    FriendsSharedTripsPageComponent,
+    SavedTripsComponent
   ],
   imports: [
     NativeScriptCommonModule,
     AccountPageRoutingModule,
     NativeScriptHttpClientModule,
-    NgShadowModule
+    NgShadowModule,
+    TripBoxModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

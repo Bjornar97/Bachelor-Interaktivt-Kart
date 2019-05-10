@@ -3,23 +3,22 @@ import { NativeScriptCommonModule } from "nativescript-angular/common";
 
 import { HomeRoutingModule } from "./home-page-routing.module";
 import { HomePageComponent } from "./home-page.component";
-import { TripBoxComponent } from './trip-box/trip-box.component';
 import { TripPageComponent } from './trip-page/trip-page.component';
 import { CurrentTripPageComponent } from './current-trip-page/current-trip-page.component';
 import { NgShadowModule } from 'nativescript-ng-shadow';
 import { TNSCheckBoxModule } from "nativescript-checkbox/angular";
-
+import { TripBoxModule } from "../trip-box/trip-box.module";
 
 @NgModule({
     imports: [
         NativeScriptCommonModule,
         HomeRoutingModule,
         NgShadowModule,
-        TNSCheckBoxModule
+        TNSCheckBoxModule,
+        TripBoxModule
     ],
     declarations: [
         HomePageComponent,
-        TripBoxComponent,
         TripPageComponent,
         CurrentTripPageComponent
     ],

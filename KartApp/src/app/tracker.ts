@@ -7,6 +7,7 @@ import * as globals from "~/app/globals";
 
 export type Trip = {
     id: number,
+    username?: string,
     startTime: number,
     stopTime: number,
     startPoint?: LocationObject,

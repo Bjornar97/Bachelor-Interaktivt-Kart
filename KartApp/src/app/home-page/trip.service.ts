@@ -325,8 +325,11 @@ export class TripService {
    * 
    * @param id The Id of the trip
    */
-  drawTrip(id: number){
-    let trip = this.getTrip(id);
+  drawTrip(id: number, local = true, trip?: Trip){
+    if (local) {
+      trip = this.getTrip(id);
+    }
+    
     trip.walks.forEach((walk) => {
       console.log("Drawing line: " + walk.startTime);
       globals.MainMap.drawLine(walk.points, walk.startTime + 1, "#fff", 4);
@@ -366,6 +369,8 @@ export class TripService {
       console.log("Distance is above 50: " + trip.distanceMeters);
       let lastWalk;
       trip.walks.forEach((walk) => {
+        console.log("In a walk: ");
+        console.dir(walk);
         let currentWalk = walk;
 
         if (lastWalk != undefined){
@@ -407,23 +412,21 @@ export class TripService {
           console.log("Making marker: " + lastWalk.stopTime);
           markerIds.push(lastWalk.stopTime);
         }
-        
-        let markerIdSetting = this.settingsClass.getSetting(32);
-        if (markerIdSetting == undefined){
-          markerIdSetting = {
-            id: 32,
-            name: "TripMarkerIds",
-            type: "markers",
-            value: []
-          }
-        }
-        markerIdSetting.value[trip.id] = markerIds;
-        this.settingsClass.setSetting(markerIdSetting);
-        console.dir(markerIdSetting);
 
         lastWalk = currentWalk;
       });
-
+      let markerIdSetting = this.settingsClass.getSetting(32);
+      if (markerIdSetting == undefined){
+        markerIdSetting = {
+          id: 32,
+          name: "TripMarkerIds",
+          type: "markers",
+          value: []
+        }
+      }
+      markerIdSetting.value[trip.id] = markerIds;
+      this.settingsClass.setSetting(markerIdSetting);
+      console.dir(markerIdSetting);
       globals.MainMap.addMarkers(markers);
     }
   }
@@ -475,6 +478,7 @@ export class TripService {
       console.log("ERROR: tripService: Error while writing trip to file: " + error);
     });
 
+    // Uploading trip
     console.log("Uploading trip");
     let autoUploadSetting = this.settingsClass.getSetting(6, true);
     let token = this.settingsClass.getSetting(61, "").value;
@@ -493,7 +497,7 @@ export class TripService {
       }, (error) => {
         console.log("Error: ");
         console.dir(error);
-        globals.showError("Turen kunne ikke lastes opp: kode 100");
+        globals.showError("Turen kunne ikke lastes opp, prøv igjen senere");
       });
     }
 
@@ -523,13 +527,15 @@ export class TripService {
    * 
    * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
    */
-  getTripEvents(id): {
+  getTripEvents(id, local = true, trip?): {
       timestamp: number,
       type: string,
       value: any,
     }[] 
     {
-    var trip = this.getTrip(id);
+    if (local) {
+      trip = this.getTrip(id);
+    }
     var events = [];
 
     if (trip != undefined){
@@ -618,6 +624,87 @@ export class TripService {
     }
   }
 
+  getBookmarkedTrips(): Trip[] {
+    try {
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips");
+      let object;
+      try {
+        object = JSON.parse(file.readTextSync());
+      } catch {
+        object = {
+          trips: []
+        }
+      }
+      return object.trips;
+    } catch (error) {
+      console.log("Noe gikk galt: " + error)
+    }
+  }
+
+  bookmarkTrip(trip: Trip, tid: number, username: string){
+    try {
+      trip.id = tid;
+      trip.username = username;
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips");
+      let object;
+      try {
+        console.log("Reading file");
+        object = JSON.parse(file.readTextSync());
+        console.log("Finished reading file");
+      } catch (error) {
+        console.log("Failed reading, making new: " + error);
+        object = {
+          trips: []
+        }
+        object.trips[tid] = trip;
+        file.writeTextSync(JSON.stringify(object));
+        console.log("Written new to file");
+        return true;
+      }
+      if (object.trips[tid] != undefined){
+        return true;
+      } else {
+        console.log("Adding to array");
+        object.trips[tid] = trip;
+        file.writeText(JSON.stringify(object));
+        console.log("Added to array");
+      }
+    } catch (error) {
+      console.log("Something went wrong: " + error);
+      globals.showError("Noe gikk galt under lagring av tur");
+      return false;
+    }
+  }
+
+  unbookmarkTrip(tid: number) {
+    try {
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips");
+      let object;
+      try {
+        object = JSON.parse(file.readTextSync());
+      } catch (error) {
+        object = {
+          trips: []
+        }
+        file.writeText(JSON.stringify(object));
+        return true;
+      }
+      object.trips[tid] = undefined;
+      return true;
+    } catch (error) {
+      console.log("Noe gikk galt: " + error);
+      globals.showError("Noe gikk galt under fjerning av lagret tur");
+      return false;
+    }
+  }
+
+  getSavedTrip(tid) {
+    let bookTrips = this.getBookmarkedTrips();
+    return bookTrips[tid];
+  }
 
   saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){
     return new Promise((resolve, reject) => {

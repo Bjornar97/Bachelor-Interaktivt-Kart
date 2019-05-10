@@ -1,0 +1,9 @@
+.actionBarTitle {
+    text-align: left;
+}
+
+.refresh {
+    padding-right: 10dp;
+    font-size: 20;
+    color: #008000;
+}

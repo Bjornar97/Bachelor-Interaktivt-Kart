@@ -1,0 +1,16 @@
+<StackLayout>
+    <GridLayout rows="*" columns="auto, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+        <GridLayout col="0" rows="*" columns="auto, *" class="actionBarBackButton" (tap)="goBack()">
+            <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
+            <label col="1" text="Konto" verticalAlignment="center" class="actionBarBackButtonText"></label>
+        </GridLayout>
+        <label col="1" class="actionBarTitle" horizontalAlignment="center" text="Lagrede turer"></label>
+    </GridLayout>
+
+    <ScrollView height="2000">
+        <Label *ngIf="saveddTrips.length == 0" text="Det finnes ingenting her enda, du kan lagre en tur ved å trykke på bokmerkesymbolet oppe til høyre på en av vennene dine sin tur" textWrap="true"></Label>
+        <StackLayout *ngFor="let trip of savedTrips">
+            <ns-trip-box [id]="trip.id" personal="false" [inputTrip]="trip" [username]="trip.username"></ns-trip-box>
+        </StackLayout>
+    </ScrollView>
+</StackLayout>
