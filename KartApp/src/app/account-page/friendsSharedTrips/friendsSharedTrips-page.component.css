@@ -7,3 +7,7 @@
     font-size: 20;
     color: #008000;
 }
+
+.invisibleRefresh {
+    color: transparent;
+}
