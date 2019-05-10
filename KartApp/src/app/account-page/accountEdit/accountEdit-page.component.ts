@@ -7,6 +7,9 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { SettingsClass } from '../../settings-page/settings';
 import { Label } from 'tns-core-modules/ui/label/label';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
+import { isIOS, isAndroid } from "tns-core-modules/platform";
+import * as frame from "tns-core-modules/ui/frame";
+import * as utils from "tns-core-modules/utils/utils";
 
 @Component({
     moduleId: module.id,
@@ -18,10 +21,9 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout'
 export class AccountEditPageComponent  {
     private drawer: DrawerClass;
     private settingsClass: SettingsClass;
-    private message: string;
     private newPasswordExpanded = false;
     private securePassword= true;
-    private vellyket: string;
+    private resultMessage: string;
     private checkColor=true;
 
     constructor(private routerExtensions: RouterExtensions,private page: Page, private backendService: BackendService) {
@@ -33,48 +35,50 @@ export class AccountEditPageComponent  {
 
 
     edit(phoneNumber,email){
+        this.resultMessage = "";
         console.log("email: " + email + " phoneNumber: " + phoneNumber );
         this.backendService.edit(phoneNumber,email)
         .subscribe((result) => {
             let tokenSetting = this.settingsClass.getSetting(61);
         if (<any>result.status == 201){
-            globals.showError("Bruker ble endret.");
+            this.resultMessage = "Bruker ble endret";
+            this.checkColor=false;
             console.dir(result); 
         }else {
-            this.message = "Noe gikk galt. Prøv igjen";
-            globals.showError("Noe gikk galt. Prøv igjen.");
+            this.resultMessage = "Noe gikk galt. Prøv igjen";
+            this.checkColor=true;
         }
         });
     }
     
+    dismissSoftKeybaord(){
+        if (isIOS) {
+            frame.topmost().nativeView.endEditing(true);
+        }
+        if (isAndroid) {
+            utils.ad.dismissSoftInput();
+        }
+    }
+    
     endrePassord(password, password2){
+        this.resultMessage = "";
         console.log("Pass1: " + password + ", pass2: " + password2)
         if (password != password2){
             console.log("Ikke like")
-            this.vellyket="Passordene skal være like!"
+            this.resultMessage="Passordene skal være like!"
             this.checkColor=true;
             console.log("password: " +password2);
         }else if(password == password2){
             this.backendService.endrePassord(password)
             .subscribe((result) => {
                 console.dir(result);
-                let tokenSetting = this.settingsClass.getSetting(61);
-                    if (tokenSetting == undefined){
-                        tokenSetting = {
-                            id: 61,
-                            name: "tokenSetting",
-                            type: "token",
-                            value: undefined
-                        }
-                    }
-                    else if (<any>result.status == 201) {
-                        this.message = "Endring av passord var vellyket!";
-                        this.checkColor=false;
-                    }
-            console.dir(result);
-            tokenSetting.value = (<any>result).body.access_token;
-            this.vellyket = (<any>result).body.message;
-            this.settingsClass.setSetting(tokenSetting);
+                if (<any>result.status == 201) {
+                    this.resultMessage = "Endring av passord var vellykket!";
+                    this.checkColor=false;
+                } else {
+                    this.resultMessage = "Kunne ikke endre passord!";
+                    this.checkColor=true;
+                }
             });
         }
     }

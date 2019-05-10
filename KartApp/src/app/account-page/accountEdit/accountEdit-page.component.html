@@ -11,15 +11,15 @@
         android:textStyle="bold">
            
         <StackLayout>
-            <StackLayout class="form" >
+            <StackLayout class="form" (tap)="dismissSoftKeybaord()">
             <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
-            <Label [text]="vellyket" height="30" verticalAlignment="center" class="{{ checkColor ? 'redColor' : 'defaultColor'}}"></Label>
+            <Label [text]="resultMessage" textWrap="true" height="30" verticalAlignment="center" class="{{ checkColor ? 'redColor' : 'defaultColor'}}"></Label>
             <Label [text]="username"></Label>
                 <StackLayout class="input-field">
-                    <TextField #telefonNr hint="Telefonnummer:" class="linje-under"> </TextField>   
+                    <TextField #telefonNr hint="Telefonnummer:" keyboardType="phone" class="linje-under"> </TextField>   
                 </StackLayout>
                 <StackLayout class="input-field">
-                    <TextField #email hint="E-post:" class="linje-under"> </TextField>   
+                    <TextField #email hint="E-post:" keyboardType="email" class="linje-under"> </TextField>   
                 </StackLayout>
                 <StackLayout>
                     <Button id="my-button" class="btn btn-primary btn-rounded-sm" text="Lagre endringer" (tap)="edit(telefonNr.text,email.text)" ></Button>
