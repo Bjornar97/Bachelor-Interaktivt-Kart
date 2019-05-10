@@ -188,7 +188,7 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestro
         try {
           this.trip = this.tripService.endTrip();
           globals.setCurrentHomePage("home");
-          this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
+          this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/true", {
             animated: true,
             clearHistory: true,
             transition: {name: "slideLeft"}

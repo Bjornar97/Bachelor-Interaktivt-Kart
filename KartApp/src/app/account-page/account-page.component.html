@@ -16,13 +16,13 @@
                     <ContentView shadow elevation="2" class="container">
                         <GridLayout columns="*,*" rows="*,*" class="innholdContainer">
                             <Label col="0" row="0" text="Venner" [nsRouterLink]="['friends']" pageTransition="slideLeft" class="MinLabel"></Label>
-                            <Label col="0" row="1" text="Venners turer" class="MinLabel"></Label>
+                            <Label col="0" row="1" text="Venners turer" [nsRouterLink]="['friendsSharedTrips']" pageTransition="slideLeft" class="MinLabel"></Label>
                         </GridLayout>
                     </ContentView>
                     </StackLayout>
                     <StackLayout>
                     <ContentView shadow elevation="2" class="container">
-                        <GridLayout columns="*,*" rows="*,*" class="innholdContainer">
+                        <GridLayout columns="*,*" rows="*,*" class="innholdContainer" [nsRouterLink]="['savedTrips']" pageTransition="slideLeft">
                             <Label col="0" row="0" text="Dine delte turer" class="MinLabel"></Label>
                             <Label col="0" row="1" text="Lagrende turer" class="MinLabel"></Label>
                         </GridLayout>

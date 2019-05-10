@@ -3,7 +3,12 @@
 .box{
     text-align: left;
     padding: 10dp 0 0 0;
-    color: #666;
+    color: #000;
+}
+
+.boxLabel.time {
+    color: #05f;
+    font-size: 18;
 }
 
 .boxLabel {
@@ -54,4 +59,10 @@
 
 .activity-indicator {
     color: #008000;
+}
+
+.username {
+    color: #008000;
+    font-size: 18;
+    padding: 5dp;
 }

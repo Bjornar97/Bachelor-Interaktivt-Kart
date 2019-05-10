@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Trip } from '~/app/tracker';
-import { TripService } from '../trip.service';
+import { TripService } from '../home-page/trip.service';
 import { formatDate } from '@angular/common';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as dialogs from "tns-core-modules/ui/dialogs";
@@ -9,8 +9,7 @@ import { screen } from "tns-core-modules/platform";
 import * as globals from "~/app/globals";
 import { BackendService } from '~/app/account-page/backend.service';
 import { SettingsClass } from '~/app/settings-page/settings';
-
-let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
+import { destroyView } from '@angular/core/src/view/view';
 
 @Component({
   selector: 'ns-trip-box',
@@ -22,14 +21,17 @@ let days = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lør
 export class TripBoxComponent implements OnInit, OnChanges {
 
   constructor(private tripService: TripService, private routerExt: RouterExtensions, private backendService: BackendService) { 
+    console.log("Made a trip-box");
     this.settingsClass = globals.getSettingsClass();
   }
 
   private settingsClass: SettingsClass;
 
   @Input() id: number;
-  @Input() personal: boolean;
+  @Input() personal: string;
   @Input() username: string;
+
+  @Input() inputTrip: string;
   
   @Output()
   delete = new EventEmitter<string>();
@@ -44,6 +46,18 @@ export class TripBoxComponent implements OnInit, OnChanges {
   private distanceString: string;
   private uploaded: boolean;
   private failed: boolean;
+
+
+  navigateToTrip() {
+    console.log("Navigating to trip");
+    this.routerExt.navigate(["home", "trip", this.id, this.personal], {
+      animated: true,
+      clearHistory: false,
+      transition: {
+        name: "slideLeft"
+      }
+    });
+  }
 
   deleteTrip(box: View){
     let options = {
@@ -138,22 +152,35 @@ export class TripBoxComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.trip = this.tripService.getTrip(this.id);
+    console.log("initting trip-box: " + this.personal);
+    this.personal = JSON.parse(this.personal)
+    if (this.personal) {
+      console.log("Personal")
+      this.trip = this.tripService.getTrip(this.id);
+    } else {
+      this.trip = JSON.parse(this.inputTrip);
+    }
+    
     if (this.trip != undefined){
+      console.log("Trip is not undefined");
       this.totalTimeString = globals.timeConversion(this.trip.duration);
       var time = new Date(this.trip.startTime);
       this.startTimeString = globals.timeMaker(time);
+      
+      console.log("Created string and stuff");
+
+      this.distanceString = (Math.round(this.trip.distanceMeters)/1000).toFixed(2);
+      console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
+
     }
 
-    this.distanceString = (Math.round(this.trip.distanceMeters)/1000).toFixed(2);
-    console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
-
-    let uploadedList: Array<any> = this.settingsClass.getSetting(42).value;
-    if (uploadedList.indexOf(this.id) != -1) {
-      this.uploaded = true;
-    } else {
-      this.uploaded = false;
+    if (this.personal){
+      let uploadedList: Array<any> = this.settingsClass.getSetting(42).value;
+      if (uploadedList.indexOf(this.id) != -1) {
+        this.uploaded = true;
+      } else {
+        this.uploaded = false;
+      }
     }
   }
-
 }
