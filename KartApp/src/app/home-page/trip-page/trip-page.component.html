@@ -32,7 +32,7 @@
         </ContentView>
         
         <StackLayout *ngFor="let event of events" class="containerEvents">
-            <GridLayout rows="*" columns="auto, *, *">
+            <GridLayout rows="*" columns="auto, auto, *">
                     <StackLayout col="0" verticalAlignment="center">
                         <Label [text]="event.timestamp"></Label>
                         <Label *ngIf="event.type == 'pause'" text="Pause"></Label>
@@ -46,12 +46,12 @@
                         <Label *ngIf="event.type == 'image'" text="&#xf030;" class="play" horizontalAlignment="left" ></Label>
                     </StackLayout>
 
-                    <Image col="2" *ngIf="event.type == 'image'" [src]="event.value.imageSrc" height="90" width="90" horizontalAlignment="right"></Image>
+                    <Image col="2" *ngIf="event.type == 'image'" [src]="event.value.imageSrc" (tap)="goToMarker(event.value.markerId)" height="90" width="90" horizontalAlignment="right"></Image>
                     <StackLayout col="2" *ngIf="event.type == 'walk'" class="event">
                             <Label [text]="'Start: ' + event.value.startTime"></Label>
                             <Label [text]="'Stopp: ' + event.value.stopTime"></Label>
                             <Label [text]="'Distanse: ' + event.value.distanceMeters + ' km'"></Label>
-                            <Label [text]="'Hastighet: ' + event.value.avgSpeed + ' min/km'" ></Label>
+                            <Label [text]="'Hastighet: ' + roundNumber(event.value.avgSpeed) + ' min/km'" ></Label>
                     </StackLayout>
                     <StackLayout col="2" *ngIf="event.type == 'pause'" class="event">
                             <Label [text]="'Fra: ' + event.value.from"></Label>

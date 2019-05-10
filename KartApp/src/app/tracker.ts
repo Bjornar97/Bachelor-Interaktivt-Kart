@@ -198,9 +198,6 @@ export class Tracker {
         console.log("Pausing in tracker");
         if (this.paused){
             console.log("Already paused");
-        }
-        if (this.pausing) {
-            console.log("Trying to pause while pauing");
             return;
         }
         this.pauseInterval();
