@@ -1,10 +1,10 @@
 <StackLayout>
-    <GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+    <GridLayout rows="*" columns="*" class="actionBar" (pan)="drawer.onPan($event)">
+        <label col="0" horizontalAlignment="center" class="actionBarTitle" text="Konto Redigering"></label>
         <GridLayout col="0" rows="*" columns="auto, *" class="actionBarBackButton" (tap)="goBack()">
             <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
             <label col="1" text="Konto" verticalAlignment="center" class="actionBarBackButtonText"></label>
         </GridLayout>
-        <label col="1" class="actionBarTitle" text="Konto Redigering"></label>
     </GridLayout>
     <ScrollView class="scrollView">
         <GridLayout android:fontFamily="cursive"
