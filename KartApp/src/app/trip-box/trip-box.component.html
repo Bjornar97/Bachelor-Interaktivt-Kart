@@ -1,6 +1,6 @@
 <ContentView #Box class="outerBox" shadow elevation="2">
     <GridLayout class="box" rows="*, *, *" columns="auto, *, *">
-        <CheckBox col="0" rowSpan="2" class="checkBox" fillColor="#008000" [checked]="checked" (checkedChange)="toggleCheck()"></CheckBox>
+        <CheckBox col="0" rowSpan="2" class="checkBox" fontSize="25" verticalAlignment="center" fillColor="#008000" [checked]="checked" (checkedChange)="toggleCheck()"></CheckBox>
         <Label col="1" row="0" class="boxLabel time" [text]="startTimeString" textWrap="true" (tap)="navigateToTrip()"></Label>
         <Label col="1" row="1" class="boxLabel" [text]="totalTimeString" textWrap="true" (tap)="navigateToTrip()"></Label>
         <StackLayout col="2" row="1" (tap)="navigateToTrip()">

@@ -4,7 +4,7 @@ import { TripService } from '../home-page/trip.service';
 import { formatDate } from '@angular/common';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as dialogs from "tns-core-modules/ui/dialogs";
-import { View } from 'tns-core-modules/ui/page/page';
+import { View, booleanConverter } from 'tns-core-modules/ui/page/page';
 import { screen } from "tns-core-modules/platform";
 import * as globals from "~/app/globals";
 import { BackendService } from '~/app/account-page/backend.service';
@@ -133,10 +133,10 @@ export class TripBoxComponent implements OnInit, OnChanges {
     }
     if (this.checked){
       console.log("It is checked, drawing");
-      this.tripService.drawTrip(this.trip.id);
+      this.tripService.drawTrip(this.trip.id, booleanConverter(this.personal), this.trip);
     } else {
       console.log("Not checked, removing");
-      this.tripService.unDrawTrip(this.trip.id);
+      this.tripService.unDrawTrip(this.trip.id, booleanConverter(this.personal), this.trip);
     }
   }
 
