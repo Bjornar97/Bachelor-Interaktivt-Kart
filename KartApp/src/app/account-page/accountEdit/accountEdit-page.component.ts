@@ -38,19 +38,11 @@ export class AccountEditPageComponent  {
         .subscribe((result) => {
             let tokenSetting = this.settingsClass.getSetting(61);
         if (<any>result.status == 201){
-            console.dir(result);
-            tokenSetting.value = (<any>result).body.access_token;
-            this.message = (<any>result).body.message;
-            this.settingsClass.setSetting(tokenSetting);
-        }else if (tokenSetting == undefined){
-            tokenSetting = {
-              id: 61,
-              name: "tokenSetting",
-              type: "token",
-              value: undefined
-            } 
+            globals.showError("Bruker ble endret.");
+            console.dir(result); 
         }else {
             this.message = "Noe gikk galt. Prøv igjen";
+            globals.showError("Noe gikk galt. Prøv igjen.");
         }
         });
     }
