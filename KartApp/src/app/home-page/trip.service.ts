@@ -653,7 +653,7 @@ export class TripService {
       trip.id = tid;
       trip.username = username;
       let folder = this.getTripFolder();
-      let file = folder.getFile("savedtrips.json");
+      let file = folder.getFile("savedTrips.json");
       let object;
       try {
         console.log("Reading file");
@@ -718,14 +718,16 @@ export class TripService {
 
   getSavedTrip(tid) {
     let bookTrips = this.getBookmarkedTrips();
+    let returnedTrip = undefined;
     bookTrips.forEach(trip => {
       if (trip != undefined){
         if (trip.id == tid) {
-          return trip;
+          returnedTrip = trip;
+          return;
         }
       }
     });
-    return undefined;
+    return returnedTrip;
   }
 
   saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){
