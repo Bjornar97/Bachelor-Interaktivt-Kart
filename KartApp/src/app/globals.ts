@@ -115,18 +115,20 @@ export function showError(errorString: string) {
 
   export function timeMaker(date: Date): string{
     let now = new Date();
+    let hours = date.getHours() < 10 ? '0' + date.getHours(): date.getHours();
+    let minutes = date.getMinutes() < 10 ? '0' + date.getMinutes(): date.getMinutes();
     if (now.getTime() - date.getTime() < 48*60*60*1000){
         let dateDay = date.getDay();
         let nowDay = now.getDay();
         if (now.getDay() == date.getDay()){
-            return "I dag kl. " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes(): date.getMinutes());
+            return "I dag kl. " + hours + ":" + minutes;
         } else {
             if((nowDay == 0 && dateDay == 6) || dateDay == nowDay - 1){
-                return "I går kl. " + date.getHours() + ":" + date.getHours();
+                return "I går kl. " + hours + ":" + minutes;
             }
         }
     }
-    return date.getDate() + "." + months[date.getMonth()] + "." + "kl. " + date.getHours() + ":" + date.getHours();
+    return date.getDate() + "." + months[date.getMonth()] + "." + "kl. " + hours + ":" + minutes;
 
   }
 
