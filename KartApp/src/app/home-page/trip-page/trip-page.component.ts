@@ -110,6 +110,19 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
     }, 5000);
   }
+  
+  goToMarker(id: number){
+    console.log(id);
+    if (id != undefined){
+      this.routerExtensions.navigate(["marker", "image", id], {
+        animated: true,
+        clearHistory: false,
+        transition: {
+          name: "fade"
+        }
+      });
+    }
+  }
 
   bookmark() {
     if (this.marked) {
@@ -126,6 +139,10 @@ export class TripPageComponent implements OnInit, OnDestroy {
       }
       console.log("Done");
     }
+  }
+
+  roundNumber(innNumber: number) {
+    return innNumber.toFixed(2);
   }
 
   goToTrip() {
