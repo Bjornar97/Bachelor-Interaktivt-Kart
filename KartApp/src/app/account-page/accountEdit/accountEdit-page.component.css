@@ -13,7 +13,7 @@ page {
       border-color:gray;
       border-width: 0 0 1 0;
       text-align: left;  
-      margin-top:10dt;
+      margin-top:10dp;
       font-size: 15;
       font-weight: bold;
   }
@@ -30,11 +30,15 @@ page {
 .KontoInn{
     font-size:20;
     font-weight:bold;
-    margin-top:10dp;
-    margin-left:8dp;
+    margin-left: 15dp;
 }
 .passord{
     margin-top:-50dp;
+}
+
+.downArrow {
+    font-size: 20;
+    margin-top: 5dp;
 }
 
 .redColor {

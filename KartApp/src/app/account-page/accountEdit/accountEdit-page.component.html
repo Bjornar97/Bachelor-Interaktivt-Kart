@@ -10,10 +10,10 @@
         <GridLayout android:fontFamily="cursive"
         android:textStyle="bold">
            
-        <StackLayout>
-            <StackLayout class="form" >
-            <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
-            <Label [text]="vellyket" height="30" verticalAlignment="center" class="{{ checkColor ? 'redColor' : 'defaultColor'}}"></Label>
+            <StackLayout>
+                <StackLayout class="form" >
+                <Image src="res://fjellman" stretch="aspectFill" width="100dp" height="100dp"></Image> 
+                <Label [text]="vellyket" height="30" verticalAlignment="center" class="{{ checkColor ? 'redColor' : 'defaultColor'}}"></Label>
                 <StackLayout class="input-field">
                     <TextField #telefonNr hint="Telefon Nummer:" class="linje-under"> </TextField>   
                 </StackLayout>
@@ -26,36 +26,32 @@
                 
                 
                 <StackLayout>
-                    <GridLayout #newPasswordBox columns="auto,*" rows="*,*" height="60">
-                        <Label col="1" row="0" text="Endre passord" class="KontoInn" textAlignment="left" verticalAlignment="center" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
+                    <GridLayout #newPasswordBox columns="auto,*, auto" rows="*" ios:height="60">
+                        <Label col="1" row="0" text="Endre passord" class="KontoInn" textAlignment="left" horizontalAlignment="left" verticalAlignment="top" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
                         <Label col="0" row="0"  text="&#xf023;" color="#008000" fontSize="25" class="fas fa-lock" stretch="aspectFill" horizontalAlignment="center" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
-                        <Label col="2" row="0" #expandNewPasswordArrow text="&#xf078;" height="25dp" width="25dp" horizontalAlignment="right"  class="fas downArrow"  color="#008000" class="fas fa-lock" stretch="aspectFill" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
+                        <Label col="2" row="0" #expandNewPasswordArrow text="&#xf078;" verticalAlignment="top" horizontalAlignment="right"  class="fas downArrow"  color="#008000" stretch="aspectFill" (tap)="expendNewPassword(expandNewPasswordArrow, newPasswordBox)" textWrap="true"></Label>
                     </GridLayout>
                 </StackLayout>
                 
                 <GridLayout *ngIf="newPasswordExpanded" rows="*,*,*" columns="*,auto" class="passord" >
-                <StackLayout class="input-field"  row="0" col="0">
-                    <TextField #password hint="Nytt passord:"  class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
-                </StackLayout>
-                
-                <Label col="1" row="0" text ="&#xf06e;" (tap)="toggleShow()" class="fas fa-eye" color="#008000"></Label>
-                
+                    <StackLayout class="input-field"  row="0" col="0">
+                        <TextField #password hint="Nytt passord:"  class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
+                    </StackLayout>
+                    
+                    <Label col="1" row="0" text ="&#xf06e;" (tap)="toggleShow()" class="fas fa-eye" color="#008000"></Label>
 
+                    <StackLayout class="input-field" row="1" col="0">
+                        <TextField #password2 hint="Passord bekreftelse:" class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
+                    </StackLayout>
 
-                <StackLayout class="input-field" row="1" col="0">
-                    <TextField #password2 hint="Passord bekreftelse:" class="linje-under" secure="true" [secure]="securePassword"> </TextField>  
-                </StackLayout>
-
-                <Label row="1" col="1" text ="&#xf06e;" (tap)="toggleShow()" class="fas fa-eye" color="#008000"></Label>
-                
-                
-                <Button row="2" colspan="2" id="my-button" class="btn btn-primary btn-rounded-sm" text="Endre passord" (tap)="endrePassord(password.text, password2.text)"></Button> 
-                
+                    <Label row="1" col="1" text ="&#xf06e;" (tap)="toggleShow()" class="fas fa-eye" color="#008000"></Label>
+                    
+                    
+                    <Button row="2" colspan="2" id="my-button" class="btn btn-primary btn-rounded-sm" text="Endre passord" (tap)="endrePassord(password.text, password2.text)"></Button> 
+                    
                 </GridLayout>
-               
-            </StackLayout>
-
-        </StackLayout>             
+                </StackLayout>
+            </StackLayout>         
         </GridLayout>
     </ScrollView>
 </StackLayout>
