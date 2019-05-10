@@ -416,7 +416,11 @@ export class TripService {
         lastWalk = currentWalk;
       });
       let markerIdSetting = this.settingsClass.getSetting(32, []);
-      markerIdSetting.value[trip.id] = markerIds;
+
+      markerIdSetting.value.push({
+        id: trip.id,
+        markers: markerIds
+      });
       this.settingsClass.setSetting(markerIdSetting);
       console.dir(markerIdSetting);
       globals.MainMap.addMarkers(markers);
@@ -441,9 +445,16 @@ export class TripService {
 
     globals.MainMap.removeLine(ids);
 
-    let markerIdsSetting = this.settingsClass.getSetting(32);
-    console.dir(markerIdsSetting);
-    globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
+    let markerIds: Array<any> = this.settingsClass.getSetting(32).value;
+    console.dir(markerIds);
+    markerIds.forEach((tripMarkers) => {
+      if (tripMarkers != undefined){
+        if (tripMarkers.id == id){
+          globals.MainMap.removeMarkers(tripMarkers.markers);
+        }
+      }
+    });
+    
   }
 
   /**

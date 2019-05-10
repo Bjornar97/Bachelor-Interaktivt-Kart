@@ -69,10 +69,10 @@ export class TripPageComponent implements OnInit, OnDestroy {
   private distanceString: string;
 
   setupTrip() {
-    this.tripService.drawTrip(this.trip.id, false, this.trip);
+    this.tripService.drawTrip(this.trip.id, this.local, this.trip);
 
     console.log("Getting trip events: ");
-    this.events = this.tripService.getTripEvents(this.trip.id, false, this.trip);
+    this.events = this.tripService.getTripEvents(this.trip.id, this.local, this.trip);
     console.log("Making strings");
     if (this.trip != undefined){
       this.totalTimeString = globals.timeConversion(this.trip.duration);
@@ -164,8 +164,9 @@ export class TripPageComponent implements OnInit, OnDestroy {
         this.marked = true;
         this.setupTrip();
       } else {
-        console.log("Getting trip from backend");
+        console.log("Getting trip from globals");
         this.trip = globals.CurrentTrip;
+        console.dir(this.trip);
         this.setupTrip();
         this.marked = false;
       }
