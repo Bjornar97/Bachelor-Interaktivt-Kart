@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { BackendService } from '../backend.service';
 import { Trip } from '~/app/tracker';
 import * as globals from "~/app/globals";
@@ -13,7 +13,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
     providers: [BackendService],
     moduleId: module.id,
   })
-export class FriendsSharedTripsPageComponent implements OnInit {
+export class FriendsSharedTripsPageComponent implements OnInit, AfterViewInit {
 
     private friendsTrips: Trip[] = [];
 
@@ -66,6 +66,10 @@ export class FriendsSharedTripsPageComponent implements OnInit {
     }
 
     ngOnInit() {
+        
+    }
+
+    ngAfterViewInit() {
         this.getTrips();
     }
 }

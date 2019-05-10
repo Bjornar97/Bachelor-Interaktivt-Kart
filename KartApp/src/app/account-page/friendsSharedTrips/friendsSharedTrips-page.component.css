@@ -11,3 +11,7 @@
 .invisibleRefresh {
     color: transparent;
 }
+
+.activity-indicator {
+    color: #008000;
+}
