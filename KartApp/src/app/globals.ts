@@ -142,8 +142,7 @@ export function showError(errorString: string) {
 
   }
 
-  var CheckboxList: boolean[] = [];
-  export var CheckboxDict = {};
+  var CheckboxDict = {};
   
   export function getCheckboxList(id: number){
     if (CheckboxDict[id] == undefined){
