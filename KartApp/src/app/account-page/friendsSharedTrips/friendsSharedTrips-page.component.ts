@@ -41,11 +41,19 @@ export class FriendsSharedTripsPageComponent implements OnInit, AfterViewInit, O
                 if (<any>result.status == 200) {
                     let trips = (<any>result).body.trips;
                     console.log("Trips, length: " + trips.length);
-                    console.dir(trips);
+                    //this.subTrip.points.forEach((point) => {
+                    //    if (prevPoint != null) {
+                    //        this.Trip.distanceMeters += LocationClass.findDistance(prevPoint, point);
+                    //    }
+                    //    prevPoint = point;
+                    //});
+                    trips.forEach(trip => {
+                        let currentTripObject: Trip = JSON.parse(trip.tripjson);
+                        trip.tripjson = currentTripObject;
+                    });
+
                     let tripsSorted = trips.sort((a, b) => {
-                        let aTripjson: Trip = JSON.parse(a.tripjson);
-                        let bTripjson: Trip = JSON.parse(b.tripjson);
-                        if (aTripjson.startTime > bTripjson.startTime) {
+                        if (a.tripjson.startTime > b.tripjson.startTime) {
                             return -1;
                         } else {
                             return 1;

@@ -31,7 +31,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
   @Input() personal: string;
   @Input() username: string;
 
-  @Input() inputTrip: string;
+  @Input() inputTrip;
   
   @Output()
   delete = new EventEmitter<string>();
@@ -163,8 +163,13 @@ export class TripBoxComponent implements OnInit, OnChanges {
     if (this.personal) {
       console.log("Personal")
       this.trip = this.tripService.getTrip(this.id);
-    } else {
+    } else if (typeof this.inputTrip == "string") {
+      console.log("Type: String");
       this.trip = JSON.parse(this.inputTrip);
+      this.trip.username = this.username;
+    } else {
+      console.log("Type: Trip");
+      this.trip = this.inputTrip;
       this.trip.username = this.username;
     }
     
