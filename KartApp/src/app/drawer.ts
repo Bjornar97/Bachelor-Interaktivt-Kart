@@ -246,9 +246,18 @@ export class DrawerClass {
                                 name: "fade"
                             }
                         });
-                    } else {
+                    } else if (token.value != undefined) {
                         console.log("Token is not undefined in drawer");
                         globals.routerExtensions.navigate(["account"], {
+                            animated: true,
+                            clearHistory: true,
+                            transition: {
+                                name: "fade"
+                            }
+                        });
+                    } else {
+                        console.log("Token is undefined in drawer");
+                        globals.routerExtensions.navigate(["account/login"], {
                             animated: true,
                             clearHistory: true,
                             transition: {
