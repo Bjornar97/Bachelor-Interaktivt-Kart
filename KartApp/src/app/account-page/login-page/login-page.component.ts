@@ -100,13 +100,15 @@ export class LoginPageComponent implements OnInit {
     try {
       let token = this.settingsClass.getSetting(61).value;
       if (token != undefined) {
-        this.routerExtensions.navigate(["account"], {
-          animated: true,
-          clearHistory: true,
-          transition: {
-            name: "slideLeft"
-          }
-        });
+        if (token.value != undefined) {
+          this.routerExtensions.navigate(["account"], {
+            animated: true,
+            clearHistory: true,
+            transition: {
+              name: "slideLeft"
+            }
+          });
+        }
       }
     } catch (error) {
       console.log("ERROR in login init. " + error);
