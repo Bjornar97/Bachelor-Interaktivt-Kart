@@ -72,7 +72,7 @@ export class LoginPageComponent implements OnInit {
               name: "slideLeft"
             }
           });
-        } else if (<any>result.status == 200) {
+        } else if (<any>result.status == 203) {
           this.message = "Feil epost eller passord";
         } else {
           this.message = "Noe gikk galt. Prøv igjen";

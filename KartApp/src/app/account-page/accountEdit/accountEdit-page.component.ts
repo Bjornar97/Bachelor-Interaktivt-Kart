@@ -39,15 +39,14 @@ export class AccountEditPageComponent  {
         console.log("email: " + email + " phoneNumber: " + phoneNumber );
         this.backendService.edit(phoneNumber,email)
         .subscribe((result) => {
-            let tokenSetting = this.settingsClass.getSetting(61);
-        if (<any>result.status == 201){
-            this.resultMessage = "Bruker ble endret";
-            this.checkColor=false;
-            console.dir(result); 
-        }else {
-            this.resultMessage = "Noe gikk galt. Prøv igjen";
-            this.checkColor=true;
-        }
+            if (<any>result.status == 201){
+                this.resultMessage = "Bruker ble endret";
+                this.checkColor=false;
+                console.dir(result); 
+            } else {
+                this.resultMessage = "Noe gikk galt. Prøv igjen";
+                this.checkColor=true;
+            }
         });
     }
     

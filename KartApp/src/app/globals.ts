@@ -93,7 +93,6 @@ export function getErrorList(){
 export function showError(errorString: string) {
     errorList.push(errorString);
     setTimeout(() => {
-        this.counter--;
         errorList.splice(0, 1);
     }, 5000);
 }
