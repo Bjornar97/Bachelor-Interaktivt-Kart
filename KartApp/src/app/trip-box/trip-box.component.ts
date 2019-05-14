@@ -163,13 +163,9 @@ export class TripBoxComponent implements OnInit, OnChanges {
     if (this.personal) {
       console.log("Personal")
       this.trip = this.tripService.getTrip(this.id);
-    } else if (typeof this.inputTrip == "string") {
+    } else {
       console.log("Type: String");
       this.trip = JSON.parse(this.inputTrip);
-      this.trip.username = this.username;
-    } else {
-      console.log("Type: Trip");
-      this.trip = this.inputTrip;
       this.trip.username = this.username;
     }
     
