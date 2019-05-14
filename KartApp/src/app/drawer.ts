@@ -236,7 +236,7 @@ export class DrawerClass {
                 }
             } else if (buttonName == "account") {
                 try {
-                    let token = this.settingsClass.getSetting(61).value;
+                    let token = this.settingsClass.getSetting(61);
                     if (token == undefined) {
                         console.log("Token is undefined in drawer");
                         globals.routerExtensions.navigate(["account/login"], {
@@ -256,7 +256,7 @@ export class DrawerClass {
                             }
                         });
                     } else {
-                        console.log("Token is undefined in drawer");
+                        console.log("Token value is undefined in drawer");
                         globals.routerExtensions.navigate(["account/login"], {
                             animated: true,
                             clearHistory: true,

@@ -98,7 +98,7 @@ export class LoginPageComponent implements OnInit {
   ngOnInit() {
     console.log("Initting login");
     try {
-      let token = this.settingsClass.getSetting(61).value;
+      let token = this.settingsClass.getSetting(61);
       if (token != undefined) {
         if (token.value != undefined) {
           this.routerExtensions.navigate(["account"], {

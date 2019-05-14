@@ -236,6 +236,7 @@ export class FriendsPageComponent implements OnInit{
                                 return i != friendIndex;
                             });
                         }
+                        this.loadFriends();
                     });
                 } catch (error) {
                     console.log("ERROR while declining friend: " + error);
@@ -270,6 +271,7 @@ export class FriendsPageComponent implements OnInit{
                                 return i != friendIndex;
                             });
                         }
+                        this.loadFriends();
                     });
                 } catch (error) {
                     console.log("ERROR while removing friend: " + error);
