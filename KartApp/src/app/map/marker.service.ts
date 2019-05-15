@@ -1,17 +1,23 @@
 import { Injectable, NgZone } from '@angular/core';
 import * as fs from "tns-core-modules/file-system";
 import { MapboxMarker } from 'nativescript-mapbox';
-import { SettingsService } from '../settings-page/settings.service';
+import { SettingsClass } from '../settings-page/settings';
 import * as globals from "../globals";
 import { RouterExtensions } from 'nativescript-angular/router';
+import { DrawerClass } from "~/app/drawer";
 
 @Injectable({
   providedIn: 'root'
 })
 export class MarkerService {
 
-  constructor(private settingsService: SettingsService) { 
+  constructor(private ngZone: NgZone) { 
+    this.settingsClass = globals.getSettingsClass();
+    this.drawer = globals.getDrawer();
   }
+
+  private drawer: DrawerClass;
+  private settingsClass: SettingsClass;
 
   getFolder(){
     return fs.knownFolders.documents().getFolder("Markers");
@@ -106,10 +112,12 @@ export class MarkerService {
       id: id,
       lat: lat,
       lng: lng,
-      onTap: function(){
-        // TODO: Open Drawer
+      onTap: () => {
         console.log("Tapped marker " + id + ". URL: " + url + id);
-        globals.routerExtensions.navigateByUrl(url + id);
+        this.ngZone.run(() => {
+          this.drawer.openDrawer();
+          globals.routerExtensions.navigateByUrl(url + id);
+        });
       },
       icon: iconPath
     }
@@ -120,19 +128,12 @@ export class MarkerService {
     });
     info.lastID = id;
     this.writeInfo(info);
-    if (this.settingsService.getSetting(undefined, 2) != undefined && type == "image"){
-      if (this.settingsService.getSetting(undefined, 2).value){
+    if (type == "image"){
+      if (this.settingsClass.getSetting(2).value){
         globals.MainMap.addMarkers([marker]);
       }
-    } else {
-      this.settingsService.setSetting({
-        id: 2,
-        name: "showImageMarkers",
-        type: "switch",
-        value: true
-      });
-      globals.MainMap.addMarkers([marker]);
     }
+    
     return marker;
   }
 
@@ -145,9 +146,12 @@ export class MarkerService {
         lat: markerObject.lat,
         lng: markerObject.lng,
         icon: markerObject.icon,
-        onTap: function(){
+        onTap: () => {
           console.log("Tapped marker " + id + ". URL: " + markerObject.url + id);
-          globals.routerExtensions.navigateByUrl(markerObject.url + id);
+          this.ngZone.run(() => {
+            this.drawer.openDrawer();
+            globals.routerExtensions.navigateByUrl(markerObject.url + id);
+          });
         }
       }
       return marker;

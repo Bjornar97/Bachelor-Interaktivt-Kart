@@ -1,8 +1,9 @@
 import { MapComponent } from "./map/map.component";
-import { Tracker } from "./tracker";
-import { SettingsService, Setting } from "./settings-page/settings.service";
+import { Tracker, Trip } from "./tracker";
+import { Setting, SettingsClass } from "./settings-page/settings";
 import { RouterExtensions } from "nativescript-angular/router";
 import { DrawerClass } from "~/app/drawer";
+import { CurrentTripPageComponent } from "./home-page/current-trip-page/current-trip-page.component";
 
 //The main map of the application.
 export var MainMap: MapComponent;
@@ -26,10 +27,13 @@ export function setRouterExtensions(routerExt: RouterExtensions){
 export var buttons: Object;
 
 // Settings Service
-export var settingsService: SettingsService;
+export var settingsClass: SettingsClass = undefined;
 
-export function setSettingsService(service: SettingsService){
-    settingsService = service;
+export function getSettingsClass(){
+    if (settingsClass == undefined){
+        settingsClass = new SettingsClass();
+    }
+    return settingsClass;
 }
 
 // Tracker
@@ -55,6 +59,42 @@ export function getDrawer(){
         Drawer = new DrawerClass();
     } 
     return Drawer;
+}
+
+// Remembering home page
+var CurrentHomePage: string = "home";
+
+export function getCurrentHomePage(){
+    return CurrentHomePage;
+}
+
+export function setCurrentHomePage(currentHomePage: string) {
+    CurrentHomePage = currentHomePage;
+}
+
+// Remembering previous page from trip page
+var TripPrevious: string = "home";
+
+export function getTripPrevious() {
+    return TripPrevious;
+}
+
+export function setTripPrevious(tripPrevious: string) {
+    TripPrevious = tripPrevious;
+}
+
+// Error list
+var errorList: string[] = [];
+
+export function getErrorList(){
+    return errorList;
+}
+
+export function showError(errorString: string) {
+    errorList.push(errorString);
+    setTimeout(() => {
+        errorList.splice(0, 1);
+    }, 5000);
 }
 
 // Time 
@@ -85,17 +125,40 @@ export function getDrawer(){
 
   export function timeMaker(date: Date): string{
     let now = new Date();
+    let hours = date.getHours() < 10 ? '0' + date.getHours(): date.getHours();
+    let minutes = date.getMinutes() < 10 ? '0' + date.getMinutes(): date.getMinutes();
     if (now.getTime() - date.getTime() < 48*60*60*1000){
         let dateDay = date.getDay();
         let nowDay = now.getDay();
         if (now.getDay() == date.getDay()){
-            return "I dag kl. " + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes(): date.getMinutes());
+            return "I dag kl. " + hours + ":" + minutes;
         } else {
             if((nowDay == 0 && dateDay == 6) || dateDay == nowDay - 1){
-                return "I går kl. " + date.getHours() + ":" + date.getHours();
+                return "I går kl. " + hours + ":" + minutes;
             }
         }
     }
-    return date.getDate() + "." + months[date.getMonth()] + "." + "kl. " + date.getHours() + ":" + date.getHours();
+    return date.getDate() + "." + months[date.getMonth()] + "." + "kl. " + hours + ":" + minutes;
 
+  }
+
+  var CheckboxDict = {};
+  
+  export function getCheckboxList(id: number){
+    if (CheckboxDict[id] == undefined){
+      console.log("Creating CheckboxList entry");
+      CheckboxDict[id] = false;
+    }
+    return CheckboxDict[id];
+  }
+
+  export function setCheckboxList(id: number, value: boolean){
+    CheckboxDict[id] = value;
+  }
+
+  // Current friends-trip
+  export var CurrentTrip: Trip;
+
+  export function setCurrentTrip(currentTrip) {
+      CurrentTrip = currentTrip;
   }

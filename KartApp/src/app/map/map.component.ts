@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MapboxViewApi, MapboxMarker, Viewport as MapboxViewport, LatLng, latitudeProperty } from "nativescript-mapbox";
 import { LocationClass, LocationObject } from "../location";
 import * as globals from "../globals";
-import { SettingsService, Setting } from '../settings-page/settings.service';
+import { SettingsClass, Setting } from '../settings-page/settings';
 import * as application from "tns-core-modules/application";
 import { MarkerService } from './marker.service';
 
@@ -32,12 +32,12 @@ export class MapComponent implements OnInit {
         }
     ]
     
-    constructor() {
+    private settingsClass: SettingsClass;
+
+    constructor(private markerService: MarkerService) {
         this.locationClass = new LocationClass(1);
-        this.settingsService = globals.settingsService;
+        this.settingsClass = globals.getSettingsClass();
     }
-    
-    private settingsService: SettingsService;
 
     @Input() main: string;
     private locationClass: LocationClass;
@@ -52,9 +52,9 @@ export class MapComponent implements OnInit {
     }
 
     setAutoRotate(value: boolean){
-        let setting = this.settingsService.getSetting(undefined, 1);
+        let setting = this.settingsClass.getSetting(1);
         setting.value = value;
-        this.settingsService.setSetting(setting);
+        this.settingsClass.setSetting(setting);
     }
 
     /**
@@ -87,8 +87,12 @@ export class MapComponent implements OnInit {
         this.map.addMarkers(markers);
     }
 
-    public removeMarkers(ids: number[]){
-        this.map.removeMarkers(ids);
+    public removeMarkers(ids?: number[]){
+        if (ids != undefined){
+            this.map.removeMarkers(ids);
+        } else {
+            this.map.removeMarkers();
+        }
     }
 
     /**
@@ -98,14 +102,7 @@ export class MapComponent implements OnInit {
      * @param width The width of the line. default: 1.
      * @param opacity The opacity of the line. Default: 0.7.
      */
-    public drawLine(points: LatLng[], id?: number, color = "#ff0000", width = 1, opacity = 0.7){
-        // var LatLngPoints: LatLng[] = [];
-        // points.forEach(function(point){
-        //     LatLngPoints.push({
-        //         lat: point.lat,
-        //         lng: point.lng
-        //     });
-        // });
+    public drawLine(points: LatLng[], id?: number, color = "#ff0000", width = 4, opacity = 0.7){
         var promise = this.map.addPolyline({id: id, color: color, points: points, width: width, opacity: opacity});
         console.log("Drew line");
         return promise;
@@ -120,7 +117,7 @@ export class MapComponent implements OnInit {
     }
 
     public trackUser(){
-        var bearingSetting = this.settingsService.getSetting(undefined, 1);
+        var bearingSetting = this.settingsClass.getSetting(1);
         let bearing;
         if (bearingSetting == null){
             bearing = true;
@@ -209,66 +206,41 @@ export class MapComponent implements OnInit {
         }
     }
 
-    private markerService: MarkerService;
-
   // Waits until the map is ready
   onMapReady(args): void {
     // Gets the map that is displayed
     this.map = args.map;
     if (this.main == "true"){
-    globals.setMap(this);
+        globals.setMap(this);
     }
 
-    this.markerService = new MarkerService(this.settingsService);
+    let imageMarkerSetting = this.settingsClass.getSetting(2, true);
+    if (imageMarkerSetting.value){
+        let markers = this.markerService.getMarkers("image");
+        this.map.addMarkers(markers);
+    }
 
-    // Getting map position from settingsService
-    var mapSetting = this.settingsService.getSetting(undefined, 31);
-    console.dir(mapSetting);
-    if (mapSetting != undefined){
-        this.mapSetting = mapSetting;
-    } else {
+    // Getting map position from settingsClass
+    this.mapSetting = this.settingsClass.getSetting(31);
+    if (this.mapSetting.name == undefined) {
         this.mapSetting = {
             id: 31,
-            name: "MapPositionSetting",
+            name: "MapPosition",
             type: "Object",
             value: undefined
         }
     }
 
-    let imageMarkerSetting = this.settingsService.getSetting(undefined, 2);
-    if (imageMarkerSetting != undefined){
-        console.log("imageMarkerSetting is defined");
-        if (imageMarkerSetting.value){
-            console.log("imageMarkerSetting is true");
-            let markers = this.markerService.getMarkers("image");
-            this.map.addMarkers(markers);
-        } else {
-            console.log("imageMarkerSetting is false");
-        }
-    } else {
-        console.log("imageMarkerSetting is not defined");
-        imageMarkerSetting = {
-            id: 2,
-            name: "showImageMarkers",
-            type: "switch",
-            value: true
-        }
-        let markers = this.markerService.getMarkers("image");
-        this.map.addMarkers(markers);
-        this.settingsService.setSetting(imageMarkerSetting);
-    }
-
-    let map = this.map;
-
     // If the setting exists, it uses that to set the center and zoom level of the map
     if (this.mapSetting.value != undefined){
-        console.log("Center is being set from setting");
-        map.setCenter({
+        console.log("Center is being set from setting: ");
+        console.dir(typeof this.mapSetting.value);
+        this.map.setCenter({
             animated: false,
             lat: this.mapSetting.value.lat,
             lng: this.mapSetting.value.lng
         });
-        map.setZoomLevel({
+        this.map.setZoomLevel({
             animated: false,
             level: this.mapSetting.value.zoomLevel
         });
@@ -277,29 +249,25 @@ export class MapComponent implements OnInit {
         console.log("Setting center from location");
         this.locationClass.getLocation(undefined, 3000, 0).then((loc) => {
             console.log("Latitude: " + loc.lat + ", longitude: " + loc.lng);
-            map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
-            map.setZoomLevel({level: 16, animated: false});
+            this.map.setCenter({lat: loc.lat, lng: loc.lng, animated: false});
+            this.map.setZoomLevel({level: 16, animated: false});
 
-            this.mapSetting = {
-                id: 31,
-                name: "mapSetting",
-                type: "Object",
-                value: {
-                    lat: loc.lat,
-                    lng: loc.lng,
-                    zoomLevel: 16
-                }
+            console.log("Setting mapPosSetting");
+            let mapPosSetting = this.settingsClass.getSetting(31);
+            mapPosSetting.value = {
+                lat: loc.lat,
+                lng: loc.lng,
+                zoomLevel: 16
             }
-            
-            this.settingsService.setSetting(this.mapSetting);
-            this.settingsService.saveSettings();
+            this.settingsClass.setSetting(this.mapSetting);
+
         }, function (err) {
             console.log("ERROR: ");
             console.dir(err);
         });
     }
 
-    map.setOnScrollListener((point?) => {
+    this.map.setOnScrollListener((point?) => {
         this.saveMapPosition(point);
     });
 
@@ -312,7 +280,15 @@ export class MapComponent implements OnInit {
        
     });
 
-    var styleSetting = globals.settingsService.getSetting(undefined, 11);
+    var styleSetting = globals.settingsClass.getSetting(11);
+    if (styleSetting.name == undefined) {
+        styleSetting = {
+            id: 11,
+            name: "mapStyle",
+            type: "buttonRow",
+            value: "outdoors"
+        }
+    }
     if (styleSetting != undefined){
         this.setMapStyle(styleSetting.value);
     }
@@ -338,7 +314,7 @@ export class MapComponent implements OnInit {
                             zoomLevel: zoom
                         }
                     }
-                    this.settingsService.setSetting(this.mapSetting);
+                    this.settingsClass.setSetting(this.mapSetting);
                     this.saved = false;
                 }
             });

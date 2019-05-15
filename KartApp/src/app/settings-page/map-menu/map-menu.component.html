@@ -1,7 +1,11 @@
-<ActionBar title="Kartinnstillinger" class="action-bar" (pan)="drawer.onPan($event)">
-    <NavigationButton text="Tilbake" android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
-</ActionBar>
 <StackLayout>
+    <GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+        <GridLayout col="0" rows="*" columns="auto, *" class="actionBarBackButton" (tap)="goBack()">
+            <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
+            <label col="1" text="Instillinger" verticalAlignment="center" class="actionBarBackButtonText"></label>
+        </GridLayout>
+        <label col="1" horizontalAlignment="left" colSpan="2" class="actionBarTitle" text="Kartinstillinger"></label>
+    </GridLayout>
     <ScrollView [height]="drawer.drawer.heightInt">
         <StackLayout>
             <ContentView class="container" shadow elevation="2">
@@ -18,7 +22,7 @@
                 <StackLayout>
                     <Label text="Kartet" textWrap="true" class="title"></Label>
                     <GridLayout rows="*" columns="*, auto" class="setting">
-                        <Label col="0" text="Roter kart automatisk mens du flytter deg" class="labelSwitch" (tap)="changeRotateSwitch()" textWrap="true"></Label>
+                        <Label col="0" text="Roter kart automatisk mens du flytter deg" class="labelSwitch" (tap)="toggleAutoRotate()" textWrap="true"></Label>
                         <Switch col="1" [checked]="isAutoRotate" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="onAutoRotateChecked($event)"></Switch>
                     </GridLayout>
                 </StackLayout>

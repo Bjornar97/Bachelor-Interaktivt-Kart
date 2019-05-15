@@ -1,23 +1,20 @@
 import * as globals from "./globals";
 import { screen } from "tns-core-modules/platform";
-import { SettingsService, Setting } from "./settings-page/settings.service";
+import { SettingsClass, Setting } from "./settings-page/settings";
 import { PanGestureEventData } from "tns-core-modules/ui/gestures/gestures";
+import { RouterExtensions } from "nativescript-angular/router/router-extensions";
 
 
 export class DrawerClass {
 
-    private settingsService: SettingsService;
+    private settingsClass: SettingsClass;
     private drawerSetting: Setting;
 
     constructor() {
-        if (globals.settingsService == undefined){
-            console.log("Need to make new settings-service");
-            globals.setSettingsService(new SettingsService());
-        }
-        this.settingsService = globals.settingsService;
+        this.settingsClass = globals.getSettingsClass();
 
         // Getting the drawer from settings
-        var drawersetting: Setting = this.settingsService.getSetting(undefined, 48);
+        var drawersetting: Setting = this.settingsClass.getSetting(48);
         console.dir(this.drawerSetting);
         if (drawersetting != undefined){
             this.drawer.initialHeight = drawersetting.value;
@@ -30,7 +27,7 @@ export class DrawerClass {
                 value: this.drawer.initialHeight
             }
             console.log("DrawerSetting does not exist");
-            this.settingsService.setSetting(drawersetting);
+            this.settingsClass.setSetting(drawersetting);
             this.drawerSetting = drawersetting;
         }
     }
@@ -119,7 +116,7 @@ export class DrawerClass {
             // Saving the state of the drawer. Subject to change
             if (this.drawerSetting != undefined){
                 this.drawerSetting.value = this.drawer.initialHeight;
-                this.settingsService.setSetting(this.drawerSetting);
+                this.settingsClass.setSetting(this.drawerSetting);
             } else {
                 console.log("ERROR in drawer: Could not set setting drawerSetting, because it is not defined");
             }
@@ -219,6 +216,66 @@ export class DrawerClass {
             this.closeDrawer();
         } else {
             this.openDrawer(height, buttonName);
+            if (buttonName == "home") {
+                try {
+                    globals.routerExtensions.navigate([globals.getCurrentHomePage()], {
+                        animated: true,
+                        clearHistory: true,
+                        transition: {
+                          name: "fade"
+                        }
+                    });
+                } catch (error) {
+                    globals.routerExtensions.navigate(["home"], {
+                        animated: true,
+                        clearHistory: true,
+                        transition: {
+                          name: "fade"
+                        }
+                    });
+                }
+            } else if (buttonName == "account") {
+                try {
+                    let token = this.settingsClass.getSetting(61);
+                    if (token == undefined) {
+                        console.log("Token is undefined in drawer");
+                        globals.routerExtensions.navigate(["account/login"], {
+                            animated: true,
+                            clearHistory: true,
+                            transition: {
+                                name: "fade"
+                            }
+                        });
+                    } else if (token.value != undefined) {
+                        console.log("Token is not undefined in drawer");
+                        globals.routerExtensions.navigate(["account"], {
+                            animated: true,
+                            clearHistory: true,
+                            transition: {
+                                name: "fade"
+                            }
+                        });
+                    } else {
+                        console.log("Token value is undefined in drawer");
+                        globals.routerExtensions.navigate(["account/login"], {
+                            animated: true,
+                            clearHistory: true,
+                            transition: {
+                                name: "fade"
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.log("ERROR in drawer while finding token");
+                    globals.routerExtensions.navigate(["account", "login"], {
+                        animated: true,
+                        clearHistory: true,
+                        transition: {
+                            name: "fade"
+                        }
+                    });
+                }
+            }
         }
     }
 }

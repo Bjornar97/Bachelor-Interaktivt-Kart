@@ -12,18 +12,22 @@ import { MarkerService } from '../map/marker.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { MapboxMarker } from 'nativescript-mapbox';
 import { start } from 'tns-core-modules/application/application';
-import { SettingsService } from '../settings-page/settings.service';
+import { SettingsClass } from '../settings-page/settings';
+import { BackendService } from '../account-page/backend.service';
 
 @Injectable({
   providedIn: AppModule
 })
 export class TripService {
 
-  constructor(private imageService: ImageService, private settingsService: SettingsService, private markerService: MarkerService, private routerExtensions: RouterExtensions) {
+  private settingsClass: SettingsClass;
+
+  constructor(private imageService: ImageService, private markerService: MarkerService, private routerExtensions: RouterExtensions, private backendService: BackendService) {
     if (globals.MainTracker == undefined){
       globals.setTracker(new Tracker(1));
     }
     this.tracker = globals.MainTracker;
+    this.settingsClass = globals.getSettingsClass();
   }
 
   private tracker: Tracker;
@@ -316,99 +320,138 @@ export class TripService {
     return this.tracker.isPaused();
   }
 
-  drawTrip(id: number){
-    let trip = this.getTrip(id);
+  /**
+   * drawTrip - Draws the trip onto the map, with lines where you walked and markers where you started, paused, and stopped.
+   * 
+   * @param id The Id of the trip
+   */
+  drawTrip(id: number, local = true, trip?: Trip){
+    if (local) {
+      trip = this.getTrip(id);
+    }
+    
     trip.walks.forEach((walk) => {
-      globals.MainMap.drawLine(walk.points, walk.startTime);
+      console.log("Drawing line: " + walk.startTime);
+      globals.MainMap.drawLine(walk.points, walk.startTime + 1, "#fff", 4);
+      globals.MainMap.drawLine(walk.points, walk.startTime, "#00f", 2);
     });
-    if (trip.distanceMeters > 50){
-      let markerIds = [];
-      let start = trip.startPoint;
-      let markers: MapboxMarker[] = [];
-      markers.push({
-        id: start.timestamp,
-        lat: start.lat,
-        lng: start.lng,
-        title: "Start",
-        subtitle: globals.timeMaker(new Date(start.timestamp)),
-        icon: "res://start_trip_marker"
-      });
-      markerIds.push(start.timestamp);
-      let stop = trip.stopPoint;
-  
-      markers.push({
-        id: stop.timestamp,
-        lat: stop.lat,
-        lng: stop.lng,
-        title: "Stopp",
-        subtitle: globals.timeMaker(new Date(stop.timestamp)),
-        icon: "res://stop_trip_marker"
-      });
-      markerIds.push(stop.timestamp);
-      
-      if (trip.distanceMeters > 200){
-        let lastWalk;
-        trip.walks.forEach((walk) => {
-          let currentWalk = walk;
-          if (lastWalk != undefined){
-            let currentPoint = walk.points.pop();
-            markers.push({
-              id: currentWalk.startTime,
-              lat: currentPoint.lat,
-              lng: currentPoint.lng,
-              title: "Pause slutter",
-              subtitle: globals.timeMaker(new Date(currentPoint.timestamp)),
-              icon: "res://pause_marker"
-            });
-            markerIds.push(currentPoint.timestamp);
-            markers.push({
-              id: lastWalk.stopTime,
-              lat: lastWalk.points.pop().lat,
-              lng: lastWalk.points.pop().lng,
-              title: "Pause begynner",
-              subtitle: globals.timeMaker(new Date(lastWalk.points.pop().timestamp)),
-              icon: "res://pause_continue_marker",
-            });
-            markerIds.push(lastWalk.stopTime);
-            let markerIdSetting = this.settingsService.getSetting(undefined, 32);
-            if (markerIdSetting == undefined){
-              markerIdSetting = {
-                id: 32,
-                name: "TripMarkerIds",
-                type: "markers",
-                value: []
-              }
-            }
-            markerIdSetting.value[trip.id] = markerIds;
-            this.settingsService.setSetting(markerIdSetting);
-          } else {
-            lastWalk = currentWalk;
+    let markerIds = [];
+    let start = trip.startPoint;
+    let startTime = start.timestamp;
+    let markers: MapboxMarker[] = [];
+    console.log("Making start-marker: " + startTime);
+    
+    markers.push({
+      id: startTime,
+      lat: start.lat,
+      lng: start.lng,
+      title: "Start",
+      subtitle: globals.timeMaker(new Date(start.timestamp)),
+      icon: "res://start_trip_marker"
+    });
+    markerIds.push(startTime);
+    
+    let stop = trip.stopPoint;
+    let stopTime = stop.timestamp;
+    console.log("Making stop-marker: " + stopTime);
+    markers.push({
+      id: stopTime,
+      lat: stop.lat,
+      lng: stop.lng,
+      title: "Stopp",
+      subtitle: globals.timeConversion(stop.timestamp - trip.startTime),
+      icon: "res://stop_trip_marker"
+    });
+    markerIds.push(stopTime);
+    
+    console.log("Distance: " + trip.distanceMeters);
+    if (trip.distanceMeters > 50 || true){
+      console.log("Distance is above 50: " + trip.distanceMeters);
+      let lastWalk;
+      trip.walks.forEach((walk) => {
+        console.log("In a walk: ");
+        let currentWalk = walk;
+
+        if (lastWalk != undefined){
+          let currentPoint = walk.points[0];
+          console.log("Making marker: " + currentWalk.startTime);
+          let pauseContinueMarker = {
+            id: currentWalk.startTime,
+            lat: currentPoint.lat,
+            lng: currentPoint.lng,
+            title: "Pause slutter",
+            subtitle: globals.timeConversion(currentPoint.timestamp - trip.startTime),
+            icon: "res://pause_continue_marker"
           }
-        });
-      }
+
+          console.log("Making marker: " + lastWalk.stopTime);
+          let pauseMarker = {
+            id: lastWalk.stopTime,
+            lat: lastWalk.points[lastWalk.points.length - 1].lat,
+            lng: lastWalk.points[lastWalk.points.length - 1].lng,
+            title: "Pause begynner",
+            subtitle: globals.timeConversion(lastWalk.points[lastWalk.points.length - 1].timestamp - trip.startTime),
+            icon: "res://pause_marker",
+          }
+
+          // Sjekker om distansen er over 5 meter, hvis ja, tegnes både pause og pause slutter markerene
+          let pauseDistance = LocationClass.findDistance(lastWalk.points[lastWalk.points.length - 1], currentPoint);
+          if (pauseDistance > 3){
+            markers.push(pauseMarker, pauseContinueMarker);
+            markerIds.push(currentWalk.startTime);
+            markerIds.push(lastWalk.stopTime);
+            // Hvis ikke distansen er over 5 meter, men pausen er over 5 sekunder, tegnes en enkelt pause-marker med lengden på pausen
+          } else if (pauseContinueMarker.id - pauseMarker.id > 5000) {
+            pauseMarker.title = "Pause";
+            pauseMarker.subtitle = globals.timeConversion(pauseMarker.id - trip.startTime) +  "\nLengde på pausen: " + globals.timeConversion(pauseContinueMarker.id - pauseMarker.id);
+            markers.push(pauseMarker);
+            markerIds.push(lastWalk.stopTime);
+          }
+
+          console.log("Making marker: " + lastWalk.stopTime);
+          markerIds.push(lastWalk.stopTime);
+        }
+
+        lastWalk = currentWalk;
+      });
+      let markerIdSetting = this.settingsClass.getSetting(32, []);
+
+      markerIdSetting.value.push({
+        id: trip.id,
+        markers: markerIds
+      });
+      this.settingsClass.setSetting(markerIdSetting);
+      globals.MainMap.addMarkers(markers);
     }
   }
 
-  unDrawTrip(id: number){
-    let trip = this.getTrip(id);
+  /**
+   * unDrawTrip - Removes all lines and markers attached to the given trip.
+   * 
+   * @param id The id of the Trip
+   */
+  unDrawTrip(id: number, local = true, trip?: Trip){
+    if (local) {
+      trip = this.getTrip(id);
+    }
+    
     let ids = [];
     trip.walks.forEach((walk) => {
       ids.push(walk.startTime);
+      ids.push(walk.startTime + 1);
     });
+
     globals.MainMap.removeLine(ids);
 
-    let markerIdsSetting = this.settingsService.getSetting(undefined, 32);
-    if (markerIdsSetting == undefined){
-      markerIdsSetting = {
-        id: 32,
-        name: "TripMarkerIds",
-        type: "markers",
-        value: []
+    let markerIds: Array<any> = this.settingsClass.getSetting(32).value;
+    markerIds.forEach((tripMarkers) => {
+      if (tripMarkers != undefined){
+        if (tripMarkers.id == id){
+          globals.MainMap.removeMarkers(tripMarkers.markers);
+        }
       }
-      this.settingsService.setSetting(markerIdsSetting);
-    } else {
-      globals.MainMap.removeMarkers(markerIdsSetting.value[id]);
-    }
+    });
+    
   }
 
   /**
@@ -432,12 +475,35 @@ export class TripService {
       var jsonTrip = JSON.stringify(trip);
     } catch (error) {
       console.log("An error occured while stringifying trip. " + error);
-      
     }
     
     file.writeTextSync(jsonTrip, (error) => {
       console.log("ERROR: tripService: Error while writing trip to file: " + error);
     });
+
+    // Uploading trip
+    console.log("Uploading trip");
+    let autoUploadSetting = this.settingsClass.getSetting(6, true);
+    let token = this.settingsClass.getSetting(61, "").value;
+    if (autoUploadSetting.value && token != "") {
+      this.backendService.uploadTrip(trip).subscribe((res) => {
+        console.log("Result: ");
+        console.dir(res);
+        if (<any>res.status == 201) {
+          let sett = this.settingsClass.getSetting(42);
+          sett.value.push(trip.id);
+          this.settingsClass.setSetting(sett);
+          console.log("Successfully uploaded trip");
+        } else {
+          globals.showError("Turen kunne ikke lastes opp");
+        }
+      }, (error) => {
+        console.log("Error: ");
+        console.dir(error);
+        globals.showError("Turen kunne ikke lastes opp, prøv igjen senere");
+      });
+    }
+
     var infoFile = this.getTripFolder().getFile("Info.json");
     var info;
     try {
@@ -464,13 +530,15 @@ export class TripService {
    * 
    * @returns An object with an array of events. Type specifies which type of event it is. And the value is the value of the event. 
    */
-  getTripEvents(id): {
+  getTripEvents(id, local = true, trip?): {
       timestamp: number,
       type: string,
       value: any,
     }[] 
     {
-    var trip = this.getTrip(id);
+    if (local) {
+      trip = this.getTrip(id);
+    }
     var events = [];
 
     if (trip != undefined){
@@ -487,40 +555,46 @@ export class TripService {
           });
 
           let duration = (walk.stopTime - walk.startTime) / 60000;
+          let speed
+          if (distance == 0) {
+            speed = 0;
+          } else {
+            speed = duration / (distance / 1000);
+          }
           let walkEvent = {
-            timestamp: walk.startTime,
+            timestamp: globals.timeConversion(walk.startTime - trip.startTime),
             type: "walk",
             value: {
               distanceMeters: (Math.round(distance)/1000).toFixed(2),
-              startTime: globals.timeMaker(new Date(walk.startTime)),
-              stopTime: globals.timeMaker(new Date(walk.stopTime)),
-              avgSpeed: duration / (distance / 1000)
+              startTime: globals.timeConversion(walk.startTime - trip.startTime),
+              stopTime: globals.timeConversion(walk.stopTime -trip.startTime),
+              avgSpeed: speed
             }
           }
 
           let pauseEvent = {
-            timestamp: globals.timeMaker(new Date(walk.stopTime)),
+            timestamp: globals.timeConversion(walk.stopTime -trip.startTime),
             type: "pause",
             value: {
-              from:globals.timeMaker(new Date(walk.stopTime)),
+              from:globals.timeConversion(walk.stopTime - trip.startTime),
               to: undefined
             }
           }
 
           if (lastPauseEvent != null){
-            lastPauseEvent.value.to = globals.timeMaker(new Date(walk.startTime));
+            lastPauseEvent.value.to = globals.timeConversion(walk.startTime -trip.startTime);
+            events.push(lastPauseEvent);
           }
 
-          lastPauseEvent = pauseEvent;
-          events.push(lastPauseEvent);
           events.push(walkEvent);
+          lastPauseEvent = pauseEvent;
         });
 
         if (trip.images != undefined){
           trip.images.forEach((image) => {
             if (image != null && image != undefined){
               let imageEvent = {
-                timestamp: globals.timeMaker(new Date(image.timestamp)),
+                timestamp: globals.timeConversion(image.timestamp - trip.startTime),
                 type: "image",
                 value: {
                   markerId: image.markerId,
@@ -553,6 +627,109 @@ export class TripService {
     }
   }
 
+  getBookmarkedTrips(): Trip[] {
+    try {
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips.json");
+      let object;
+      try {
+        object = JSON.parse(file.readTextSync());
+      } catch {
+        object = {
+          trips: []
+        }
+      }
+      return object.trips;
+    } catch (error) {
+      console.log("Noe gikk galt: " + error)
+    }
+  }
+
+  bookmarkTrip(trip: Trip, tid: number, username: string){
+    console.log("Tid: " + tid);
+    console.log("username: " + username);
+    console.log();
+    try {
+      trip.id = tid;
+      trip.username = username;
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips.json");
+      let object;
+      try {
+        console.log("Reading file");
+        object = JSON.parse(file.readTextSync());
+        console.log("Finished reading file");
+      } catch (error) {
+        console.log("Failed reading, making new: " + error);
+        object = {
+          trips: []
+        }
+        object.trips.push(trip);
+        file.writeTextSync(JSON.stringify(object));
+        console.log("Written new to file");
+        return true;
+      }
+      if (object.trips.indexOf(trip) != -1){
+        return true;
+      } else {
+        console.log("Adding to array");
+        object.trips.push(trip);
+        file.writeText(JSON.stringify(object));
+        console.log("Added to array");
+        return true;
+      }
+    } catch (error) {
+      console.log("Something went wrong: " + error);
+      globals.showError("Noe gikk galt under lagring av tur");
+      return false;
+    }
+  }
+
+  unbookmarkTrip(tid: number) {
+    try {
+      let folder = this.getTripFolder();
+      let file = folder.getFile("savedTrips.json");
+      let object;
+      try {
+        object = JSON.parse(file.readTextSync());
+      } catch (error) {
+        object = {
+          trips: []
+        }
+        file.writeText(JSON.stringify(object));
+        return true;
+      }
+      let bookmarkedTrips = object.trips;
+      bookmarkedTrips.forEach((trip, index) => {
+        if (trip != undefined){
+          if (trip.id == tid){
+            bookmarkedTrips.splice(index, 1);
+          }
+        }
+      });
+      object.trips = bookmarkedTrips;
+      file.writeTextSync(JSON.stringify(object));
+      return true;
+    } catch (error) {
+      console.log("Noe gikk galt: " + error);
+      globals.showError("Noe gikk galt under fjerning av lagret tur");
+      return false;
+    }
+  }
+
+  getSavedTrip(tid) {
+    let bookTrips = this.getBookmarkedTrips();
+    let returnedTrip = undefined;
+    bookTrips.forEach(trip => {
+      if (trip != undefined){
+        if (trip.id == tid) {
+          returnedTrip = trip;
+          return;
+        }
+      }
+    });
+    return returnedTrip;
+  }
 
   saveImage(image: ImageAsset, lat: number, lng: number, url: string, iconPath?: string){
     return new Promise((resolve, reject) => {

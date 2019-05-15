@@ -9,8 +9,9 @@ import { MapComponent } from "./map/map.component";
 registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 registerElement('Fab', () => require('nativescript-floatingactionbutton').Fab);
 
-import { SettingsService } from "./settings-page/settings.service";
 import { NgShadowModule } from 'nativescript-ng-shadow';
+import { ErrorMessageComponent } from './error-message/error-message.component';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
     bootstrap: [
@@ -19,13 +20,14 @@ import { NgShadowModule } from 'nativescript-ng-shadow';
     imports: [
         NativeScriptModule,
         AppRoutingModule,
-        NgShadowModule
+        NgShadowModule,
+        HttpClientModule
     ],
     declarations: [
         AppComponent,
-        MapComponent
+        MapComponent,
+        ErrorMessageComponent,
     ],
-    providers: [SettingsService],
     schemas: [
         NO_ERRORS_SCHEMA
     ],

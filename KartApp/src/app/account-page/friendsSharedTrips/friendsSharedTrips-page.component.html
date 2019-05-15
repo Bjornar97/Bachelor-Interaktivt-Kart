@@ -1,0 +1,21 @@
+<StackLayout>
+    <GridLayout rows="*" columns="auto, *, auto" class="actionBar" (pan)="drawer.onPan($event)">
+        <label col="0" colSpan="3" class="actionBarTitle" horizontalAlignment="center" text="Venners turer"></label>
+        <GridLayout col="0" rows="*" columns="auto, *" class="actionBarBackButton" (tap)="goBack()">
+            <label col="0" text="&#xf053;" class="actionBarBackButtonArrow"></label>
+            <label col="1" text="Konto" verticalAlignment="center" class="actionBarBackButtonText"></label>
+        </GridLayout>
+        <Label col="2" *ngIf="!loading" text="&#xf2f9;" textWrap="false" class="fas refresh" (tap)="getTrips()"></Label>
+    </GridLayout>
+
+    <ActivityIndicator *ngIf="loading" width="50" height="50" [busy]="loading" class="activity-indicator"></ActivityIndicator>
+
+    <ScrollView height="2000">
+        <StackLayout>
+            <Label *ngIf="friendsTrips.length == 0 && !loading" text="Det finnes ingenting her enda :(" textWrap="true"></Label>
+            <ng-templage *ngFor="let trip of friendsTrips">
+                <ns-trip-box *ngIf="trip != undefined" [id]="trip.tripid" personal="false" [inputTrip]="trip.tripjson" [username]="trip.username"></ns-trip-box>
+            </ng-templage>
+        </StackLayout>
+    </ScrollView>
+</StackLayout>

@@ -3,7 +3,12 @@
 .box{
     text-align: left;
     padding: 10dp 0 0 0;
-    color: #666;
+    color: #000;
+}
+
+.boxLabel.time {
+    color: #05f;
+    font-size: 18;
 }
 
 .boxLabel {
@@ -12,7 +17,6 @@
 }
 
 .checkBox {
-    font-size: 20;
     margin-left: 5dp;
 }
 
@@ -24,6 +28,14 @@
 .actionText {
     vertical-align: center;
     padding: 5dp;
+}
+
+.uploaded {
+    color: #008000;
+}
+
+.failed {
+    color: orangered;
 }
 
 .actionIcon {
@@ -42,4 +54,14 @@
     margin-top: 10dp;
     border-color: #aaa;
     border-top-width: 1dp;
+}
+
+.activity-indicator {
+    color: #008000;
+}
+
+.username {
+    color: #008000;
+    font-size: 18;
+    padding: 5dp;
 }

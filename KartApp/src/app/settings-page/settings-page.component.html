@@ -1,6 +1,7 @@
-<ActionBar title="Innstillinger" class="action-bar" (pan)="drawer.onPan($event)">
-</ActionBar>
 <StackLayout>
+    <GridLayout rows="*" columns="*, *, *" class="actionBar" (pan)="drawer.onPan($event)">
+        <label col="1" class="actionBarTitle" text="Innstillinger"></label>
+    </GridLayout>
     <ScrollView class="scrollView" height="1000">
         <StackLayout class="outer">
             <ContentView class="container" shadow elevation="2">
@@ -10,18 +11,48 @@
                         <Label col="0" text="Kartinstillinger" [nsRouterLink]="['./menu/map']" pageTransition="slide" class="menu"></Label>
                         <Image col="1" src="res://baseline_chevron_right_black_24" [nsRouterLink]="['./menu/map']" pageTransition="slide"></Image>
                     </GridLayout>
+
+                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                        <Label col="0" text="Lagre bilder til galleriet" textWrap="true" class="settingLabel" (tap)="toggleSwitch(imageSaveSwitch)"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleSwitch(imageSaveSwitch)">
+                            <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
+                            <Label text="Skal bilder du tar på tur lagres i galleriet på telefonen?" class="infoText" textWrap="true"></Label>
+                        </StackLayout>
+                        <Switch #imageSaveSwitch col="1" rowSpan="2" [checked]="isImageSave" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="imageSaveChanged($event)">
+                        </Switch>
+                    </GridLayout>
+
+                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                        <Label col="0" text="Vise alle bildemarkører" textWrap="true" class="settingLabel" (tap)="toggleAllImagesSwitch(allImageSwitch)"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleAllImagesSwitch(allImages)">
+                            <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
+                            <Label text="Skal alle markørene for bilder vises hele tiden? Hvis av, vises kun markørene for bildene som er tatt av turene som vises" class="infoText" textWrap="true"></Label>
+                        </StackLayout>
+                        <Switch #allImages col="1" rowSpan="2" [checked]="isAllImages" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="allImagesChanged($event)">
+                        </Switch>
+                    </GridLayout>
+
+                    <GridLayout rows="*, *" columns="*, auto" class="setting">
+                        <Label col="0" text="Automatisk synkronisering" textWrap="true" class="settingLabel" (tap)="toggleAutoUploadSwitch(autoUploadSwitch)"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleAutoUploadSwitch(autoUploadSwitch)">
+                            <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
+                            <Label text="Skal turene dine automatisk bli lastet opp når du avslutter de?" class="infoText" textWrap="true"></Label>
+                        </StackLayout>
+                        <Switch #autoUploadSwitch col="1" rowSpan="2" [checked]="isAutoUpload" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="autoUploadChanged($event)">
+                        </Switch>
+                    </GridLayout>
                 </StackLayout>
             </ContentView>
             <ContentView class="container" shadow elevation="2">
                 <StackLayout>
                     <Label class="title" text="Avansert" textWrap="true"></Label>
                     <GridLayout rows="*, *" columns="*, auto" class="setting">
-                        <Label col="0" text="Festepunkter" textWrap="true" class="settingLabel"></Label>
-                        <StackLayout col="0" row="1" orientation="horizontal">
+                        <Label col="0" text="Festepunkter" textWrap="true" class="settingLabel" (tap)="toggleSwitch(drawerSnapSwitch)"></Label>
+                        <StackLayout col="0" row="1" orientation="horizontal" (tap)="toggleSwitch(drawerSnapSwitch)">
                             <Label text="&#xf05a;" textWrap="true" class="labelIcon"></Label>
                             <Label text="Skal skuffen feste seg til bestemte punkter, slik at det best passer innholdet på siden" class="infoText" textWrap="true"></Label>
                         </StackLayout>
-                        <Switch col="1" rowSpan="2" [checked]="isDrawerSnap" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="drawerSnapChange($event)">
+                        <Switch #drawerSnapSwitch col="1" rowSpan="2" [checked]="isDrawerSnap" ios:class="switch iosSwitch" android:class="switch androidSwitch" (checkedChange)="drawerSnapChange($event)">
                         </Switch>
                     </GridLayout>
                 </StackLayout>

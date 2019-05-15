@@ -7,6 +7,7 @@ import * as globals from "~/app/globals";
 
 export type Trip = {
     id: number,
+    username?: string,
     startTime: number,
     stopTime: number,
     startPoint?: LocationObject,
@@ -94,7 +95,7 @@ export class Tracker {
           lat: point.latitude,
           lng: point.longitude,
           speed: point.speed,
-          timestamp: point.timestamp,
+          timestamp: point.timestamp.getTime(),
           verticalAccuracy: point.verticalAccuracy
         }
 
@@ -110,24 +111,27 @@ export class Tracker {
         } else {
             this.gpsSignalStrength = 3;
         }
-        if (this.lastPoint != undefined){
-            if (LocationClass.findDistance(this.lastPoint, location) < this.lastAccuracy && !force) {
-                if (location.horizontalAccuracy < this.lastAccuracy) {
-                    this.subTrip.points.pop();
-                    this.subTrip.points.push(location);
-                    this.lastAccuracy = location.horizontalAccuracy;
-                    this.lastPoint = location;
-                }
-            } else if (this.gpsSignalStrength > 0){
-                this.subTrip.points.push(location);
-                this.lastPoint = location;
-                this.lastAccuracy = location.horizontalAccuracy;
-            }
-        } else if (this.gpsSignalStrength > 0){
-            this.subTrip.points.push(location);
-            this.lastPoint = location;
-            this.lastAccuracy = location.horizontalAccuracy;
-        }
+
+        // if (this.lastPoint != undefined){
+        //     if (LocationClass.findDistance(this.lastPoint, location) < this.lastAccuracy && !force && this.lastPoint.id != this.Trip.startPoint.id) {
+        //         if (location.horizontalAccuracy < this.lastAccuracy) {
+        //             this.subTrip.points.pop();
+        //             this.subTrip.points.push(location);
+        //             this.lastAccuracy = location.horizontalAccuracy;
+        //             this.lastPoint = location;
+        //         }
+        //     } else if (this.gpsSignalStrength > 0){
+        //         this.subTrip.points.push(location);
+        //         this.lastPoint = location;
+        //         this.lastAccuracy = location.horizontalAccuracy;
+        //     }
+        // } else if (this.gpsSignalStrength > 0){
+        //     this.subTrip.points.push(location);
+        //     this.lastPoint = location;
+        //     this.lastAccuracy = location.horizontalAccuracy;
+        // }
+
+        this.subTrip.points.push(location);
         console.log("Added point");
     }
 
@@ -166,10 +170,11 @@ export class Tracker {
             }, 
             {
                 desiredAccuracy: this.accuracy, 
-                timeout: 10000, 
-                maximumAge: 5000, 
-                updateDistance: 10,
-                updateTime: 5000,
+                timeout: 5000,
+                maximumAge: 3000,
+                updateTime: 2000,
+                updateDistance: 5,
+                minimumUpdateTime: 500,
                 iosAllowsBackgroundLocationUpdates: true,
                 iosPausesLocationUpdatesAutomatically: false
         });
@@ -193,9 +198,6 @@ export class Tracker {
         console.log("Pausing in tracker");
         if (this.paused){
             console.log("Already paused");
-        }
-        if (this.pausing) {
-            console.log("Trying to pause while pauing");
             return;
         }
         this.pauseInterval();
@@ -218,7 +220,7 @@ export class Tracker {
                 latitude: loc.lat,
                 longitude: loc.lng,
                 speed: loc.speed,
-                timestamp: loc.timestamp,
+                timestamp: new Date(loc.timestamp),
                 verticalAccuracy: loc.verticalAccuracy
             }, true);
 
@@ -244,10 +246,10 @@ export class Tracker {
             }, 
             {
                 desiredAccuracy: this.accuracy, 
-                timeout: 10000, 
-                maximumAge: 5000, 
-                updateDistance: 10, 
-                updateTime: 5000,
+                timeout: 5000,
+                maximumAge: 1000,
+                updateTime: 1000,
+                minimumUpdateTime: 500,
                 iosAllowsBackgroundLocationUpdates: true,
                 iosPausesLocationUpdatesAutomatically: false
         });
@@ -276,7 +278,17 @@ export class Tracker {
             }
             this.Trip.stopTime = this.subTrip.stopTime;
             this.status = false;
-            this.Trip.stopPoint = this.subTrip.points[this.subTrip.points.length - 1];
+            let i = 1;
+            while (this.Trip.stopPoint == undefined){
+                this.Trip.stopPoint = this.subTrip.points[this.subTrip.points.length - i];
+                i++;
+                if (i > 20){
+                    break;
+                }
+            }
+            console.log("StopPoint: ");
+            console.dir(this.Trip.stopPoint);
+            
             console.log("Finished ending of trip");
         } catch (error) {
             console.log("ERROR in endTrip: " + error);

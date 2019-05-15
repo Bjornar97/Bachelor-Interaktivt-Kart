@@ -15,6 +15,7 @@
 
 .outer {
     padding-bottom: 20dp;
+    padding-top: -15dp;
 }
 
 .containerShadowBox{
@@ -41,16 +42,13 @@
     color: #000;
 }
 
-.switch[checked=false] {
+.switch {
     text-align: right;
 }
 
-.switch[checked=true] {
-    text-align: right;
-}
-
-.iosSwitch[checked=true]{
+.iosSwitch{
     background-color: #008000;
+    color: #eee;
 }
 
 .androidSwitch {

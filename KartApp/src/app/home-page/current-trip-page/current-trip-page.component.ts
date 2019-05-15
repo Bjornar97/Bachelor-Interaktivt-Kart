@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterContentInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Page } from 'tns-core-modules/ui/page/page';
 import { Trip, Tracker } from '~/app/tracker';
 import { TripService } from '../trip.service';
@@ -10,8 +10,11 @@ import { LocationClass } from '~/app/location';
 import * as globals from "~/app/globals";
 import { DrawerClass } from '~/app/drawer';
 import { on as applicationOn, exitEvent, ApplicationEventData } from "tns-core-modules/application";
-import { Setting, SettingsService } from '~/app/settings-page/settings.service';
+import { Setting, SettingsClass } from '~/app/settings-page/settings';
 import { trigger, transition, style, animate, state } from "@angular/animations";
+import { isAndroid } from "tns-core-modules/platform";
+import * as application from 'tns-core-modules/application';
+import { GC } from 'tns-core-modules/utils/utils';
 
 
 @Component({
@@ -37,15 +40,19 @@ import { trigger, transition, style, animate, state } from "@angular/animations"
   providers: [TripService, MarkerService],
   moduleId: module.id,
 })
-export class CurrentTripPageComponent implements OnInit, AfterViewInit {
+export class CurrentTripPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService, private settingsService: SettingsService) { 
+  constructor(private page: Page, private routerExtensions: RouterExtensions, private markerService: MarkerService, private tripService: TripService) { 
     this.locationClass = new LocationClass();
     this.tracker = globals.MainTracker;
+    this.settingsClass = globals.getSettingsClass();
+    page.actionBarHidden = true;
+    this.settingsClass = globals.getSettingsClass();
   }
 
   private tracker: Tracker;
   private trip: Trip;
+  private settingsClass: SettingsClass;
 
   private locationClass: LocationClass;
 
@@ -77,21 +84,13 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
 
   private goBack(){
     let height = this.drawer.drawer.heightInt;
-    let setting = this.settingsService.getSetting(undefined, 52);
-    if (setting == undefined) {
-      setting = {
-        id: 52,
-        name: "currentTripPageHeight",
-        type: "height",
-        value: height
-      }
-    }
+    let setting = this.settingsClass.getSetting(52);
     if (height <= 350){
       setting.value = 160;
     } else {
       setting.value = height;
     }
-    this.settingsService.setSetting(setting);
+    this.settingsClass.setSetting(setting);
     this.routerExtensions.navigate(["home"], {animated: true, transition: {name: "slideRight"}});
   }
 
@@ -113,15 +112,12 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
    */
   OpenCamera(){
     console.log("Taking picture");
-    let saveImageSetting = this.settingsService.getSetting(undefined, 4);
-    if (saveImageSetting == undefined || saveImageSetting == null){
-      saveImageSetting = {
-        id: 4,
-        name: "saveImage",
-        type: "switch",
-        value: false
-      }
-      this.settingsService.setSetting(saveImageSetting);
+    let saveImageSetting = this.settingsClass.getSetting(4);
+    let saveImage;
+    if (saveImageSetting == null) {
+      saveImage = false;
+    } else {
+      saveImage = saveImageSetting.value
     }
     camera.requestPermissions().then(
       () => {
@@ -129,9 +125,9 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
           this.locationClass.getLocation(5000, 10000, 1).then((loc) => {
             this.tripService.saveImage(imageAsset, loc.lat, loc.lng, "marker/image/", "res://image_marker").then(() => {
               this.trip = this.tripService.getCurrentTrip();
-              console.dir(this.trip);
               this.trip.images.forEach((image) => {
                 this.imageSrcs.push(image);
+                GC();
               });
             });
           }).catch((error) => {
@@ -191,7 +187,8 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
       if (result){
         try {
           this.trip = this.tripService.endTrip();
-          this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/false", {
+          globals.setCurrentHomePage("home");
+          this.routerExtensions.navigateByUrl("home/trip/" + this.trip.id + "/true", {
             animated: true,
             clearHistory: true,
             transition: {name: "slideLeft"}
@@ -224,17 +221,12 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){
-    let mountSetting = this.settingsService.getSetting(undefined, 3);
+    let mountSetting = this.settingsClass.getSetting(3);
     if (mountSetting != null && mountSetting != undefined){
       if (mountSetting.value){
-        let heightSetting = this.settingsService.getSetting(undefined, 52);
-        if (heightSetting == undefined){
-          heightSetting = {
-            id: 52,
-            name: "currentTripPageHeight",
-            type: "height",
-            value: 160
-          }
+        let heightSetting = this.settingsClass.getSetting(52);
+        if (heightSetting.value == undefined){
+          heightSetting.value = 160;
         }
         this.drawer.setDrawerHeight(heightSetting.value);
       }
@@ -262,18 +254,31 @@ export class CurrentTripPageComponent implements OnInit, AfterViewInit {
     this.drawer = globals.getDrawer();
 
     applicationOn(exitEvent, (args: ApplicationEventData) => {
-      let tripActive: Setting = {
-        id: 41,
-        name: "tripActive",
-        value: false,
-        type: "Object"
-      }
+      let tripActiveSetting = this.settingsClass.getSetting(41);
       if (!this.tripService.isPaused()) {
-        tripActive.value = true;
+        console.log("Not paused, saving setting: ");
+        tripActiveSetting.value = true;
+        console.dir(tripActiveSetting);
         this.tripService.pauseTrip(); 
+      } else {
+        tripActiveSetting.value = false;
       }
-      this.settingsService.setSetting(tripActive);
+      this.settingsClass.setSetting(tripActiveSetting);
+      this.settingsClass.saveSettings();
     });
+    
+    if (isAndroid){
+      application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => {
+        args.cancel = true;
+        this.goBack();
+      });
+    }
 
+    globals.setCurrentHomePage("home/currentTrip");
+    globals.setTripPrevious("home");
+  }
+
+  ngOnDestroy() {
+    GC();
   }
 }
