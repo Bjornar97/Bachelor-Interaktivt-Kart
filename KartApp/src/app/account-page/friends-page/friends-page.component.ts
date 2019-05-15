@@ -166,6 +166,40 @@ export class FriendsPageComponent implements OnInit{
         }
     }
 
+    onTextFieldChange(args) {
+        let textField = <TextField>args.object;
+
+        this.newFriendUsernameText = textField.text;
+    }
+
+    private newFriendLoading = false;
+    sendRequest() {
+        this.newFriendLoading = true;
+        console.log(this.newFriendUsernameText);
+        try {
+            let response = this.backendService.sendFriendRequest(this.newFriendUsernameText, "send");
+            response.subscribe((result) => {
+                console.dir(result);
+                this.newFriendLoading = false;
+                if (<any>result.status == 201) {
+                    this.friendRequests.push({
+                        name: this.newFriendUsernameText,
+                        status: "sent",
+                        loading: false
+                    });
+                } else {
+                    console.log("Status is not 201: " + result.status);
+                    this.usernameExists = false;
+                    this.newFriendLoading = false;
+                }
+            });
+        } catch (error) {
+            this.usernameExists = false;
+            this.newFriendLoading = false;
+        }
+        
+    }
+
     getFriendIndex(name: string, type = "request") {
         if (type == "request"){
             return this.friendRequests.findIndex((request) => {
@@ -185,7 +219,30 @@ export class FriendsPageComponent implements OnInit{
     }
 
     declineRequest(name: string) {
-        this.backendService.sendFriendRequest(name, "delete");
+        let friendIndex = this.getFriendIndex(name, "friend");
+        let options = {
+            title: "Avslå venn",
+            message: "Er du sikker på at du vil avslå " + name + " sin venneforespørsel?",
+            okButtonText: "Ja", 
+            cancelButtonText: "Nei"
+        }
+        confirm(options).then((result) => {
+            if (result) {
+                console.log("Declining friend");
+                try {
+                    this.backendService.sendFriendRequest(name, "delete").subscribe((result) => {
+                        if (<any>result == 201) {
+                            this.friendList = this.friendList.filter((value, i, array) => {
+                                return i != friendIndex;
+                            });
+                        }
+                        this.loadFriends();
+                    });
+                } catch (error) {
+                    console.log("ERROR while declining friend: " + error);
+                }
+            }
+        });
     }
 
     animate(content: StackLayout) {
@@ -214,6 +271,7 @@ export class FriendsPageComponent implements OnInit{
                                 return i != friendIndex;
                             });
                         }
+                        this.loadFriends();
                     });
                 } catch (error) {
                     console.log("ERROR while removing friend: " + error);

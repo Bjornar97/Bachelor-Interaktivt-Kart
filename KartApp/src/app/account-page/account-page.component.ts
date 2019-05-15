@@ -69,6 +69,8 @@ export class AccountPageComponent implements OnInit{
                     }
                 }, 10000);
             } catch (error) {
+                token.value = undefined;
+                this.settingsClass.setSetting(token);
                 this.loading = false;
                 console.log("Error while getting username: " + error);
                 this.routerExtensions.navigate(["account", "login"], {

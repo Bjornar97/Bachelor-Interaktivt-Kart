@@ -93,7 +93,6 @@ export function getErrorList(){
 export function showError(errorString: string) {
     errorList.push(errorString);
     setTimeout(() => {
-        this.counter--;
         errorList.splice(0, 1);
     }, 5000);
 }
@@ -143,18 +142,18 @@ export function showError(errorString: string) {
 
   }
 
-  var CheckboxList: boolean[] = [];
+  var CheckboxDict = {};
   
   export function getCheckboxList(id: number){
-    if (CheckboxList[id] == undefined){
+    if (CheckboxDict[id] == undefined){
       console.log("Creating CheckboxList entry");
-      CheckboxList[id] = false;
+      CheckboxDict[id] = false;
     }
-    return CheckboxList[id];
+    return CheckboxDict[id];
   }
 
   export function setCheckboxList(id: number, value: boolean){
-    CheckboxList[id] = value;
+    CheckboxDict[id] = value;
   }
 
   // Current friends-trip

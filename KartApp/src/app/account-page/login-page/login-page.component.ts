@@ -72,7 +72,7 @@ export class LoginPageComponent implements OnInit {
               name: "slideLeft"
             }
           });
-        } else if (<any>result.status == 200) {
+        } else if (<any>result.status == 203) {
           this.message = "Feil epost eller passord";
         } else {
           this.message = "Noe gikk galt. Prøv igjen";
@@ -98,15 +98,17 @@ export class LoginPageComponent implements OnInit {
   ngOnInit() {
     console.log("Initting login");
     try {
-      let token = this.settingsClass.getSetting(61).value;
+      let token = this.settingsClass.getSetting(61);
       if (token != undefined) {
-        this.routerExtensions.navigate(["account"], {
-          animated: true,
-          clearHistory: true,
-          transition: {
-            name: "slideLeft"
-          }
-        });
+        if (token.value != undefined) {
+          this.routerExtensions.navigate(["account"], {
+            animated: true,
+            clearHistory: true,
+            transition: {
+              name: "slideLeft"
+            }
+          });
+        }
       }
     } catch (error) {
       console.log("ERROR in login init. " + error);

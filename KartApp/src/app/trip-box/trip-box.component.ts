@@ -31,7 +31,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
   @Input() personal: string;
   @Input() username: string;
 
-  @Input() inputTrip: string;
+  @Input() inputTrip;
   
   @Output()
   delete = new EventEmitter<string>();
@@ -164,6 +164,7 @@ export class TripBoxComponent implements OnInit, OnChanges {
       console.log("Personal")
       this.trip = this.tripService.getTrip(this.id);
     } else {
+      console.log("Type: String");
       this.trip = JSON.parse(this.inputTrip);
       this.trip.username = this.username;
     }
@@ -176,12 +177,12 @@ export class TripBoxComponent implements OnInit, OnChanges {
       
       console.log("Created string and stuff");
 
-    this.distanceString = (Math.round(this.trip.distanceMeters)/1000).toFixed(2);
-    console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
-    if (globals.getCheckboxList(this.id)) {
-      this.skipCheck = true;
-      this.checked = true;
-    }
+      this.distanceString = (Math.round(this.trip.distanceMeters)/1000).toFixed(2);
+      console.log("Distance: " + this.trip.distanceMeters + ". String: " + this.distanceString);
+      if (globals.getCheckboxList(this.id)) {
+        this.skipCheck = true;
+        this.checked = true;
+      }
 
     }
 

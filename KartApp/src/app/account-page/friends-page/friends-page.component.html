@@ -20,20 +20,20 @@
                         <Label row="0" col="0" text="Legg til ny venn" (tap)="expandNewFriend(expandNewFriendArrow, newFriendBox)" textWrap="true"></Label>
                         
                         <TextField 
-                            #usernameTextField
+                            #usernameTextField 
                             *ngIf="newFriendExpanded"
                             row="1" col="0"
                             hint="Brukernavn"
                             class="newFriendTextField"
                             autocorrect="false" 
-                            (textChange)="checkUsername($event)" 
-                            (returnPress)="sendNewRequest($event)"
+                            (textChange)="onTextFieldChange($event)"
+                            (returnPress)="sendRequest()"
                             >
                         </TextField>
                         <StackLayout *ngIf="newFriendExpanded" orientation="horizontal" row="1" col="1">
                             <Label *ngIf="usernameExists" text="Check" textWrap="false" verticalAlignment="center"></Label>
                             <Label *ngIf="!usernameExists && usernameExists != undefined" text="Cross" verticalAlignment="center" textWrap="false"></Label>
-                            <Button #sendFriendButton text="Send" class="newFriendBtn" [isEnabled]="!sendingRequest" (tap)="sendRequest()"></Button>
+                            <Button text="Send" class="newFriendBtn" [isEnabled]="!sendingRequest" (tap)="sendRequest()"></Button>
                         </StackLayout>
                         
                     </GridLayout>
